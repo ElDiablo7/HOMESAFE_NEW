@@ -366,3 +366,5 @@ router.post('/export/excel', (req, res) => {
     res.status(500).json({ success: false, error: e.message });
   }
 });
+
+module.exports = router;
