@@ -1,0 +1,489 @@
+/* ============================================
+   GRACE-X AI™ v6.5.0 TITAN Edition
+   MASTER STREAMLINED CSS
+   © 2026 Zachary Charles Anthony Crockett
+   ============================================ */
+
+/* ============================================
+   THEME SYSTEM - 6 Color Schemes
+   ============================================ */
+:root[data-theme="titan"] {
+    --primary: #00f0ff;
+    --secondary: #ff00ff;
+    --accent: #8800ff;
+    --bg-main: #0a0e1a;
+    --bg-alt: #050810;
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255,255,255,0.7);
+    --glass: rgba(255,255,255,0.05);
+    --glass-border: rgba(255,255,255,0.1);
+    --glow: rgba(0,240,255,0.3);
+}
+
+:root[data-theme="sentinel"] {
+    --primary: #3b82f6;
+    --secondary: #1e40af;
+    --accent: #60a5fa;
+    --bg-main: #0f172a;
+    --bg-alt: #020617;
+    --text-primary: #f8fafc;
+    --text-secondary: rgba(248,250,252,0.7);
+    --glass: rgba(59,130,246,0.05);
+    --glass-border: rgba(59,130,246,0.1);
+    --glow: rgba(59,130,246,0.3);
+}
+
+:root[data-theme="forge"] {
+    --primary: #00ff88;
+    --secondary: #00d4ff;
+    --accent: #00ffcc;
+    --bg-main: #0a1a0f;
+    --bg-alt: #051008;
+    --text-primary: #e8fff3;
+    --text-secondary: rgba(232,255,243,0.7);
+    --glass: rgba(0,255,136,0.05);
+    --glass-border: rgba(0,255,136,0.1);
+    --glow: rgba(0,255,136,0.3);
+}
+
+:root[data-theme="venus"] {
+    --primary: #ff00ff;
+    --secondary: #ff88ff;
+    --accent: #ff44ff;
+    --bg-main: #1a0a1a;
+    --bg-alt: #100510;
+    --text-primary: #fff0ff;
+    --text-secondary: rgba(255,240,255,0.7);
+    --glass: rgba(255,0,255,0.05);
+    --glass-border: rgba(255,0,255,0.1);
+    --glow: rgba(255,0,255,0.3);
+}
+
+:root[data-theme="stealth"] {
+    --primary: #64748b;
+    --secondary: #475569;
+    --accent: #94a3b8;
+    --bg-main: #0f0f0f;
+    --bg-alt: #050505;
+    --text-primary: #e2e8f0;
+    --text-secondary: rgba(226,232,240,0.7);
+    --glass: rgba(100,116,139,0.05);
+    --glass-border: rgba(100,116,139,0.1);
+    --glow: rgba(100,116,139,0.2);
+}
+
+:root[data-theme="solar"] {
+    --primary: #f59e0b;
+    --secondary: #d97706;
+    --accent: #fbbf24;
+    --bg-main: #fef3c7;
+    --bg-alt: #fde68a;
+    --text-primary: #18181b;
+    --text-secondary: rgba(24,24,27,0.7);
+    --glass: rgba(245,158,11,0.1);
+    --glass-border: rgba(245,158,11,0.2);
+    --glow: rgba(245,158,11,0.3);
+}
+
+/* Default theme */
+:root {
+    --primary: #00f0ff;
+    --secondary: #ff00ff;
+    --accent: #8800ff;
+    --bg-main: #0a0e1a;
+    --bg-alt: #050810;
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255,255,255,0.7);
+    --glass: rgba(255,255,255,0.05);
+    --glass-border: rgba(255,255,255,0.1);
+    --glow: rgba(0,240,255,0.3);
+    
+    /* Golden Ratio Spacing */
+    --space-xs: 0.382rem;
+    --space-sm: 0.618rem;
+    --space-md: 1rem;
+    --space-lg: 1.618rem;
+    --space-xl: 2.618rem;
+    --space-2xl: 4.236rem;
+    
+    /* Timing */
+    --transition-fast: 0.2s;
+    --transition-base: 0.3s;
+    --transition-slow: 0.5s;
+}
+
+/* ============================================
+   BASE STYLES
+   ============================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg-main);
+    color: var(--text-primary);
+    overflow-x: hidden;
+    line-height: 1.6;
+}
+
+/* ============================================
+   SIDEBAR - Collapsible
+   ============================================ */
+.aside {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 280px;
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-right: 1px solid var(--glass-border);
+    padding: var(--space-lg);
+    overflow-y: auto;
+    transition: transform var(--transition-base) ease;
+    z-index: 1000;
+}
+
+.aside.collapsed {
+    transform: translateX(-100%);
+}
+
+/* Sidebar Toggle Button */
+.sidebar-toggle {
+    position: fixed;
+    left: 20px;
+    top: 20px;
+    width: 44px;
+    height: 44px;
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    color: var(--primary);
+    font-size: 24px;
+    cursor: pointer;
+    transition: all var(--transition-base) ease;
+    z-index: 1001;
+    display: none;
+}
+
+.aside.collapsed ~ .sidebar-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar-toggle:hover {
+    background: var(--primary);
+    color: var(--bg-main);
+    box-shadow: 0 0 20px var(--glow);
+}
+
+/* Brand */
+.brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    margin-bottom: var(--space-xl);
+    padding-bottom: var(--space-lg);
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.brand img {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+}
+
+.brand h1 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.brand .small {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+/* Section Titles */
+.section-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    margin: var(--space-lg) 0 var(--space-md);
+}
+
+/* Module Buttons */
+.module-nav {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.module-btn {
+    padding: var(--space-md) var(--space-lg);
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-base) ease;
+    text-align: left;
+}
+
+.module-btn:hover {
+    background: var(--primary);
+    color: var(--bg-main);
+    transform: translateX(4px);
+    box-shadow: 0 4px 16px var(--glow);
+}
+
+.module-btn.active {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: var(--bg-main);
+    box-shadow: 0 4px 16px var(--glow);
+}
+
+/* ============================================
+   MAIN CONTENT
+   ============================================ */
+#content {
+    margin-left: 280px;
+    padding: var(--space-xl);
+    min-height: 100vh;
+    transition: margin-left var(--transition-base) ease;
+}
+
+.aside.collapsed ~ #app #content {
+    margin-left: 0;
+}
+
+#view {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* ============================================
+   GLASS CARDS
+   ============================================ */
+.glass-card {
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: var(--space-xl);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    transition: all var(--transition-base) ease;
+}
+
+.glass-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 48px var(--glow);
+    border-color: var(--primary);
+}
+
+/* ============================================
+   BOOT SEQUENCE
+   ============================================ */
+#boot {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-alt);
+}
+
+.boot-bg-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.3;
+}
+
+.boot-card {
+    position: relative;
+    background: var(--glass);
+    backdrop-filter: blur(40px);
+    border: 2px solid var(--glass-border);
+    border-radius: 24px;
+    padding: var(--space-2xl);
+    text-align: center;
+    max-width: 500px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+
+.boot-title {
+    font-size: 3rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: var(--space-md);
+}
+
+.boot-sub {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-xl);
+}
+
+.progress {
+    height: 4px;
+    background: var(--glass-border);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress div {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    animation: progress 2s ease-in-out infinite;
+}
+
+@keyframes progress {
+    0%, 100% { width: 0%; }
+    50% { width: 100%; }
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+    .aside {
+        width: 100%;
+        transform: translateX(-100%);
+    }
+    
+    .aside.show {
+        transform: translateX(0);
+    }
+    
+    #content {
+        margin-left: 0;
+        padding: var(--space-md);
+    }
+    
+    .sidebar-toggle {
+        display: flex;
+    }
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+.text-gradient {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.glow {
+    box-shadow: 0 0 30px var(--glow);
+}
+
+.pulse {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 20px var(--glow); }
+    50% { opacity: 0.8; box-shadow: 0 0 40px var(--glow); }
+}
+
+.fade-in {
+    animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================
+   THEME SELECTOR UI
+   ============================================ */
+.theme-selector {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: var(--space-md);
+    display: none;
+    flex-direction: column;
+    gap: var(--space-sm);
+    z-index: 9997;
+}
+
+.theme-selector.show {
+    display: flex;
+}
+
+.theme-option {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all var(--transition-fast) ease;
+}
+
+.theme-option:hover {
+    transform: scale(1.1);
+}
+
+.theme-option.active {
+    border-color: var(--primary);
+    box-shadow: 0 0 12px var(--glow);
+}
+
+.theme-titan { background: linear-gradient(135deg, #00f0ff, #ff00ff); }
+.theme-sentinel { background: linear-gradient(135deg, #3b82f6, #1e40af); }
+.theme-forge { background: linear-gradient(135deg, #00ff88, #00d4ff); }
+.theme-venus { background: linear-gradient(135deg, #ff00ff, #ff88ff); }
+.theme-stealth { background: linear-gradient(135deg, #64748b, #475569); }
+.theme-solar { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
+
+/* ============================================
+   PERFORMANCE OPTIMIZATIONS
+   ============================================ */
+* {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ============================================
+   MODULE-SPECIFIC OVERRIDES
+   ============================================ */
+/* These are loaded separately and override as needed */
+/* Accounting, Builder, Core, Forge, OSINT, Fit modules */
+/* Keep module CSS files for specific styling needs */

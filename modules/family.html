@@ -1,0 +1,152 @@
+<section class="module-section family-container">
+  <!-- Module Header -->
+        <div class="module-header">
+    <div class="module-logo-slot" style="background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%);">
+      <span class="module-logo-text">👨‍👩‍👧</span>
+        </div>
+        <div class="module-header-text">
+          <h1 class="module-title">GRACE-X Family™</h1>
+          <p class="module-subtitle">
+        Homework, chores and family rhythm – your family hub assistant.
+      </p>
+      <p class="module-meta" style="font-size: 0.75rem; color: #888; margin-top: 4px;">
+        🔗 Accessed via Core™ · Safeguarding via Guardian™
+          </p>
+        </div>
+      </div>
+
+  <!-- Core Access Notice -->
+  <div class="builder-card" style="background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.3);">
+    <div style="display: flex; align-items: flex-start; gap: 12px;">
+      <span style="font-size: 1.5rem;">🔗</span>
+      <div>
+        <h3 style="margin: 0 0 8px 0; font-size: 1rem; color: #a855f7;">Accessed via GRACE-X Core™</h3>
+        <p style="margin: 0; font-size: 0.9rem; color: #94a3b8;">
+          Family™ is mediated through Core. Voice commands, permissions, and safeguarding escalation are all handled by Core.
+          If Family detects a safeguarding concern, it routes through <strong>Core → Guardian™ → Uplift™</strong>.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- GRACE-X Family Assistant (RIGHT AFTER HEADER) -->
+      <div class="builder-card" id="family-brain-card">
+    <h2>🧠 GRACE-X Family Assistant</h2>
+        <p class="hint">
+          Ask about kids' homework, routines, or screen time.
+        </p>
+
+        <div class="module-brain" id="family-brain-panel">
+      <div id="family-brain-output" class="brain-output">
+        <div class="brain-message brain-message-system">
+          Ready to help with family planning, homework help, and daily routines. What do you need?
+        </div>
+      </div>
+
+          <div class="brain-input-row">
+        <button type="button" class="brain-mic-btn" id="family-brain-mic" title="Voice input">
+          🎙️
+        </button>
+            <input
+              id="family-brain-input"
+              type="text"
+              placeholder="Ask about routines, screen time, or chores…"
+            />
+            <button id="family-brain-send">Ask</button>
+          </div>
+
+      <div class="brain-actions">
+        <button class="builder-btn" id="family-brain-clear">
+          Clear conversation
+        </button>
+      </div>
+        </div>
+      </div>
+
+        <!-- TODAY'S FAMILY PLAN -->
+        <div class="builder-card" id="family-plan-card">
+    <h2>📅 Today's Family Plan</h2>
+          <p class="hint">
+            Jot down one or two simple things for today (walk, game night, film, homework time, etc).
+          </p>
+
+          <div class="family-row">
+            <label>
+              Time / slot
+              <input type="text" id="family-plan-time" placeholder="After school, evening, Saturday morning…">
+            </label>
+          </div>
+
+          <div class="family-row">
+            <label>
+              Activity
+              <input type="text" id="family-plan-activity" placeholder="Board game, walk to the park, movie night…">
+            </label>
+          </div>
+
+          <div class="family-row">
+            <button class="builder-btn" id="family-plan-add">
+              Add to plan
+            </button>
+          </div>
+
+          <ul id="family-plan-list" class="family-list">
+            <!-- items will be added here -->
+          </ul>
+        </div>
+
+        <!-- FAMILY TASKS / CHORES -->
+        <div class="builder-card" id="family-tasks-card">
+          <h2>🧹 Family Tasks & Chores</h2>
+          <p class="hint">
+      Simple shared list. Tick things off as you go. Nothing is stored permanently – it's just for the day.
+          </p>
+
+          <div class="family-row">
+            <label>
+              Task or chore
+              <input type="text" id="family-task-input" placeholder="Wash dishes, tidy living room, feed the pets…">
+            </label>
+          </div>
+
+          <div class="family-row">
+            <button class="builder-btn" id="family-task-add">
+              Add task
+            </button>
+          </div>
+
+          <ul id="family-task-list" class="family-list">
+            <!-- tasks will be added here -->
+          </ul>
+        </div>
+
+        <!-- REWARD / THANK YOU NOTES -->
+        <div class="builder-card" id="family-reward-card">
+          <h2>🌟 Shout-outs & Thank Yous</h2>
+          <p class="hint">
+      Space for quick "well done" notes – good for kids and grown-ups. You can read them out together later.
+          </p>
+
+          <textarea id="family-reward-notes" rows="5"
+            placeholder="Grace helped with dinner…&#10;Charlie walked the dog…&#10;Everyone sat together for 10 minutes with no phones…"></textarea>
+
+          <div class="family-row">
+            <button class="builder-btn" id="family-reward-clear">
+              Clear notes
+            </button>
+          </div>
+        </div>
+
+  <!-- Voice Panel (MOVED LOWER) -->
+  <div class="builder-card">
+    <h2>🎙️ Voice Dictation</h2>
+    <p class="hint">Use this for continuous voice input and transcript viewing.</p>
+    
+    <div class="module-voice-panel" data-module="family" style="background: transparent; padding: 0; margin: 0;">
+      <button type="button" class="module-voice-btn">🎙 Talk to GRACE-X Family</button>
+      <span class="module-voice-status">Mic off</span>
+      <textarea class="module-voice-text" placeholder="Voice transcript appears here…" rows="3"></textarea>
+      <div class="module-voice-reply"></div>
+    </div>
+  </div>
+      </section>

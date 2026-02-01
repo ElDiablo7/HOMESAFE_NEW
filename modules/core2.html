@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRACE-X CORE 2.0™ - AI Command Center</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0a0e1a 0%, #1a0a1a 100%);
+            color: #ffffff;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            overflow-x: hidden;
+        }
+        
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            inset: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(0,240,255,0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255,0,255,0.12) 0%, transparent 50%),
+                radial-gradient(circle at 40% 60%, rgba(136,0,255,0.08) 0%, transparent 50%);
+            animation: pulseGlow 20s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
+        }
+        
+        .container {
+            position: relative;
+            z-index: 1;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        /* Header */
+        .core-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .core-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00f0ff, #ff00ff, #8800ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .core-status {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(0,255,136,0.1);
+            border-radius: 12px;
+            border: 1px solid rgba(0,255,136,0.3);
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #00ff88;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        /* Main Grid */
+        .core-grid {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 20px;
+            height: calc(100vh - 200px);
+        }
+        
+        /* AI Chat Panel */
+        .ai-chat-panel {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .chat-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .chat-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .chat-controls {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .chat-btn {
+            padding: 8px 16px;
+            background: rgba(0,240,255,0.2);
+            border: 1px solid rgba(0,240,255,0.5);
+            border-radius: 8px;
+            color: #00f0ff;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .chat-btn:hover {
+            background: rgba(0,240,255,0.3);
+            box-shadow: 0 0 20px rgba(0,240,255,0.3);
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .message {
+            max-width: 85%;
+            padding: 15px 20px;
+            border-radius: 18px;
+            position: relative;
+            animation: fadeInUp 0.5s ease;
+        }
+        
+        .message.user {
+            background: linear-gradient(135deg, #00f0ff, #0088ff);
+            color: #000;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+        
+        .message.assistant {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            align-self: flex-start;
+        }
+        
+        .message-time {
+            font-size: 0.8rem;
+            opacity: 0.6;
+            margin-top: 5px;
+        }
+        
+        .chat-input-area {
+            padding: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            gap: 10px;
+        }
+        
+        .chat-input {
+            flex: 1;
+            padding: 15px 20px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 25px;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+        }
+        
+        .chat-input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+        
+        .send-btn, .voice-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .send-btn {
+            background: linear-gradient(135deg, #00f0ff, #ff00ff);
+            color: #000;
+        }
+        
+        .voice-btn {
+            background: rgba(255,0,255,0.2);
+            border: 1px solid rgba(255,0,255,0.5);
+            color: #ff00ff;
+        }
+        
+        .voice-btn.active {
+            background: #ff00ff;
+            color: #000;
+            animation: pulse 1s infinite;
+        }
+        
+        /* Right Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .widget {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 20px;
+        }
+        
+        .widget-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* System Stats Widget */
+        .system-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #00f0ff;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+        
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .action-btn {
+            padding: 12px;
+            background: rgba(136,0,255,0.2);
+            border: 1px solid rgba(136,0,255,0.5);
+            border-radius: 12px;
+            color: #8800ff;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        
+        .action-btn:hover {
+            background: rgba(136,0,255,0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(136,0,255,0.3);
+        }
+        
+        /* Weather Widget */
+        .weather-info {
+            text-align: center;
+        }
+        
+        .weather-temp {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #00f0ff;
+        }
+        
+        .weather-desc {
+            opacity: 0.8;
+            margin: 10px 0;
+        }
+        
+        .weather-details {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+        
+        /* News Ticker */
+        .news-item {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .news-item:last-child {
+            border-bottom: none;
+        }
+        
+        .news-title {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        
+        .news-source {
+            font-size: 0.8rem;
+            opacity: 0.6;
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .core-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                flex-direction: row;
+                overflow-x: auto;
+            }
+            
+            .widget {
+                min-width: 300px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .core-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .core-title {
+                font-size: 2rem;
+            }
+        }
+        
+        /* Loading States */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #00f0ff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 15px 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 18px;
+            width: fit-content;
+        }
+        
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #00f0ff;
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+        
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+            30% { transform: translateY(-10px); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+    
+    <div class="container">
+        <!-- Header -->
+        <div class="core-header">
+            <div>
+                <h1 class="core-title">GRACE-X CORE 2.0™</h1>
+                <p style="opacity: 0.8; margin-top: 5px;">Advanced AI Command Center - Engineered by Zac Crockett</p>
+            </div>
+            <div class="core-status">
+                <div class="status-indicator">
+                    <div class="status-dot"></div>
+                    <span>AI Online</span>
+                </div>
+                <div class="status-indicator" style="background: rgba(255,0,255,0.1); border-color: rgba(255,0,255,0.3);">
+                    <div class="status-dot" style="background: #ff00ff;"></div>
+                    <span id="connection-status">Connected</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Grid -->
+        <div class="core-grid">
+            <!-- AI Chat Panel -->
+            <div class="ai-chat-panel">
+                <div class="chat-header">
+                    <h2 class="chat-title">🧠 GRACE AI Assistant</h2>
+                    <div class="chat-controls">
+                        <button class="chat-btn" onclick="clearChat()">Clear</button>
+                        <button class="chat-btn" onclick="exportChat()">Export</button>
+                        <button class="chat-btn" onclick="toggleVoice()">🎙️ Voice</button>
+                    </div>
+                </div>
+                
+                <div class="chat-messages" id="chat-messages">
+                    <div class="message assistant">
+                        <div>Welcome to GRACE-X CORE 2.0™! I'm your advanced AI assistant, engineered by Zac Crockett. I can help you with anything - from system management to creative projects. What would you like to work on?</div>
+                        <div class="message-time" id="welcome-time"></div>
+                    </div>
+                </div>
+                
+                <div class="chat-input-area">
+                    <input type="text" class="chat-input" id="chat-input" placeholder="Ask me anything... (Press Enter to send)">
+                    <button class="voice-btn" id="voice-btn" onclick="toggleVoiceInput()">🎙️</button>
+                    <button class="send-btn" onclick="sendMessage()">🚀</button>
+                </div>
+            </div>
+            
+            <!-- Right Sidebar -->
+            <div class="sidebar">
+                <!-- System Stats -->
+                <div class="widget">
+                    <h3 class="widget-title">⚡ System Status</h3>
+                    <div class="system-stats">
+                        <div class="stat-item">
+                            <div class="stat-value" id="uptime">0:00</div>
+                            <div class="stat-label">Uptime</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="message-count">0</div>
+                            <div class="stat-label">Messages</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="brain-status">TITAN</div>
+                            <div class="stat-label">Brain Mode</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="network-speed">—</div>
+                            <div class="stat-label">Network</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="api-status">OK</div>
+                            <div class="stat-label">API Status</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="response-time">—</div>
+                            <div class="stat-label">Response</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="widget">
+                    <h3 class="widget-title">🌐 Network Settings</h3>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                        <div>
+                            <label for="c2-ssid">Wi‑Fi SSID</label>
+                            <input type="text" id="c2-ssid" placeholder="e.g. HomeNetwork">
+                        </div>
+                        <div>
+                            <label for="c2-password">Wi‑Fi Password</label>
+                            <div style="display:flex;gap:8px;align-items:center;">
+                                <input type="password" id="c2-password" placeholder="Enter password" style="flex:1;">
+                                <label style="display:flex;align-items:center;gap:6px;">
+                                    <input type="checkbox" id="c2-password-show"> Show
+                                </label>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="c2-proxy">Proxy (optional)</label>
+                            <input type="text" id="c2-proxy" placeholder="http://proxy:8080">
+                        </div>
+                        <div>
+                            <label for="c2-api-endpoint">Brain API Endpoint</label>
+                            <input type="text" id="c2-api-endpoint" placeholder="http://localhost:3000/api/brain">
+                        </div>
+                    </div>
+                    <div style="margin-top:10px;display:flex;gap:8px;">
+                        <button class="action-btn" id="c2-open-settings-btn">Open System Network Settings</button>
+                        <button class="action-btn" id="c2-test-btn">Test Connection</button>
+                        <button class="action-btn" id="c2-save-btn">Save</button>
+                    </div>
+                    <div style="margin-top:8px;">
+                        <span id="c2-net-status">Ready</span> · <span id="c2-net-badge">🟡 Checking…</span>
+                    </div>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="widget">
+                    <h3 class="widget-title">⚡ Quick Actions</h3>
+                    <div class="quick-actions">
+                        <button class="action-btn" onclick="quickAction('weather')">🌤️ Weather</button>
+                        <button class="action-btn" onclick="quickAction('time')">🕐 Time</button>
+                        <button class="action-btn" onclick="quickAction('news')">📰 News</button>
+                        <button class="action-btn" onclick="quickAction('system')">💻 System</button>
+                        <button class="action-btn" onclick="quickAction('crypto')">₿ Crypto</button>
+                        <button class="action-btn" onclick="quickAction('maps')">🌍 Maps</button>
+                        <button class="action-btn" onclick="quickAction('refresh-weather')">🔄 Refresh Weather</button>
+                        <button class="action-btn" onclick="quickAction('refresh-news')">🔄 Refresh News</button>
+                    </div>
+                </div>
+                
+                <!-- Weather Widget -->
+                <div class="widget" id="weather-widget">
+                    <h3 class="widget-title">🌤️ Weather</h3>
+                    <div class="weather-info">
+                        <div class="weather-temp" id="weather-temp">--°</div>
+                        <div class="weather-desc" id="weather-desc">Getting location...</div>
+                        <div class="weather-details">
+                            <span>Humidity: <strong id="weather-humidity">--%</strong></span>
+                            <span>Wind: <strong id="weather-wind">-- mph</strong></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- News Feed -->
+                <div class="widget">
+                    <h3 class="widget-title">📰 Latest News</h3>
+                    <div id="news-feed">
+                        <div class="news-item">
+                            <div class="news-title">Loading latest news...</div>
+                            <div class="news-source">GRACE-X News</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Global state
+        let messageCount = 0;
+        let startTime = Date.now();
+        let isVoiceActive = false;
+        let recognition = null;
+        let conversations = [];
+        
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCore();
+            setupEventListeners();
+            updateWelcomeTime();
+            startSystemMonitoring();
+            loadWeather();
+            loadNews();
+            loadNetworkPrefs();
+            wireNetworkSettings();
+        });
+        
+        function initializeCore() {
+            console.log('🚀 GRACE-X CORE 2.0 Initializing...');
+            
+            // Setup speech recognition
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                recognition.continuous = false;
+                recognition.interimResults = false;
+                recognition.lang = 'en-US';
+                
+                recognition.onstart = function() {
+                    isVoiceActive = true;
+                    document.getElementById('voice-btn').classList.add('active');
+                };
+                
+                recognition.onend = function() {
+                    isVoiceActive = false;
+                    document.getElementById('voice-btn').classList.remove('active');
+                };
+                
+                recognition.onresult = function(event) {
+                    const transcript = event.results[0][0].transcript;
+                    document.getElementById('chat-input').value = transcript;
+                    sendMessage();
+                };
+            }
+        }
+        
+        function setupEventListeners() {
+          // Enter key to send message
+          document.getElementById('chat-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+              sendMessage();
+            }
+          });
+          
+          // Network status monitoring
+          window.addEventListener('online', () => {
+            updateConnectionStatus('Connected');
+            document.getElementById('voice-btn').disabled = false;
+            document.querySelector('.send-btn').disabled = false;
+          });
+          window.addEventListener('offline', () => {
+            updateConnectionStatus('Offline');
+            document.getElementById('voice-btn').disabled = true;
+            document.querySelector('.send-btn').disabled = true;
+          });
+        }
+        
+        function updateWelcomeTime() {
+            const now = new Date();
+            document.getElementById('welcome-time').textContent = now.toLocaleTimeString();
+        }
+        
+        async function sendMessage() {
+          const input = document.getElementById('chat-input');
+          const message = input.value.trim();
+          
+          if (!message) return;
+          
+          // Clear input
+          input.value = '';
+            
+            // Add user message
+            addMessage(message, 'user');
+            
+            // Show typing indicator
+            showTypingIndicator();
+            
+            try {
+                let aiResponse = '';
+                
+                // Use runModuleBrain if available (connects to backend API)
+                if (typeof window.runModuleBrain === 'function') {
+                    const result = await window.runModuleBrain('core2', message);
+                    aiResponse = typeof result === 'string' ? result : (result.reply || result.message || '');
+                } else {
+                    // Fallback: try backend API directly
+                    const apiBase = window.GRACEX_BRAIN_API || window.GRACEX_API_BASE || 'http://localhost:3000';
+                    const response = await fetch(apiBase + '/api/brain', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            module: 'core2',
+                            messages: [{
+                                role: 'user',
+                                content: message
+                            }],
+                            temperature: 0.7,
+                            max_tokens: 1000
+                        })
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        aiResponse = data.reply || data.message || 'I received your message but had trouble processing it.';
+                    } else {
+                        throw new Error(`API returned ${response.status}`);
+                    }
+                }
+                
+                // Remove typing indicator
+                removeTypingIndicator();
+                
+                if (aiResponse) {
+                    addMessage(aiResponse, 'assistant');
+                    
+                    // Update API status
+                    const apiStatusEl = document.getElementById('api-status');
+                    if (apiStatusEl) apiStatusEl.textContent = 'OK';
+                } else {
+                    addMessage('I apologize, but I encountered an issue processing your request. Please try again.', 'assistant');
+                }
+                
+            } catch (error) {
+                console.error('API Error:', error);
+                removeTypingIndicator();
+                
+                // Update API status
+                const apiStatusEl = document.getElementById('api-status');
+                if (apiStatusEl) apiStatusEl.textContent = 'ERR';
+                
+                let errorMsg = 'I\'m experiencing connection issues. ';
+                if (!navigator.onLine) {
+                    errorMsg += 'You appear to be offline. Please check your internet connection.';
+                } else if (error.message.includes('Failed to fetch')) {
+                    errorMsg += 'Cannot reach the backend API. Make sure the server is running on port 3000.';
+                } else {
+                    errorMsg += 'Please check your network and try again.';
+                }
+                addMessage(errorMsg, 'assistant');
+            }
+            
+            messageCount++;
+            updateMessageCount();
+        }
+        
+        function addMessage(content, type) {
+            const messagesContainer = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            
+            messageDiv.innerHTML = `
+                <div>${content}</div>
+                <div class="message-time">${timeString}</div>
+            `;
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            // Store conversation
+            conversations.push({
+                content,
+                type,
+                timestamp: now
+            });
+        }
+        
+        function showTypingIndicator() {
+            const messagesContainer = document.getElementById('chat-messages');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'typing-indicator';
+            typingDiv.id = 'typing-indicator';
+            typingDiv.innerHTML = `
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            `;
+            messagesContainer.appendChild(typingDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        function removeTypingIndicator() {
+            const typingIndicator = document.getElementById('typing-indicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+        
+        function toggleVoiceInput() {
+            if (!recognition) {
+                alert('Speech recognition not supported in this browser');
+                return;
+            }
+            
+            if (isVoiceActive) {
+                recognition.stop();
+                isVoiceActive = false;
+                document.getElementById('voice-btn').classList.remove('active');
+            } else {
+                try {
+                    recognition.start();
+                } catch (e) {
+                    console.warn('Voice recognition error:', e);
+                    alert('Voice recognition failed to start. Please try again.');
+                }
+            }
+        }
+        
+        function toggleVoice() {
+            toggleVoiceInput();
+        }
+        
+        function clearChat() {
+            document.getElementById('chat-messages').innerHTML = `
+                <div class="message assistant">
+                    <div>Chat cleared. How can I help you?</div>
+                    <div class="message-time">${new Date().toLocaleTimeString()}</div>
+                </div>
+            `;
+            conversations = [];
+            messageCount = 0;
+            updateMessageCount();
+        }
+        
+        function exportChat() {
+            const chatData = {
+                timestamp: new Date().toISOString(),
+                conversations: conversations,
+                metadata: {
+                    messageCount,
+                    startTime: new Date(startTime).toISOString()
+                }
+            };
+            
+            const blob = new Blob([JSON.stringify(chatData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `gracex-chat-${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        function quickAction(action) {
+            const actions = {
+                weather: 'What\'s the current weather in my location?',
+                time: 'What time is it right now?',
+                news: 'What are the latest news headlines?',
+                system: 'Show me system information and performance stats',
+                crypto: 'What are the current Bitcoin and Ethereum prices?',
+                maps: 'Show me nearby places or directions'
+            };
+            
+            if (actions[action]) {
+                const input = document.getElementById('chat-input');
+                if (input) {
+                    input.value = actions[action];
+                    sendMessage();
+                }
+            } else if (action === 'refresh-weather') {
+                loadWeather();
+            } else if (action === 'refresh-news') {
+                loadNews();
+            }
+        }
+        
+        function startSystemMonitoring() {
+            // Update immediately
+            updateUptime();
+            updateNetworkSpeed();
+            checkInternetConnectivity();
+            
+            // Then update every second
+            setInterval(() => {
+                updateUptime();
+                updateNetworkSpeed();
+            }, 1000);
+            
+            // Check connectivity every 30 seconds
+            setInterval(() => {
+                checkInternetConnectivity();
+            }, 30000);
+        }
+        
+        function updateUptime() {
+            const elapsed = Date.now() - startTime;
+            const hours = Math.floor(elapsed / (1000 * 60 * 60));
+            const minutes = Math.floor((elapsed % (1000 * 60 * 60)) / (1000 * 60));
+            document.getElementById('uptime').textContent = `${hours}:${minutes.toString().padStart(2, '0')}`;
+        }
+        
+        function updateMessageCount() {
+            document.getElementById('message-count').textContent = messageCount;
+        }
+        
+        function updateConnectionStatus(status) {
+            document.getElementById('connection-status').textContent = status;
+        }
+        
+        function updateNetworkSpeed() {
+            const networkEl = document.getElementById('network-speed');
+            if (!networkEl) return;
+            
+            if ('connection' in navigator) {
+                const conn = navigator.connection;
+                if (conn.downlink) {
+                    networkEl.textContent = `${conn.downlink}Mbps`;
+                    networkEl.title = `Connection type: ${conn.effectiveType || 'Unknown'}`;
+                } else {
+                    networkEl.textContent = navigator.onLine ? 'Online' : 'Offline';
+                }
+            } else {
+                networkEl.textContent = navigator.onLine ? 'Online' : 'Offline';
+            }
+        }
+        
+        // Enhanced internet connectivity check
+        async function checkInternetConnectivity() {
+            const statusEl = document.getElementById('connection-status');
+            const badge = document.getElementById('c2-net-badge');
+            
+            if (!navigator.onLine) {
+                if (statusEl) statusEl.textContent = 'Offline';
+                if (badge) badge.textContent = '🔴 Offline';
+                return false;
+            }
+            
+            // Test multiple endpoints
+            const testUrls = [
+                'https://www.google.com',
+                'https://www.cloudflare.com',
+                'https://1.1.1.1'
+            ];
+            
+            let connected = false;
+            for (const url of testUrls) {
+                try {
+                    const response = await fetch(url, { 
+                        method: 'HEAD', 
+                        mode: 'no-cors',
+                        cache: 'no-cache'
+                    });
+                    connected = true;
+                    break;
+                } catch (e) {
+                    // Try next URL
+                }
+            }
+            
+            if (connected) {
+                if (statusEl) statusEl.textContent = 'Connected';
+                if (badge) badge.textContent = '🟢 Online';
+            } else {
+                if (statusEl) statusEl.textContent = 'Limited';
+                if (badge) badge.textContent = '🟡 Limited';
+            }
+            
+            return connected;
+        }
+        
+        function loadNetworkPrefs() {
+            const saved = JSON.parse(localStorage.getItem('gracex.network') || '{}');
+            const ssid = document.getElementById('c2-ssid');
+            const pwd = document.getElementById('c2-password');
+            const proxy = document.getElementById('c2-proxy');
+            const api = document.getElementById('c2-api-endpoint');
+            if (ssid && saved.ssid) ssid.value = saved.ssid;
+            if (pwd && saved.password) pwd.value = saved.password;
+            if (proxy && saved.proxy) proxy.value = saved.proxy;
+            if (api && (saved.apiEndpoint || window.GRACEX_BRAIN_API)) {
+                api.value = saved.apiEndpoint || window.GRACEX_BRAIN_API;
+            }
+        }
+        
+        function wireNetworkSettings() {
+            const status = document.getElementById('c2-net-status');
+            const openBtn = document.getElementById('c2-open-settings-btn');
+            const testBtn = document.getElementById('c2-test-btn');
+            const saveBtn = document.getElementById('c2-save-btn');
+            const api = document.getElementById('c2-api-endpoint');
+            const ssid = document.getElementById('c2-ssid');
+            const pwd = document.getElementById('c2-password');
+            const proxy = document.getElementById('c2-proxy');
+            const pwdShow = document.getElementById('c2-password-show');
+            const badge = document.getElementById('c2-net-badge');
+            function updateBadge() {
+                if (!badge) return;
+                badge.textContent = navigator.onLine ? '🟢 Online' : '🔴 Offline';
+            }
+            updateBadge();
+            if (pwdShow && pwd) {
+                pwdShow.onchange = function() { pwd.type = pwdShow.checked ? 'text' : 'password'; };
+            }
+            if (openBtn) {
+                openBtn.onclick = function() {
+                    let opened = false;
+                    try { window.open('ms-settings:network', '_blank'); opened = true; } catch(e) {}
+                    if (!opened && status) status.textContent = 'Open your OS network settings to configure Wi‑Fi.';
+                };
+            }
+            if (testBtn) {
+                testBtn.onclick = async function() {
+                    if (status) status.textContent = 'Testing connection...';
+                    try {
+                        // Test internet connectivity first
+                        const internetOk = await checkInternetConnectivity();
+                        
+                        if (!internetOk) {
+                            if (status) status.textContent = 'No internet connection';
+                            return;
+                        }
+                        
+                        // Test backend API
+                        const base = (api && api.value) ? api.value : (window.GRACEX_BRAIN_API || 'http://localhost:3000/api/brain');
+                        const healthUrl = base.replace('/api/brain', '/health');
+                        
+                        try {
+                            const resp = await fetch(healthUrl, { 
+                                method: 'GET',
+                                signal: AbortSignal.timeout(5000)
+                            });
+                            if (resp.ok) {
+                                const data = await resp.json().catch(() => ({}));
+                                if (status) status.textContent = data.status === 'ok' ? '✅ Connected' : '⚠️ Degraded';
+                            } else {
+                                if (status) status.textContent = `❌ API Error ${resp.status}`;
+                            }
+                        } catch (apiError) {
+                            if (status) status.textContent = '❌ Backend API unreachable (check server)';
+                        }
+                    } catch (e) {
+                        if (status) status.textContent = navigator.onLine ? '❌ Connection test failed' : '🔴 Offline';
+                    }
+                };
+            }
+            if (saveBtn) {
+                saveBtn.onclick = function() {
+                    const payload = {
+                        ssid: ssid ? ssid.value.trim() : '',
+                        password: pwd ? pwd.value : '',
+                        proxy: proxy ? proxy.value.trim() : '',
+                        apiEndpoint: api ? api.value.trim() : ''
+                    };
+                    localStorage.setItem('gracex.network', JSON.stringify(payload));
+                    if (payload.apiEndpoint) window.GRACEX_BRAIN_API = payload.apiEndpoint;
+                    if (status) status.textContent = 'Saved';
+                };
+            }
+            window.addEventListener('online', updateBadge);
+            window.addEventListener('offline', updateBadge);
+        }
+        
+        async function loadWeather() {
+            try {
+                // Get user location
+                if ('geolocation' in navigator) {
+                    navigator.geolocation.getCurrentPosition(async (position) => {
+                        const { latitude, longitude } = position.coords;
+                        
+                        // Try to fetch weather from backend API (which can use OpenWeatherMap or similar)
+                        try {
+                            const apiBase = window.GRACEX_BRAIN_API || window.GRACEX_API_BASE || 'http://localhost:3000';
+                            const response = await fetch(`${apiBase}/api/weather?lat=${latitude}&lon=${longitude}`, {
+                                method: 'GET',
+                                headers: { 'Content-Type': 'application/json' }
+                            });
+                            
+                            if (response.ok) {
+                                const data = await response.json();
+                                updateWeatherUI({
+                                    temperature: Math.round(data.temp || data.temperature || 0),
+                                    description: data.description || data.condition || 'Clear',
+                                    humidity: data.humidity || 0,
+                                    windSpeed: Math.round(data.windSpeed || data.wind || 0)
+                                });
+                                return;
+                            }
+                        } catch (apiError) {
+                            console.warn('Weather API unavailable, using fallback');
+                        }
+                        
+                        // Fallback: Use OpenWeatherMap directly (requires API key in backend)
+                        // For now, show location-based placeholder
+                        updateWeatherUI({
+                            temperature: '--',
+                            description: `Location: ${latitude.toFixed(2)}°, ${longitude.toFixed(2)}°`,
+                            humidity: '--',
+                            windSpeed: '--'
+                        });
+                    }, () => {
+                        updateWeatherUI({
+                            temperature: '--',
+                            description: 'Location unavailable',
+                            humidity: '--',
+                            windSpeed: '--'
+                        });
+                    });
+                } else {
+                    updateWeatherUI({
+                        temperature: '--',
+                        description: 'Geolocation not supported',
+                        humidity: '--',
+                        windSpeed: '--'
+                    });
+                }
+            } catch (error) {
+                console.error('Weather error:', error);
+                updateWeatherUI({
+                    temperature: '--',
+                    description: 'Error loading weather',
+                    humidity: '--',
+                    windSpeed: '--'
+                });
+            }
+        }
+        
+        function updateWeatherUI(data) {
+            document.getElementById('weather-temp').textContent = `${data.temperature}°`;
+            document.getElementById('weather-desc').textContent = data.description;
+            document.getElementById('weather-humidity').textContent = `${data.humidity}%`;
+            document.getElementById('weather-wind').textContent = `${data.windSpeed} mph`;
+        }
+        
+        async function loadNews() {
+            const newsContainer = document.getElementById('news-feed');
+            if (!newsContainer) return;
+            
+            // Show loading state
+            newsContainer.innerHTML = '<div class="news-item"><div class="news-title">Loading latest news...</div><div class="news-source">GRACE-X News</div></div>';
+            
+            try {
+                // Try to fetch news from backend API
+                const apiBase = window.GRACEX_BRAIN_API || window.GRACEX_API_BASE || 'http://localhost:3000';
+                const response = await fetch(`${apiBase}/api/news?limit=5`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const articles = data.articles || data.news || [];
+                    
+                    if (articles.length > 0) {
+                        newsContainer.innerHTML = '';
+                        articles.forEach(article => {
+                            const newsItem = document.createElement('div');
+                            newsItem.className = 'news-item';
+                            newsItem.innerHTML = `
+                                <div class="news-title">${article.title || article.headline || 'No title'}</div>
+                                <div class="news-source">${article.source || article.publisher || 'News'}</div>
+                            `;
+                            if (article.url) {
+                                newsItem.style.cursor = 'pointer';
+                                newsItem.onclick = () => window.open(article.url, '_blank');
+                            }
+                            newsContainer.appendChild(newsItem);
+                        });
+                        return;
+                    }
+                }
+            } catch (apiError) {
+                console.warn('News API unavailable, using fallback');
+            }
+            
+            // Fallback: Use NewsAPI.org directly (requires API key)
+            // For now, show placeholder with refresh option
+            newsContainer.innerHTML = `
+                <div class="news-item">
+                    <div class="news-title">News feed requires backend API configuration</div>
+                    <div class="news-source">Configure NewsAPI key in server/.env</div>
+                </div>
+                <div class="news-item">
+                    <div class="news-title">Click to refresh</div>
+                    <div class="news-source" style="cursor:pointer;color:#00f0ff;" onclick="loadNews()">🔄 Refresh</div>
+                </div>
+            `;
+        }
+        
+        // Debug logging
+        console.log('🔥 GRACE-X CORE 2.0™ Loaded - Ready for Action!');
+        console.log('© 2026 Zachary Charles Anthony Crockett - All Rights Reserved');
+    </script>
+</body>
+</html>

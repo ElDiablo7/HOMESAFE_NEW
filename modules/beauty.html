@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>GRACE-X Beauty™</title>
+  <style>
+    :root{
+      --bg:#05070c; --panel:#0b1020; --panel2:#070b14;
+      --line:rgba(140,170,255,.18); --line2:rgba(140,170,255,.28);
+      --txt:rgba(235,245,255,.92); --muted:rgba(235,245,255,.62);
+      --accent1:#7ab7ff; --accent2:#b56dff;
+      --danger:#ff5a7a; --ok:#4dffbf;
+      --r:18px;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    }
+    body{
+      margin:0;
+      background:
+        radial-gradient(1200px 800px at 15% 10%, rgba(122,183,255,.12), transparent 60%),
+        radial-gradient(1000px 700px at 85% 30%, rgba(181,109,255,.10), transparent 65%),
+        linear-gradient(180deg, #05070c, #04060a 40%, #03050a);
+      color:var(--txt);
+    }
+    .wrap{ max-width:1200px; margin:0 auto; padding:18px; }
+    .top{
+      display:flex; gap:14px; align-items:center; justify-content:space-between;
+      padding:16px; border:1px solid var(--line); border-radius:var(--r);
+      background:linear-gradient(180deg, rgba(11,16,32,.92), rgba(7,11,20,.92));
+      box-shadow:0 0 0 1px rgba(120,170,255,.05), 0 18px 60px rgba(0,0,0,.55);
+    }
+    .brand{ display:flex; flex-direction:column; gap:4px; }
+    .brand h1{ margin:0; font-size:18px; letter-spacing:.6px; }
+    .brand .sub{ font-size:12px; color:var(--muted); }
+    .status{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; font-size:12px; color:var(--muted); }
+    .pill{
+      border:1px solid var(--line2); border-radius:999px; padding:6px 10px;
+      background:linear-gradient(180deg, rgba(8,12,22,.8), rgba(6,9,16,.8));
+    }
+
+    .grid{ display:grid; grid-template-columns: 1.05fr .95fr; gap:14px; margin-top:14px; }
+    @media (max-width: 980px){ .grid{ grid-template-columns:1fr; } }
+
+    .card{
+      border:1px solid var(--line); border-radius:var(--r);
+      background:linear-gradient(180deg, rgba(11,16,32,.88), rgba(7,11,20,.88));
+      box-shadow:0 0 0 1px rgba(120,170,255,.04), 0 18px 50px rgba(0,0,0,.55);
+      overflow:hidden;
+    }
+    .card .hd{
+      padding:12px 14px; border-bottom:1px solid var(--line);
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      background:linear-gradient(90deg, rgba(122,183,255,.10), rgba(181,109,255,.08));
+    }
+    .card .hd .t{ font-size:13px; letter-spacing:.4px; }
+    .card .bd{ padding:14px; }
+
+    .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    .btn{
+      cursor:pointer; user-select:none;
+      border:1px solid var(--line2);
+      padding:10px 12px; border-radius:14px;
+      background:linear-gradient(180deg, rgba(8,12,22,.86), rgba(6,9,16,.86));
+      color:var(--txt); font-size:13px;
+      transition:transform .08s ease, border-color .12s ease, box-shadow .12s ease;
+      box-shadow:0 0 0 1px rgba(120,170,255,.04);
+    }
+    .btn:hover{ border-color:rgba(140,170,255,.45); box-shadow:0 0 0 1px rgba(120,170,255,.08), 0 0 24px rgba(120,170,255,.12); }
+    .btn:active{ transform:translateY(1px); }
+    .btn.primary{
+      border-color:rgba(122,183,255,.55);
+      background:linear-gradient(180deg, rgba(122,183,255,.18), rgba(6,9,16,.86));
+    }
+    .btn.danger{
+      border-color:rgba(255,90,122,.45);
+      background:linear-gradient(180deg, rgba(255,90,122,.12), rgba(6,9,16,.86));
+    }
+
+    textarea, input, select{
+      width:100%; box-sizing:border-box;
+      background:rgba(5,7,12,.65); color:var(--txt);
+      border:1px solid var(--line); border-radius:14px;
+      padding:10px 12px; outline:none;
+    }
+    textarea{ min-height:140px; resize:vertical; }
+    label{ font-size:12px; color:var(--muted); display:block; margin:10px 0 6px; }
+    .hint{ font-size:12px; color:var(--muted); margin-top:8px; line-height:1.35; }
+
+    .log{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size:12px; color:rgba(235,245,255,.70);
+      background:rgba(3,5,10,.6); border-top:1px solid var(--line);
+      padding:10px 12px; max-height:220px; overflow:auto;
+    }
+
+    /* AR Mirror */
+    .mirrorWrap{
+      position:relative;
+      border:1px solid var(--line);
+      border-radius:16px;
+      overflow:hidden;
+      background:rgba(2,3,6,.6);
+      box-shadow: inset 0 0 0 1px rgba(120,170,255,.05);
+    }
+    video{ width:100%; height:auto; display:block; transform: scaleX(-1); } /* mirror */
+    canvas{ display:none; }
+
+    .hud{
+      position:absolute; inset:0;
+      pointer-events:none;
+    }
+    .reticle{
+      position:absolute; inset:10%;
+      border:1px solid rgba(122,183,255,.35);
+      border-radius:22px;
+      box-shadow: 0 0 28px rgba(122,183,255,.12);
+    }
+    .gridlines{
+      position:absolute; inset:0;
+      background:
+        linear-gradient(to right, rgba(140,170,255,.10) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(140,170,255,.10) 1px, transparent 1px);
+      background-size: 18% 18%;
+      opacity:.25;
+      mix-blend-mode: screen;
+    }
+    .hudText{
+      position:absolute; left:12px; bottom:12px;
+      font-size:12px; color:rgba(235,245,255,.75);
+      background:rgba(3,5,10,.55);
+      border:1px solid rgba(140,170,255,.18);
+      padding:8px 10px; border-radius:14px;
+      max-width: 80%;
+    }
+    .shot{
+      margin-top:10px;
+      border:1px dashed rgba(140,170,255,.28);
+      border-radius:16px;
+      padding:10px;
+      background:rgba(3,5,10,.35);
+    }
+    .shot img{ width:100%; height:auto; border-radius:12px; display:block; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">
+        <h1>GRACE-X Beauty™</h1>
+        <div class="sub">Skincare • Hair • Grooming • Makeup • AR Mirror</div>
+      </div>
+      <div class="status">
+        <div class="pill" id="beautyStatus">Status: <b>Idle</b></div>
+        <div class="pill">Module ID: <b>beauty</b></div>
+        <div class="pill">Safety: <b>On</b></div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <!-- LEFT: AR Mirror -->
+      <div class="card">
+        <div class="hd">
+          <div class="t">AR Mirror (Camera)</div>
+          <div class="row">
+            <button class="btn" id="btnCamStart">Start Camera</button>
+            <button class="btn" id="btnCamFlip">Flip</button>
+            <button class="btn danger" id="btnCamStop">Stop</button>
+          </div>
+        </div>
+        <div class="bd">
+          <div class="mirrorWrap">
+            <video id="mirrorVideo" autoplay playsinline muted></video>
+            <div class="hud">
+              <div class="gridlines"></div>
+              <div class="reticle"></div>
+              <div class="hudText" id="hudText">
+                Tip: face a window, avoid overhead lighting, keep camera at eye level.
+              </div>
+            </div>
+          </div>
+
+          <div class="row" style="margin-top:10px;">
+            <button class="btn primary" id="btnSnap">Snapshot</button>
+            <button class="btn" id="btnAnalyseSkin">Analyse Skin (send to Beauty)</button>
+            <button class="btn" id="btnMakeupCheck">Makeup Check (send to Beauty)</button>
+          </div>
+
+          <label for="arMode">Overlay Mode</label>
+          <select id="arMode">
+            <option value="skin">Skin Scan Guide</option>
+            <option value="makeup">Makeup Symmetry Guide</option>
+            <option value="hair">Hair / Frizz Check</option>
+            <option value="lighting">Lighting Check</option>
+          </select>
+
+          <div class="shot" id="shotBox" style="display:none;">
+            <div class="hint" style="margin:0 0 8px 0;">Latest snapshot (local only unless you send a note):</div>
+            <img id="shotImg" alt="snapshot"/>
+          </div>
+
+          <canvas id="snapCanvas"></canvas>
+          <div class="hint">
+            Notes: Snapshot stays on-device in this panel. If you want Beauty to help, use the Analyse buttons — it will send a description prompt, not the image itself.
+          </div>
+        </div>
+        <div class="log" id="beautyLog"></div>
+      </div>
+
+      <!-- RIGHT: panels + inputs -->
+      <div class="card">
+        <div class="hd">
+          <div class="t">Tiny-Brain Panels</div>
+          <div class="row">
+            <button class="btn danger" id="btnReset">Reset</button>
+            <button class="btn primary" id="btnSend">TalkToGrace</button>
+          </div>
+        </div>
+        <div class="bd">
+          <div class="row">
+            <button class="btn" data-prompt="Skin Audit: Here’s my routine list + my goal.">Skin Audit</button>
+            <button class="btn" data-prompt="Build me an AM/PM Routine. Skin type: ___. Goal: ___. Sensitivity: ___.">AM/PM Routine Builder</button>
+            <button class="btn" data-prompt="Breakout SOS: What’s happening, where, how long, and what I changed recently.">Breakout SOS</button>
+            <button class="btn" data-prompt="Barrier Repair Mode: My skin is stinging/tight/flaky. Build a 7–10 day reset.">Barrier Repair</button>
+            <button class="btn" data-prompt="Makeup 5-Minute Face: My vibe is ___. My skin type is ___.">5-Minute Face</button>
+            <button class="btn" data-prompt="Hair & Scalp Plan: Hair type: ___. Wash schedule: ___. Biggest issue: ___.">Hair & Scalp Plan</button>
+            <button class="btn" data-prompt="Shopping Priority List: Budget: ___. Shops: ___. Only buy 2 things: what should I get?">Shopping List</button>
+            <button class="btn" data-prompt="Event Ready Plan: Event date: ___. Look: ___. Outfit colour: ___. Build 7-day + day-of plan.">Event Ready</button>
+          </div>
+
+          <label for="quickMode">Quick Mode</label>
+          <select id="quickMode">
+            <option value="default">Default (balanced)</option>
+            <option value="ultra">Ultra-minimal routine</option>
+            <option value="budget">Budget-first shopping</option>
+            <option value="sensitive">Sensitive-skin safe</option>
+          </select>
+
+          <label for="userText">Your message to Beauty</label>
+          <textarea id="userText" placeholder="Type here… (or tap a panel button above)"></textarea>
+
+          <label for="routineList">Current routine (optional)</label>
+          <textarea id="routineList" placeholder="AM: …&#10;PM: …&#10;Actives: …"></textarea>
+
+          <label for="goal">Main goal (optional)</label>
+          <input id="goal" placeholder="acne / glow / texture / redness / marks / anti-age"/>
+
+          <label>Kids Present</label>
+          <div class="row">
+            <button class="btn" id="kidsOff">kidsPresent: OFF</button>
+            <button class="btn" id="kidsOn">kidsPresent: ON</button>
+          </div>
+
+          <div class="hint" style="margin-top:12px;">
+            © GRACE-X AI™ — Engineered & Copyrighted by Zac Crockett<br/>
+            Contact: gracex@outlook.com
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="beauty.js"></script>
+</body>
+</html>

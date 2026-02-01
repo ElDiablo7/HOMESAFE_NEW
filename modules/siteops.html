@@ -1,0 +1,502 @@
+<section class="module-section siteops-container" id="siteops-root">
+  <!-- Module Header -->
+  <div class="module-header" id="siteops-header">
+        <div class="module-logo-slot">
+          <span class="module-logo-text">SO</span>
+        </div>
+        <div class="module-header-text">
+          <h1 class="module-title">GRACE-X SiteOps™</h1>
+          <p class="module-subtitle">
+        Construction project control — multi-trade coordination, programme management & compliance
+          </p>
+        </div>
+    <div class="siteops-header-status">
+      <span class="siteops-status-badge" id="siteops-status-badge">Planning</span>
+      <span class="siteops-health-indicator" id="siteops-health">🟢 Healthy</span>
+              </div>
+          </div>
+
+  <!-- SiteOps AI Assistant -->
+      <div class="builder-card" id="siteops-brain-card">
+    <h2>🧠 GRACE-X SiteOps Assistant</h2>
+        <p class="hint">
+      Ask about programme sequencing, trade coordination, compliance gates, or site logistics.
+        </p>
+
+        <div class="module-brain" id="siteops-brain-panel">
+      <div id="siteops-brain-output" class="brain-output">
+        <div class="brain-message brain-message-system">
+          I'm GRACE-X SiteOps. I coordinate multi-trade projects and keep your programme on track. What's the project?
+        </div>
+      </div>
+
+          <div class="brain-input-row">
+        <button type="button" class="brain-mic-btn" id="siteops-brain-mic" title="Voice input">
+          🎙️
+        </button>
+            <input
+              id="siteops-brain-input"
+              type="text"
+          placeholder="e.g. 'What's blocking the programme?' or 'Sequence plaster after M&E'"
+            />
+            <button id="siteops-brain-send">Ask</button>
+          </div>
+
+      <div class="brain-actions">
+        <button class="builder-btn" id="siteops-brain-clear">Clear conversation</button>
+      </div>
+          </div>
+        </div>
+
+  <!-- DASHBOARD (Tab 1) -->
+  <div class="builder-card" id="siteops-panel-dashboard">
+    <h2>📊 Project Dashboard</h2>
+    
+    <div class="summary-grid" style="margin-bottom: 16px;">
+            <label>
+        Project Name
+        <input type="text" id="siteops-project-name" placeholder="e.g. 14 Oak Lane Extension">
+            </label>
+            <label>
+        Site Address
+        <input type="text" id="siteops-project-address" placeholder="Site address">
+            </label>
+            <label>
+        Status
+        <select id="siteops-project-status">
+          <option value="planning">Planning</option>
+          <option value="live">Live</option>
+          <option value="hold">On Hold</option>
+          <option value="completed">Completed</option>
+        </select>
+            </label>
+            <label>
+        Start Date
+        <input type="date" id="siteops-project-start">
+      </label>
+    </div>
+
+    <div class="siteops-dashboard-grid">
+      <div class="siteops-dash-card">
+        <h4>📅 Today's Focus</h4>
+        <div id="siteops-today-focus">No critical tasks today</div>
+      </div>
+      <div class="siteops-dash-card">
+        <h4>🚧 Blocking Issues</h4>
+        <div id="siteops-blocking-issues">0 blockers</div>
+      </div>
+      <div class="siteops-dash-card">
+        <h4>🔒 Gates Due</h4>
+        <div id="siteops-gates-due">No gates pending</div>
+      </div>
+      <div class="siteops-dash-card">
+        <h4>⚠️ Site Constraints</h4>
+        <div id="siteops-constraints-summary">—</div>
+      </div>
+    </div>
+
+    <div class="builder-controls" style="margin-top: 16px;">
+      <button class="builder-btn" id="siteops-btn-import-from-builder">📥 Import from Builder</button>
+      <button class="builder-btn" id="siteops-btn-new-project">➕ New Project</button>
+      <button class="builder-btn" id="siteops-btn-load-project">📂 Load Project</button>
+    </div>
+  </div>
+
+  <!-- SITE CONSTRAINTS -->
+  <div class="builder-card" id="siteops-panel-constraints">
+    <h2>🏠 Site Constraints</h2>
+    <p class="hint">Define real-world constraints that affect sequencing and access.</p>
+
+    <div class="siteops-constraints-grid">
+      <label class="siteops-constraint">
+        <input type="checkbox" id="siteops-constraint-occupied">
+        <span>Occupied property</span>
+      </label>
+      <label class="siteops-constraint">
+        <input type="checkbox" id="siteops-constraint-kids">
+        <span>Children present</span>
+      </label>
+      <label class="siteops-constraint">
+        <input type="checkbox" id="siteops-constraint-pets">
+        <span>Pets on site</span>
+      </label>
+      <label class="siteops-constraint">
+        <input type="checkbox" id="siteops-constraint-elderly">
+        <span>Elderly/vulnerable</span>
+      </label>
+      <label class="siteops-constraint">
+        <input type="checkbox" id="siteops-constraint-neighbours">
+        <span>Neighbour sensitivity</span>
+      </label>
+      <label class="siteops-constraint">
+        <input type="checkbox" id="siteops-constraint-parking">
+        <span>Parking restrictions</span>
+            </label>
+          </div>
+
+    <div class="summary-grid" style="margin-top: 12px;">
+      <label>
+        Access hours
+        <input type="text" id="siteops-access-hours" placeholder="e.g. 08:00-17:00 Mon-Fri">
+      </label>
+      <label>
+        Noise window
+        <input type="text" id="siteops-noise-window" placeholder="e.g. 09:00-17:00">
+      </label>
+      <label>
+        Skip location
+        <input type="text" id="siteops-skip-location" placeholder="e.g. Front drive">
+      </label>
+      <label>
+        Weather notes
+        <input type="text" id="siteops-weather-notes" placeholder="External works dependent">
+      </label>
+    </div>
+  </div>
+
+  <!-- PROGRAMME VIEW -->
+  <div class="builder-card" id="siteops-panel-programme">
+    <h2>📋 Programme & Phases</h2>
+    <p class="hint">Master programme with phases, trade owners, and dependencies.</p>
+
+    <div class="builder-controls">
+      <button class="builder-btn" id="siteops-btn-add-phase">➕ Add Phase</button>
+      <button class="builder-btn" id="siteops-btn-programme-recalc">🔄 Recalculate</button>
+      <button class="builder-btn" id="siteops-btn-sequence-check">✅ Validate Sequence</button>
+      <button class="builder-btn" id="siteops-btn-critical-path">📈 Critical Path</button>
+    </div>
+
+    <div class="siteops-programme-table-wrapper">
+      <table class="siteops-table" id="siteops-programme-table">
+        <thead>
+          <tr>
+            <th>Phase</th>
+            <th>Trade</th>
+            <th>Start</th>
+            <th>Duration</th>
+            <th>Depends On</th>
+            <th>Gate?</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="siteops-programme-body">
+          <!-- Phases will be added here -->
+        </tbody>
+      </table>
+    </div>
+
+    <div id="siteops-programme-empty" class="hint" style="text-align: center; padding: 20px;">
+      No phases yet. Add phases or import from Builder.
+    </div>
+
+    <div id="siteops-sequence-warning" class="compliance-warning" style="display: none;">
+      ⚠️ Sequence violations detected - check dependencies
+    </div>
+  </div>
+
+  <!-- TRADES REGISTER -->
+  <div class="builder-card" id="siteops-panel-trades">
+    <h2>👷 Trades Register</h2>
+    <p class="hint">All trades on the project with scope, dependencies, and requirements.</p>
+
+    <div class="builder-controls">
+      <button class="builder-btn" id="siteops-btn-trade-add">➕ Add Trade</button>
+      <button class="builder-btn" id="siteops-btn-trade-clash-check">⚠️ Check Clashes</button>
+    </div>
+
+    <div id="siteops-trades-list" class="siteops-trades-grid">
+      <!-- Trades will be added here -->
+    </div>
+
+    <div id="siteops-trades-empty" class="hint" style="text-align: center; padding: 20px;">
+      No trades registered. Add trades to coordinate.
+    </div>
+  </div>
+
+  <!-- DEPENDENCIES -->
+  <div class="builder-card" id="siteops-panel-dependencies">
+    <h2>🔗 Dependencies</h2>
+    <p class="hint">What must finish before what starts. Critical for programme integrity.</p>
+
+    <div class="builder-controls">
+      <button class="builder-btn" id="siteops-btn-deps-add">➕ Add Dependency</button>
+      <button class="builder-btn" id="siteops-btn-deps-auto">🤖 Auto-Generate</button>
+      <button class="builder-btn" id="siteops-btn-deps-validate">✅ Validate All</button>
+    </div>
+
+    <div id="siteops-deps-list" class="siteops-deps-list">
+      <!-- Dependencies will be added here -->
+    </div>
+
+    <div class="siteops-deps-rules" style="margin-top: 16px;">
+      <h4>📜 Standard Construction Rules (Auto-applied)</h4>
+      <ul class="hint">
+        <li>Demolition → Structural → First Fix</li>
+        <li>No plaster before M&E first fix signed off</li>
+        <li>No flooring before wet trades cured</li>
+        <li>No kitchen install before final M&E positions confirmed</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- GATES & INSPECTIONS -->
+  <div class="builder-card" id="siteops-panel-gates">
+    <h2>🔒 Compliance Gates & Inspections</h2>
+    <p class="hint">Required sign-offs that can block downstream phases.</p>
+
+    <div class="builder-controls">
+      <button class="builder-btn" id="siteops-btn-gate-add">➕ Add Gate</button>
+      <button class="builder-btn" id="siteops-btn-gate-check">🔍 Check All Gates</button>
+    </div>
+
+    <table class="siteops-table" id="siteops-gates-table">
+      <thead>
+        <tr>
+          <th>Gate Type</th>
+          <th>Related Phase</th>
+          <th>Required</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="siteops-gates-body">
+        <!-- Gates will be added here -->
+      </tbody>
+    </table>
+
+    <div id="siteops-gates-empty" class="hint" style="text-align: center; padding: 20px;">
+      No compliance gates defined. Add gates for Building Control, Part P, Gas Safe, etc.
+    </div>
+  </div>
+
+  <!-- PROJECT RAMS -->
+  <div class="builder-card" id="siteops-panel-rams">
+    <h2>📝 Project RAMS</h2>
+    <p class="hint">Risk assessments at project scale - combined across all trades.</p>
+
+    <div class="builder-controls">
+      <button class="builder-btn" id="siteops-btn-rams-generate">📄 Generate Project RAMS</button>
+      <button class="builder-btn" id="siteops-btn-rams-phase">📋 Phase RAMS</button>
+      <button class="builder-btn" id="siteops-btn-rams-export">📤 Export</button>
+    </div>
+
+    <div id="siteops-rams-overlap" class="compliance-warning" style="display: none;">
+      ⚠️ Risk overlap detected - review combined hazards
+    </div>
+
+    <pre id="siteops-rams-output" class="builder-output" style="max-height: 400px; overflow-y: auto;">
+Click "Generate Project RAMS" to create combined risk assessment across all phases.
+          </pre>
+        </div>
+
+  <!-- ISSUES / SNAGS / RISKS -->
+  <div class="builder-card" id="siteops-panel-issues">
+    <h2>🚨 Issues, Snags & Risks</h2>
+    <p class="hint">Track blockers, snags, and risks that affect the programme.</p>
+
+    <div class="builder-controls">
+      <button class="builder-btn" id="siteops-btn-issue-add">➕ Add Issue</button>
+      <button class="builder-btn" id="siteops-btn-issue-filter">🔍 Filter</button>
+    </div>
+
+    <div class="summary-grid" id="siteops-issue-form" style="display: none;">
+      <label>
+        Category
+        <select id="siteops-issue-category">
+          <option value="blocker">Blocker</option>
+          <option value="snag">Snag</option>
+          <option value="risk">Risk</option>
+          <option value="variation">Variation</option>
+        </select>
+      </label>
+      <label>
+        Severity
+        <select id="siteops-issue-severity">
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select>
+      </label>
+      <label>
+        Description
+        <input type="text" id="siteops-issue-desc" placeholder="Describe the issue">
+      </label>
+      <label>
+        Trade Owner
+        <input type="text" id="siteops-issue-owner" placeholder="Who owns this?">
+      </label>
+      <button class="builder-btn" id="siteops-issue-save" style="align-self: end;">Save Issue</button>
+    </div>
+
+    <table class="siteops-table" id="siteops-issues-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Category</th>
+          <th>Description</th>
+          <th>Severity</th>
+          <th>Owner</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="siteops-issues-body">
+        <!-- Issues will be added here -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- DAILY OPS -->
+  <div class="builder-card" id="siteops-panel-dailyops">
+    <h2>📅 Daily Ops Log</h2>
+    <p class="hint">Record daily site activity, deliveries, delays, and incidents.</p>
+
+    <div class="summary-grid">
+      <label>
+        Date
+        <input type="date" id="siteops-daily-date">
+      </label>
+      <label>
+        Who on site
+        <input type="text" id="siteops-daily-who" placeholder="e.g. Plasterer, Sparks, Plumber">
+      </label>
+    </div>
+
+    <div class="summary-grid" style="margin-top: 8px;">
+      <label>
+        What happened
+        <textarea id="siteops-daily-what" rows="2" placeholder="Progress made today..."></textarea>
+      </label>
+      <label>
+        Deliveries
+        <input type="text" id="siteops-daily-deliveries" placeholder="Materials received">
+      </label>
+    </div>
+
+    <div class="summary-grid" style="margin-top: 8px;">
+      <label>
+        Delays/Issues
+        <input type="text" id="siteops-daily-delays" placeholder="Any delays?">
+      </label>
+      <label>
+        Weather
+        <select id="siteops-daily-weather">
+          <option value="good">Good - no impact</option>
+          <option value="rain">Rain - external delayed</option>
+          <option value="cold">Cold - curing affected</option>
+          <option value="wind">Wind - height work paused</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="builder-controls" style="margin-top: 12px;">
+      <button class="builder-btn" id="siteops-daily-save">💾 Save Daily Log</button>
+      <button class="builder-btn" id="siteops-daily-view">📋 View History</button>
+      <button class="builder-btn" id="siteops-daily-tomorrow">📅 Plan Tomorrow</button>
+    </div>
+
+    <pre id="siteops-daily-output" class="builder-output" style="display: none; max-height: 300px; overflow-y: auto;"></pre>
+  </div>
+
+  <!-- CHANGE CONTROL -->
+  <div class="builder-card" id="siteops-panel-changecontrol">
+    <h2>🔄 Change Control</h2>
+    <p class="hint">Manage programme changes with impact analysis.</p>
+
+    <div class="builder-controls">
+      <button class="builder-btn" id="siteops-btn-change-new">➕ New Change Request</button>
+      <button class="builder-btn" id="siteops-btn-change-impact">📊 Impact Analysis</button>
+    </div>
+
+    <div id="siteops-change-form" style="display: none; margin-top: 12px; padding: 16px; background: rgba(255,255,255,0.05); border-radius: 8px;">
+      <h4 style="margin-top: 0;">📝 Change Request</h4>
+      <div class="summary-grid">
+        <label>
+          Description
+          <textarea id="siteops-change-desc" rows="2" placeholder="What changed?"></textarea>
+        </label>
+        <label>
+          Reason
+          <input type="text" id="siteops-change-reason" placeholder="Why?">
+        </label>
+      </div>
+      <div class="summary-grid" style="margin-top: 8px;">
+        <label>
+          Time Impact (days)
+          <input type="number" id="siteops-change-time" placeholder="0">
+        </label>
+        <label>
+          Cost Impact (£)
+          <input type="number" id="siteops-change-cost" placeholder="0">
+        </label>
+        <label>
+          Affected Phases
+          <input type="text" id="siteops-change-phases" placeholder="e.g. Plaster, Second Fix">
+        </label>
+      </div>
+      <div class="builder-controls" style="margin-top: 12px;">
+        <button class="builder-btn" id="siteops-change-save">💾 Save Change</button>
+        <button class="builder-btn" id="siteops-change-cancel">Cancel</button>
+      </div>
+    </div>
+
+    <table class="siteops-table" id="siteops-changes-table" style="margin-top: 12px;">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Description</th>
+          <th>Time</th>
+          <th>Cost</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="siteops-changes-body">
+        <!-- Changes will be added here -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- REPORTS & EXPORT -->
+  <div class="builder-card" id="siteops-panel-export">
+    <h2>📤 Reports & Export</h2>
+    <p class="hint">Generate reports and export site documentation.</p>
+
+    <div class="siteops-export-grid">
+      <button class="builder-btn siteops-export-btn" id="siteops-btn-report-weekly">
+        📊 Weekly Report
+      </button>
+      <button class="builder-btn siteops-export-btn" id="siteops-btn-report-client">
+        👔 Client Update
+      </button>
+      <button class="builder-btn siteops-export-btn" id="siteops-btn-report-trade">
+        👷 Trade Brief
+      </button>
+      <button class="builder-btn siteops-export-btn" id="siteops-btn-report-compliance">
+        🔒 Compliance Status
+      </button>
+    </div>
+
+    <div class="builder-controls" style="margin-top: 16px;">
+      <button class="builder-btn" id="siteops-btn-export-programme">📋 Export Programme</button>
+      <button class="builder-btn" id="siteops-btn-export-rams">📝 Export RAMS</button>
+      <button class="builder-btn" id="siteops-btn-export-all">📦 Export All</button>
+          </div>
+
+    <pre id="siteops-report-output" class="builder-output" style="display: none; max-height: 400px; overflow-y: auto;"></pre>
+        </div>
+
+  <!-- Voice Panel -->
+  <div class="builder-card">
+    <h2>🎙️ Voice Dictation</h2>
+    <p class="hint">Use this for continuous voice input and transcript viewing.</p>
+    
+    <div class="module-voice-panel" data-module="siteops" style="background: transparent; padding: 0; margin: 0;">
+      <button type="button" class="module-voice-btn">🎙 Talk to GRACE-X SiteOps</button>
+      <span class="module-voice-status">Mic off</span>
+      <textarea class="module-voice-text" placeholder="Voice transcript appears here…" rows="3"></textarea>
+      <div class="module-voice-reply"></div>
+    </div>
+        </div>
+      </section>

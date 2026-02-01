@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Call Sheets - GRACE-X</title>
+  <link rel="stylesheet" href="../assets/css/callsheets.css">
+</head>
+<body>
+  <div class="callsheet-container">
+    <!-- Header -->
+    <div class="callsheet-header">
+      <div class="header-left">
+        <h1>📋 Call Sheets</h1>
+        <p>Daily Site Communication & Crew Management</p>
+      </div>
+      <div class="header-right">
+        <button class="btn btn-primary" id="new-sheet-btn">+ New Call Sheet</button>
+        <button class="btn btn-secondary" id="sync-btn">🔄 Sync</button>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="callsheet-main">
+      <!-- Sidebar - Date Navigation -->
+      <div class="callsheet-sidebar">
+        <div class="date-picker">
+          <h3>Select Date</h3>
+          <input type="date" id="date-select" />
+        </div>
+        
+        <div class="sheets-list">
+          <h4>Call Sheets</h4>
+          <div id="sheets-list-container"></div>
+        </div>
+
+        <div class="quick-stats">
+          <h4>Today's Stats</h4>
+          <div class="stat-item">
+            <span class="stat-label">Crew On-Site:</span>
+            <span class="stat-value" id="stat-crew">0</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Tasks Active:</span>
+            <span class="stat-value" id="stat-tasks">0</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Total Hours:</span>
+            <span class="stat-value" id="stat-hours">0.0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Panel - Call Sheet Details -->
+      <div class="callsheet-panel">
+        <!-- Empty State -->
+        <div class="empty-state" id="empty-state">
+          <div class="empty-icon">📋</div>
+          <h2>No Call Sheet Selected</h2>
+          <p>Select a call sheet from the list or create a new one</p>
+          <button class="btn btn-primary" onclick="document.getElementById('new-sheet-btn').click()">Create Call Sheet</button>
+        </div>
+
+        <!-- Call Sheet View -->
+        <div class="callsheet-view" id="callsheet-view" style="display: none;">
+          <!-- Sheet Header Info -->
+          <div class="sheet-info">
+            <div class="info-row">
+              <div class="info-field">
+                <label>Site:</label>
+                <input type="text" id="sheet-site" placeholder="Site Name/Location" />
+              </div>
+              <div class="info-field">
+                <label>Date:</label>
+                <input type="date" id="sheet-date" />
+              </div>
+              <div class="info-field">
+                <label>Supervisor:</label>
+                <input type="text" id="sheet-supervisor" placeholder="Name" />
+              </div>
+            </div>
+            
+            <div class="info-row">
+              <div class="info-field">
+                <label>Weather:</label>
+                <input type="text" id="sheet-weather" placeholder="e.g., Sunny, 18°C" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Tabs -->
+          <div class="tabs">
+            <button class="tab-btn active" data-tab="crew">Crew</button>
+            <button class="tab-btn" data-tab="tasks">Tasks</button>
+            <button class="tab-btn" data-tab="notes">Notes & Photos</button>
+            <button class="tab-btn" data-tab="report">Report</button>
+          </div>
+
+          <!-- Tab: Crew -->
+          <div class="tab-content active" id="tab-crew">
+            <div class="tab-header">
+              <h3>Crew Members</h3>
+              <button class="btn btn-small" id="add-crew-btn">+ Add Crew</button>
+            </div>
+            
+            <div class="crew-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Company</th>
+                    <th>Clock In</th>
+                    <th>Clock Out</th>
+                    <th>Hours</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="crew-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Tab: Tasks -->
+          <div class="tab-content" id="tab-tasks">
+            <div class="tab-header">
+              <h3>Tasks</h3>
+              <button class="btn btn-small" id="add-task-btn">+ Add Task</button>
+            </div>
+            
+            <div class="tasks-container" id="tasks-container"></div>
+          </div>
+
+          <!-- Tab: Notes & Photos -->
+          <div class="tab-content" id="tab-notes">
+            <div class="tab-header">
+              <h3>Notes & Communications</h3>
+            </div>
+            
+            <div class="notes-section">
+              <textarea id="notes-textarea" placeholder="Add notes about today's work..."></textarea>
+              <button class="btn btn-primary" id="save-notes-btn">Save Notes</button>
+            </div>
+
+            <div class="photos-section">
+              <h4>Photos</h4>
+              <div class="photos-grid" id="photos-grid"></div>
+              <button class="btn btn-secondary" id="add-photo-btn">+ Add Photo</button>
+            </div>
+          </div>
+
+          <!-- Tab: Report -->
+          <div class="tab-content" id="tab-report">
+            <div class="tab-header">
+              <h3>Daily Report</h3>
+              <div>
+                <button class="btn btn-secondary" id="export-pdf-btn">📄 Export PDF</button>
+                <button class="btn btn-secondary" id="export-csv-btn">📊 Export CSV</button>
+              </div>
+            </div>
+            
+            <div class="report-preview" id="report-preview">
+              <!-- Report will be generated here -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: New Call Sheet -->
+  <div class="modal" id="new-sheet-modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>New Call Sheet</h2>
+        <button class="modal-close" onclick="document.getElementById('new-sheet-modal').style.display='none'">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Site Name:</label>
+          <input type="text" id="new-site" placeholder="Enter site name or location" />
+        </div>
+        <div class="form-group">
+          <label>Date:</label>
+          <input type="date" id="new-date" />
+        </div>
+        <div class="form-group">
+          <label>Supervisor:</label>
+          <input type="text" id="new-supervisor" placeholder="Your name" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="document.getElementById('new-sheet-modal').style.display='none'">Cancel</button>
+        <button class="btn btn-primary" id="create-sheet-btn">Create Call Sheet</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Add Crew -->
+  <div class="modal" id="add-crew-modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Add Crew Member</h2>
+        <button class="modal-close" onclick="document.getElementById('add-crew-modal').style.display='none'">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Name:</label>
+          <input type="text" id="crew-name" placeholder="Full name" />
+        </div>
+        <div class="form-group">
+          <label>Role:</label>
+          <input type="text" id="crew-role" placeholder="e.g., Carpenter, Electrician" />
+        </div>
+        <div class="form-group">
+          <label>Company:</label>
+          <input type="text" id="crew-company" placeholder="Company name" />
+        </div>
+        <div class="form-group">
+          <label>Phone:</label>
+          <input type="tel" id="crew-phone" placeholder="Phone number" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="document.getElementById('add-crew-modal').style.display='none'">Cancel</button>
+        <button class="btn btn-primary" id="save-crew-btn">Add Crew Member</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../assets/js/callsheets.js"></script>
+  <script src="../assets/js/callsheets-ui.js"></script>
+</body>
+</html>

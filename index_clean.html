@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRACE-X TITAN v7.1</title>
+    <link rel="icon" type="image/png" href="assets/img/gracex_main_logo.png">
+    
+    <!-- AGGRESSIVE CACHE BUSTING -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
+    <!-- INLINE CRITICAL CSS - LOADS INSTANTLY -->
+    <style>
+        /* INSTANT LOAD STYLES */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #000;
+            color: #fff;
+        }
+        
+        /* BOOT SCREEN - SIMPLE & FAST */
+        #boot {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #000 0%, #1a1a2e 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            transition: opacity 0.5s ease;
+        }
+        
+        #boot.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .boot-box {
+            text-align: center;
+        }
+        
+        .boot-logo {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+            animation: spin 2s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .boot-title {
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #06b6d4, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        
+        .boot-version {
+            color: #64748b;
+            font-size: 1rem;
+            margin-bottom: 30px;
+        }
+        
+        .boot-bar {
+            width: 200px;
+            height: 3px;
+            background: rgba(255,255,255,0.1);
+            margin: 0 auto;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .boot-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #06b6d4, #8b5cf6);
+            animation: load 1.5s ease-in-out forwards;
+        }
+        
+        @keyframes load {
+            from { width: 0%; }
+            to { width: 100%; }
+        }
+        
+        .boot-hint {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+        
+        /* APP - HIDDEN UNTIL LOADED */
+        #app {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            grid-template-columns: 260px 1fr;
+        }
+        
+        #app.show {
+            display: grid;
+        }
+        
+        /* BACKGROUND */
+        .bg {
+            position: fixed;
+            inset: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(6,182,212,0.15), transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(139,92,246,0.12), transparent 50%),
+                #000;
+            z-index: -1;
+        }
+        
+        /* SIDEBAR */
+        .sidebar {
+            background: rgba(15,23,42,0.95);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(148,163,184,0.1);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .sidebar::-webkit-scrollbar { width: 5px; }
+        .sidebar::-webkit-scrollbar-thumb { background: rgba(148,163,184,0.3); border-radius: 10px; }
+        
+        .logo-area {
+            padding: 25px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(148,163,184,0.1);
+        }
+        
+        .logo-img {
+            width: 45px;
+            height: 45px;
+        }
+        
+        .brand h1 {
+            font-size: 1.2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #06b6d4, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .brand span {
+            font-size: 0.7rem;
+            color: #64748b;
+        }
+        
+        .nav-title {
+            padding: 20px 15px 10px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #64748b;
+            letter-spacing: 1px;
+        }
+        
+        .nav {
+            flex: 1;
+            padding: 0 10px;
+        }
+        
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding: 10px 12px;
+            margin-bottom: 5px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid transparent;
+            border-radius: 8px;
+            color: #94a3b8;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: rgba(6,182,212,0.3);
+            color: #f1f5f9;
+            transform: translateX(2px);
+        }
+        
+        .nav-btn.active {
+            background: linear-gradient(135deg, rgba(6,182,212,0.2), rgba(139,92,246,0.2));
+            border-color: rgba(6,182,212,0.5);
+            color: #06b6d4;
+        }
+        
+        .nav-icon {
+            font-size: 1.1rem;
+        }
+        
+        /* MAIN */
+        .main {
+            overflow-y: auto;
+            background: transparent;
+        }
+        
+        .main::-webkit-scrollbar { width: 6px; }
+        .main::-webkit-scrollbar-thumb { background: rgba(148,163,184,0.3); border-radius: 10px; }
+        
+        .content {
+            padding: 30px;
+            min-height: 100%;
+        }
+        
+        /* VOICE BUTTON */
+        .voice {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            color: #fff;
+            font-size: 22px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(102,126,234,0.4);
+            transition: transform 0.2s;
+            z-index: 1000;
+        }
+        
+        .voice:hover {
+            transform: scale(1.1);
+        }
+        
+        .voice:active {
+            transform: scale(0.95);
+        }
+        
+        /* VERSION */
+        .ver {
+            position: fixed;
+            bottom: 12px;
+            right: 95px;
+            padding: 5px 12px;
+            background: rgba(15,23,42,0.8);
+            border: 1px solid rgba(6,182,212,0.3);
+            border-radius: 15px;
+            font-size: 0.7rem;
+            color: #06b6d4;
+            font-weight: 600;
+        }
+        
+        /* LOADING STATE */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            font-size: 1.1rem;
+            color: #94a3b8;
+        }
+        
+        .loading::after {
+            content: '...';
+            animation: dots 1.5s steps(4) infinite;
+        }
+        
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- BOOT SCREEN -->
+    <div id="boot">
+        <div class="boot-box">
+            <img src="assets/img/gracex_main_logo.png" class="boot-logo" alt="GRACE-X">
+            <div class="boot-title">GRACE-X</div>
+            <div class="boot-version">TITAN v7.1</div>
+            <div class="boot-bar"><div class="boot-fill"></div></div>
+        </div>
+        <div class="boot-hint">Click to start</div>
+    </div>
+
+    <!-- MAIN APP -->
+    <div id="app">
+        <div class="bg"></div>
+        
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="logo-area">
+                <img src="assets/img/gracex_main_logo.png" class="logo-img" alt="Logo">
+                <div class="brand">
+                    <h1>GRACE-X</h1>
+                    <span>TITAN v7.1</span>
+                </div>
+            </div>
+            
+            <div class="nav-title">Modules</div>
+            
+            <nav class="nav" id="nav">
+                <button class="nav-btn active" data-module="core"><span class="nav-icon">⚡</span> Core</button>
+                <button class="nav-btn" data-module="sport"><span class="nav-icon">⚽</span> Sport</button>
+                <button class="nav-btn" data-module="builder"><span class="nav-icon">🔨</span> Builder</button>
+                <button class="nav-btn" data-module="siteops"><span class="nav-icon">⚙️</span> SiteOps</button>
+                <button class="nav-btn" data-module="tradelink"><span class="nav-icon">🔗</span> TradeLink</button>
+                <button class="nav-btn" data-module="beauty"><span class="nav-icon">💄</span> Beauty</button>
+                <button class="nav-btn" data-module="fit"><span class="nav-icon">💪</span> Fit</button>
+                <button class="nav-btn" data-module="yoga"><span class="nav-icon">🧘</span> Yoga</button>
+                <button class="nav-btn" data-module="uplift"><span class="nav-icon">✨</span> Uplift</button>
+                <button class="nav-btn" data-module="chef"><span class="nav-icon">👨‍🍳</span> Chef</button>
+                <button class="nav-btn" data-module="artist"><span class="nav-icon">🎨</span> Artist</button>
+                <button class="nav-btn" data-module="family"><span class="nav-icon">👨‍👩‍👧‍👦</span> Family</button>
+                <button class="nav-btn" data-module="gamer"><span class="nav-icon">🎮</span> Gamer</button>
+                <button class="nav-btn" data-module="accounting"><span class="nav-icon">💰</span> Accounting</button>
+                <button class="nav-btn" data-module="osint"><span class="nav-icon">🔍</span> OSINT</button>
+                <button class="nav-btn" data-module="guardian"><span class="nav-icon">🛡️</span> Guardian</button>
+                <button class="nav-btn" data-module="forge"><span class="nav-icon">⚒️</span> Forge</button>
+            </nav>
+        </aside>
+        
+        <!-- MAIN CONTENT -->
+        <main class="main">
+            <div class="content" id="content">
+                <div class="loading">Loading Core module</div>
+            </div>
+        </main>
+        
+        <!-- VOICE BUTTON -->
+        <button class="voice" id="voice-btn" title="Voice: Hey Gracie">🎤</button>
+        
+        <!-- VERSION BADGE -->
+        <div class="ver">v7.1</div>
+    </div>
+
+    <!-- BOOT SCRIPT - RUNS IMMEDIATELY -->
+    <script>
+        (function() {
+            console.log('🚀 GRACE-X TITAN v7.1 - Booting...');
+            
+            const boot = document.getElementById('boot');
+            const app = document.getElementById('app');
+            
+            // AUTO BOOT AFTER 1.5 SECONDS
+            setTimeout(completeBoot, 1500);
+            
+            // OR CLICK TO SKIP
+            boot.addEventListener('click', completeBoot);
+            
+            function completeBoot() {
+                console.log('✅ Boot complete');
+                boot.classList.add('hidden');
+                app.classList.add('show');
+                
+                // Remove boot screen after transition
+                setTimeout(() => {
+                    boot.remove();
+                }, 500);
+                
+                // Initialize app
+                initApp();
+            }
+            
+            function initApp() {
+                // Load Core module by default
+                loadModule('core');
+                
+                // Setup navigation
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                        this.classList.add('active');
+                        loadModule(this.dataset.module);
+                    });
+                });
+                
+                // Voice button
+                const voiceBtn = document.getElementById('voice-btn');
+                voiceBtn.addEventListener('click', () => {
+                    if (window.GRACEX_VoiceAssistant) {
+                        GRACEX_VoiceAssistant.activate();
+                        console.log('🎤 Voice activated');
+                    } else {
+                        console.log('🎤 Voice loading...');
+                    }
+                });
+                
+                console.log('✅ App initialized');
+            }
+            
+            function loadModule(name) {
+                const content = document.getElementById('content');
+                content.innerHTML = '<div class="loading">Loading ' + name + '</div>';
+                
+                fetch('modules/' + name + '.html?t=' + Date.now())
+                    .then(r => r.text())
+                    .then(html => {
+                        content.innerHTML = html;
+                        console.log('✅ Loaded:', name);
+                        
+                        // Initialize module if it has init function
+                        const initFn = 'init' + name.charAt(0).toUpperCase() + name.slice(1);
+                        if (typeof window[initFn] === 'function') {
+                            window[initFn]();
+                        }
+                    })
+                    .catch(err => {
+                        content.innerHTML = `
+                            <div style="text-align:center;padding:50px;">
+                                <h2 style="color:#ef4444;margin-bottom:10px;">⚠️ Module Not Found</h2>
+                                <p style="color:#94a3b8;">Could not load ${name}.html</p>
+                            </div>
+                        `;
+                        console.error('Error loading module:', err);
+                    });
+            }
+        })();
+    </script>
+
+    <!-- LOAD VOICE SCRIPTS -->
+    <script src="assets/js/speechQueue.js?v=7.1.0" defer></script>
+    <script src="assets/js/voiceTTS.js?v=7.1.0" defer></script>
+    <script src="assets/js/voiceAssistant.js?v=7.1.0" defer></script>
+
+</body>
+</html>

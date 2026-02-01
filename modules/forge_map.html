@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forge Map - GRACE-X Live Control Center</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0a0e1a 0%, #1a1e2e 100%);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      color: #e0e0e0;
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    .forge-map-container {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .forge-map-header {
+      padding: 20px 40px;
+      background: rgba(0, 0, 0, 0.3);
+      border-bottom: 2px solid rgba(6, 182, 212, 0.3);
+      backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-left {
+      flex: 1;
+    }
+
+    .forge-map-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #06b6d4;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .forge-map-subtitle {
+      font-size: 14px;
+      color: #94a3b8;
+    }
+
+    .header-right {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .live-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: rgba(16, 185, 129, 0.2);
+      border: 1px solid #10b981;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #10b981;
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.2); }
+    }
+
+    .refresh-btn {
+      padding: 8px 16px;
+      background: rgba(6, 182, 212, 0.2);
+      border: 1px solid #06b6d4;
+      color: #06b6d4;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .refresh-btn:hover {
+      background: rgba(6, 182, 212, 0.4);
+      transform: scale(1.05);
+    }
+
+    /* Canvas Container */
+    .forge-map-canvas-container {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #forge-map-canvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Module Cards */
+    .module-card {
+      position: absolute;
+      width: 200px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 2px solid rgba(6, 182, 212, 0.4);
+      border-radius: 12px;
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .module-card:hover {
+      transform: scale(1.08);
+      border-color: #06b6d4;
+      box-shadow: 0 12px 40px rgba(6, 182, 212, 0.5);
+      z-index: 100;
+    }
+
+    .module-card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .module-icon {
+      font-size: 28px;
+    }
+
+    .module-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: #e0e0e0;
+    }
+
+    .module-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: #94a3b8;
+      margin-bottom: 8px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      animation: pulse 2s infinite;
+    }
+
+    .status-dot.warning {
+      background: #f59e0b;
+    }
+
+    .status-dot.error {
+      background: #ef4444;
+    }
+
+    .module-info {
+      font-size: 11px;
+      color: #64748b;
+      margin-bottom: 4px;
+    }
+
+    .module-brain-status {
+      font-size: 11px;
+      padding: 6px 10px;
+      border-radius: 4px;
+      background: rgba(16, 185, 129, 0.2);
+      color: #10b981;
+      text-align: center;
+      margin-top: 8px;
+      font-weight: 600;
+    }
+
+    .module-brain-status.unwired {
+      background: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+    }
+
+    .module-action-hint {
+      font-size: 10px;
+      color: #06b6d4;
+      text-align: center;
+      margin-top: 8px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .module-card:hover .module-action-hint {
+      opacity: 1;
+    }
+
+    /* Stats Panel */
+    .forge-map-stats {
+      position: absolute;
+      top: 100px;
+      left: 20px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      border-radius: 8px;
+      padding: 20px;
+      backdrop-filter: blur(10px);
+      min-width: 240px;
+    }
+
+    .stats-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #06b6d4;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .stat-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 13px;
+    }
+
+    .stat-label {
+      color: #94a3b8;
+    }
+
+    .stat-value {
+      color: #06b6d4;
+      font-weight: 600;
+    }
+
+    .stat-separator {
+      height: 1px;
+      background: rgba(6, 182, 212, 0.2);
+      margin: 12px 0;
+    }
+
+    /* System Info Panel */
+    .system-info-panel {
+      position: absolute;
+      top: 100px;
+      right: 20px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      border-radius: 8px;
+      padding: 20px;
+      backdrop-filter: blur(10px);
+      min-width: 280px;
+    }
+
+    .system-info-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #06b6d4;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .info-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 12px;
+    }
+
+    .info-label {
+      color: #94a3b8;
+    }
+
+    .info-value {
+      color: #e0e0e0;
+      font-weight: 500;
+      font-family: 'Courier New', monospace;
+    }
+
+    /* Legend */
+    .forge-map-legend {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      border-radius: 8px;
+      padding: 16px;
+      backdrop-filter: blur(10px);
+    }
+
+    .legend-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #06b6d4;
+      margin-bottom: 12px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: #94a3b8;
+      margin-bottom: 8px;
+    }
+
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    /* Close Button */
+    .close-btn {
+      padding: 8px 16px;
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid #ef4444;
+      color: #ef4444;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .close-btn:hover {
+      background: rgba(239, 68, 68, 0.4);
+      transform: scale(1.05);
+    }
+
+    /* Error/Loading States */
+    .status-message {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(15, 23, 42, 0.95);
+      border: 2px solid rgba(6, 182, 212, 0.5);
+      border-radius: 12px;
+      padding: 30px 40px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .status-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .status-text {
+      font-size: 16px;
+      color: #e0e0e0;
+      font-weight: 600;
+    }
+
+    .spinner {
+      border: 3px solid rgba(6, 182, 212, 0.3);
+      border-top: 3px solid #06b6d4;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="forge-map-container">
+    <!-- Header -->
+    <div class="forge-map-header">
+      <div class="header-left">
+        <div class="forge-map-title">🗺️ Forge Map - Live</div>
+        <div class="forge-map-subtitle">Real-Time Module Control Center · GRACE-X GALVANIZED Edition</div>
+      </div>
+      <div class="header-right">
+        <div class="live-indicator">
+          <div class="live-dot"></div>
+          <span>LIVE DATA</span>
+        </div>
+        <button class="refresh-btn" onclick="forgeMap.fetchSystemStatus()">🔄 Refresh</button>
+        <button class="close-btn" onclick="window.close()">✕ Close</button>
+      </div>
+    </div>
+
+    <!-- Canvas -->
+    <div class="forge-map-canvas-container" id="canvas-container">
+      <canvas id="forge-map-canvas"></canvas>
+      
+      <!-- Module Cards (positioned dynamically) -->
+      <div id="module-cards"></div>
+
+      <!-- Loading Message -->
+      <div class="status-message" id="loading-message">
+        <div class="spinner"></div>
+        <div class="status-text">Loading System Data...</div>
+      </div>
+
+      <!-- Stats Panel -->
+      <div class="forge-map-stats" id="stats-panel" style="display: none;">
+        <div class="stats-title">📊 Module Stats</div>
+        <div class="stat-item">
+          <span class="stat-label">Total Modules:</span>
+          <span class="stat-value" id="stat-total">—</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Brain Wired:</span>
+          <span class="stat-value" id="stat-wired">—</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Production Ready:</span>
+          <span class="stat-value" id="stat-production">—</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Commercial:</span>
+          <span class="stat-value" id="stat-commercial">—</span>
+        </div>
+      </div>
+
+      <!-- System Info Panel -->
+      <div class="system-info-panel" id="system-info-panel" style="display: none;">
+        <div class="system-info-title">⚙️ System Info</div>
+        <div class="info-item">
+          <span class="info-label">Backend:</span>
+          <span class="info-value" id="info-backend">—</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Uptime:</span>
+          <span class="info-value" id="info-uptime">—</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Memory:</span>
+          <span class="info-value" id="info-memory">—</span>
+        </div>
+        <div class="stat-separator"></div>
+        <div class="info-item">
+          <span class="info-label">AI Provider:</span>
+          <span class="info-value" id="info-provider">—</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">API Key:</span>
+          <span class="info-value" id="info-apikey">—</span>
+        </div>
+        <div class="stat-separator"></div>
+        <div class="info-item">
+          <span class="info-label">Forge Dir:</span>
+          <span class="info-value" id="info-forge" style="font-size: 10px; word-break: break-all;">—</span>
+        </div>
+      </div>
+
+      <!-- Legend -->
+      <div class="forge-map-legend">
+        <div class="legend-title">Module Status</div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background: #10b981;"></div>
+          <span>Production Ready</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background: #f59e0b;"></div>
+          <span>Development</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background: #ef4444;"></div>
+          <span>Needs Work</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Forge Map Controller
+    const forgeMap = {
+      modules: [
+        { name: 'Core', icon: '🎯', wired: true, status: 'production', commercial: false, x: 50, y: 20, slug: 'core' },
+        { name: 'Core2', icon: '🚀', wired: true, status: 'production', commercial: false, x: 50, y: 30, slug: 'core2' },
+        { name: 'Builder', icon: '🏗️', wired: true, status: 'production', commercial: true, x: 20, y: 40, slug: 'builder' },
+        { name: 'SiteOps', icon: '🚧', wired: true, status: 'production', commercial: true, x: 35, y: 55, slug: 'siteops' },
+        { name: 'Sport', icon: '⚽', wired: true, status: 'production', commercial: true, x: 65, y: 55, slug: 'sport' },
+        { name: 'Forge', icon: '⚒️', wired: true, status: 'production', commercial: false, x: 80, y: 40, slug: 'forge' },
+        { name: 'OSINT', icon: '🔍', wired: true, status: 'production', commercial: true, x: 50, y: 70, slug: 'osint' },
+        { name: 'Accounting', icon: '💰', wired: true, status: 'production', commercial: true, x: 20, y: 70, slug: 'accounting' },
+        { name: 'Guardian', icon: '🛡️', wired: true, status: 'production', commercial: false, x: 80, y: 70, slug: 'guardian' },
+        { name: 'Uplift', icon: '💚', wired: true, status: 'production', commercial: false, x: 15, y: 25, slug: 'uplift' },
+        { name: 'Fit', icon: '💪', wired: true, status: 'development', commercial: false, x: 85, y: 25, slug: 'fit' },
+        { name: 'Yoga', icon: '🧘', wired: true, status: 'development', commercial: false, x: 70, y: 15, slug: 'yoga' },
+        { name: 'Chef', icon: '👨‍🍳', wired: true, status: 'development', commercial: false, x: 30, y: 15, slug: 'chef' },
+        { name: 'Beauty', icon: '💄', wired: true, status: 'development', commercial: false, x: 15, y: 55, slug: 'beauty' },
+        { name: 'Artist', icon: '🎨', wired: true, status: 'development', commercial: false, x: 85, y: 55, slug: 'artist' },
+        { name: 'Gamer', icon: '🎮', wired: true, status: 'development', commercial: false, x: 35, y: 85, slug: 'gamer' },
+        { name: 'Family', icon: '👨‍👩‍👧‍👦', wired: true, status: 'development', commercial: false, x: 65, y: 85, slug: 'family' },
+        { name: 'TradeLink', icon: '🔗', wired: true, status: 'development', commercial: false, x: 50, y: 95, slug: 'tradelink' }
+      ],
+      
+      canvas: null,
+      ctx: null,
+      container: null,
+      cardsContainer: null,
+      systemData: null,
+
+      // Initialize
+      async init() {
+        this.canvas = document.getElementById('forge-map-canvas');
+        this.ctx = this.canvas.getContext('2d');
+        this.container = document.getElementById('canvas-container');
+        this.cardsContainer = document.getElementById('module-cards');
+
+        window.addEventListener('resize', () => this.resizeCanvas());
+        this.resizeCanvas();
+
+        // Fetch initial data
+        await this.fetchSystemStatus();
+
+        // Auto-refresh every 5 seconds
+        setInterval(() => this.fetchSystemStatus(), 5000);
+
+        // Start animation
+        this.animateConnections();
+
+        console.log('🗺️ Forge Map initialized with live data');
+      },
+
+      // Fetch live system status from backend
+      async fetchSystemStatus() {
+        try {
+          const response = await fetch('http://localhost:3000/api/system/status');
+          if (!response.ok) throw new Error('Backend not responding');
+          
+          this.systemData = await response.json();
+          this.updateUI();
+          this.hideLoading();
+          
+        } catch (error) {
+          console.error('Failed to fetch system status:', error);
+          this.showError(error.message);
+        }
+      },
+
+      // Update UI with live data
+      updateUI() {
+        if (!this.systemData) return;
+
+        // Update stats
+        document.getElementById('stat-total').textContent = this.systemData.modules.total;
+        document.getElementById('stat-wired').textContent = `${this.systemData.modules.wired}/${this.systemData.modules.total}`;
+        document.getElementById('stat-production').textContent = this.systemData.modules.production;
+        document.getElementById('stat-commercial').textContent = this.systemData.modules.commercial;
+
+        // Update system info
+        const uptime = this.formatUptime(this.systemData.uptime);
+        const memory = `${this.systemData.memory.used}MB / ${this.systemData.memory.total}MB (${this.systemData.memory.percentage}%)`;
+        
+        document.getElementById('info-backend').textContent = this.systemData.backend.running ? '✅ Online' : '❌ Offline';
+        document.getElementById('info-uptime').textContent = uptime;
+        document.getElementById('info-memory').textContent = memory;
+        document.getElementById('info-provider').textContent = this.systemData.backend.provider.toUpperCase();
+        document.getElementById('info-apikey').textContent = this.systemData.backend.apiKeyConfigured ? '✅ Configured' : '❌ Missing';
+        document.getElementById('info-forge').textContent = this.systemData.forge.baseDir;
+
+        // Create/update module cards
+        this.createModuleCards();
+      },
+
+      // Format uptime
+      formatUptime(seconds) {
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const secs = seconds % 60;
+        return `${hours}h ${minutes}m ${secs}s`;
+      },
+
+      // Hide loading message
+      hideLoading() {
+        document.getElementById('loading-message').style.display = 'none';
+        document.getElementById('stats-panel').style.display = 'block';
+        document.getElementById('system-info-panel').style.display = 'block';
+      },
+
+      // Show error
+      showError(message) {
+        const loadingEl = document.getElementById('loading-message');
+        loadingEl.innerHTML = `
+          <div class="status-icon">⚠️</div>
+          <div class="status-text">Connection Error</div>
+          <div style="font-size: 12px; color: #94a3b8; margin-top: 8px;">${message}</div>
+          <div style="font-size: 11px; color: #64748b; margin-top: 12px;">Make sure backend server is running on port 3000</div>
+        `;
+      },
+
+      // Resize canvas
+      resizeCanvas() {
+        this.canvas.width = this.container.clientWidth;
+        this.canvas.height = this.container.clientHeight;
+        this.drawConnections();
+      },
+
+      // Draw connection lines
+      drawConnections() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.strokeStyle = 'rgba(6, 182, 212, 0.2)';
+        this.ctx.lineWidth = 2;
+
+        // Draw connections from Core to all modules
+        const coreModule = this.modules.find(m => m.name === 'Core');
+        const coreX = (coreModule.x / 100) * this.canvas.width;
+        const coreY = (coreModule.y / 100) * this.canvas.height;
+
+        this.modules.forEach(module => {
+          if (module.name !== 'Core') {
+            const x = (module.x / 100) * this.canvas.width;
+            const y = (module.y / 100) * this.canvas.height;
+            
+            this.ctx.beginPath();
+            this.ctx.moveTo(coreX, coreY);
+            this.ctx.lineTo(x, y);
+            this.ctx.stroke();
+          }
+        });
+      },
+
+      // Create module cards
+      createModuleCards() {
+        this.cardsContainer.innerHTML = '';
+        
+        this.modules.forEach(module => {
+          const card = document.createElement('div');
+          card.className = 'module-card';
+          
+          const x = (module.x / 100) * this.container.clientWidth - 100;
+          const y = (module.y / 100) * this.container.clientHeight - 75;
+          card.style.left = x + 'px';
+          card.style.top = y + 'px';
+
+          const statusClass = module.status === 'production' ? '' : (module.status === 'development' ? 'warning' : 'error');
+          const brainClass = module.wired ? '' : 'unwired';
+          const brainText = module.wired ? '✅ Brain Wired' : '❌ Not Wired';
+
+          card.innerHTML = `
+            <div class="module-card-header">
+              <div class="module-icon">${module.icon}</div>
+              <div class="module-name">${module.name}™</div>
+            </div>
+            <div class="module-status">
+              <div class="status-dot ${statusClass}"></div>
+              <span>${module.status === 'production' ? 'Production' : 'Development'}</span>
+            </div>
+            <div class="module-info">
+              ${module.commercial ? '💰 Commercial' : '🎨 Lifestyle'}
+            </div>
+            <div class="module-brain-status ${brainClass}">
+              ${brainText}
+            </div>
+            <div class="module-action-hint">
+              Click to open module →
+            </div>
+          `;
+
+          // REAL navigation - opens module in parent window
+          card.addEventListener('click', () => {
+            if (window.opener) {
+              // If opened from GRACEX, use parent window's navigation
+              window.opener.postMessage({
+                type: 'navigate',
+                module: module.slug
+              }, '*');
+              console.log(`✅ Navigate to ${module.name} module`);
+            } else {
+              // Fallback: redirect this window
+              window.location.href = `http://localhost:8080/?module=${module.slug}`;
+            }
+          });
+
+          this.cardsContainer.appendChild(card);
+        });
+      },
+
+      // Animate connections (pulsing effect)
+      animateConnections() {
+        let opacity = 0.2;
+        let direction = 1;
+        
+        setInterval(() => {
+          opacity += 0.01 * direction;
+          if (opacity >= 0.4 || opacity <= 0.1) direction *= -1;
+          this.ctx.strokeStyle = `rgba(6, 182, 212, ${opacity})`;
+          this.drawConnections();
+        }, 50);
+      }
+    };
+
+    // Initialize when page loads
+    window.addEventListener('DOMContentLoaded', () => {
+      forgeMap.init();
+    });
+
+    console.log('🗺️ Forge Map with LIVE DATA - GRACE-X GALVANIZED Edition');
+  </script>
+</body>
+</html>

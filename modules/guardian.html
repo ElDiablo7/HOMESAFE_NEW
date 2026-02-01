@@ -1,0 +1,265 @@
+<section class="module-section guardian-container">
+  <!-- Module Header -->
+  <div class="module-header">
+    <div class="module-logo-slot" style="background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);">
+      <span class="module-logo-text">🛡️</span>
+    </div>
+    <div class="module-header-text">
+      <h1 class="module-title">GRACE-X Guardian™</h1>
+      <p class="module-subtitle">
+        Independent AI brain for security, safety, safeguarding, and ethical intervention.
+      </p>
+      <p class="module-copyright" style="font-size: 0.75rem; color: #888; margin-top: 4px;">
+        Always-on protection · User-first safety · White-hat only
+      </p>
+    </div>
+  </div>
+
+  <!-- Guardian AI Brain Panel (TOP PRIORITY) -->
+  <div class="builder-card" id="guardian-brain-card" style="border-left: 3px solid #dc2626;">
+    <h2>🛡️ Guardian AI Brain</h2>
+    <p class="hint">
+      Ask about safety concerns, safeguarding questions, or report suspicious behaviour.
+      Guardian operates independently with its own logic, memory, and response rules.
+    </p>
+
+    <div class="module-brain" id="guardian-brain-panel">
+      <div id="guardian-brain-output" class="brain-output">
+        <div class="brain-message brain-message-system">
+          I'm Guardian, the safety and protection brain within GRACE-X AI™. I'm here to help keep you and your family safe. 
+          How can I assist you today?
+        </div>
+      </div>
+
+      <div class="brain-input-row">
+        <button type="button" class="brain-mic-btn" id="guardian-brain-mic" title="Voice input">
+          🎙️
+        </button>
+        <input
+          id="guardian-brain-input"
+          type="text"
+          placeholder="Report a concern, ask about safety, or describe a situation…"
+        />
+        <button id="guardian-brain-send">Ask</button>
+      </div>
+
+      <div class="brain-actions">
+        <button class="builder-btn" id="guardian-brain-clear">
+          Clear conversation
+        </button>
+        <button class="builder-btn guardian-btn-urgent" id="guardian-urgent-btn" style="background: rgba(220, 38, 38, 0.2); border-color: #dc2626; color: #fca5a5;">
+          🚨 Urgent Safety Concern
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Current Safety Status -->
+  <div class="builder-card" id="guardian-status-card">
+    <h2>📊 Current Safety Status</h2>
+    <div class="guardian-status-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;">
+      <div class="guardian-status-item" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 16px; text-align: center;">
+        <div style="font-size: 2rem; margin-bottom: 8px;">✅</div>
+        <div style="font-weight: 600; color: #10b981;">All Clear</div>
+        <div style="font-size: 0.8rem; color: #888;">No active alerts</div>
+      </div>
+      <div class="guardian-status-item" style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 12px; padding: 16px; text-align: center;">
+        <div style="font-size: 2rem; margin-bottom: 8px;">👁️</div>
+        <div style="font-weight: 600; color: #3b82f6;">Monitoring</div>
+        <div style="font-size: 0.8rem; color: #888;">Background active</div>
+      </div>
+      <div class="guardian-status-item" style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 12px; padding: 16px; text-align: center;">
+        <div style="font-size: 2rem; margin-bottom: 8px;">🔒</div>
+        <div style="font-weight: 600; color: #8b5cf6;">Privacy Mode</div>
+        <div style="font-size: 0.8rem; color: #888;">Local only</div>
+      </div>
+      <div class="guardian-status-item" style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 12px; padding: 16px; text-align: center;">
+        <div style="font-size: 2rem; margin-bottom: 8px;" id="guardian-kids-icon">👤</div>
+        <div style="font-weight: 600; color: #f59e0b;" id="guardian-kids-status">Standard Mode</div>
+        <div style="font-size: 0.8rem; color: #888;" id="guardian-kids-desc">Adult user</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key Functions -->
+  <div class="builder-card" id="guardian-functions-card">
+    <h2>🔧 Guardian Functions</h2>
+    <p class="hint">Quick access to Guardian's key protective features.</p>
+
+    <div class="guardian-functions-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 16px;">
+      <button class="guardian-function-btn" id="guardian-func-safety" style="display: flex; align-items: center; gap: 12px; padding: 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; cursor: pointer; text-align: left; transition: all 0.2s;">
+        <span style="font-size: 1.5rem;">🚨</span>
+        <div>
+          <div style="font-weight: 600; color: #f1f5f9;">Safety Alert</div>
+          <div style="font-size: 0.8rem; color: #888;">Report immediate danger</div>
+        </div>
+      </button>
+      <button class="guardian-function-btn" id="guardian-func-grooming" style="display: flex; align-items: center; gap: 12px; padding: 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; cursor: pointer; text-align: left; transition: all 0.2s;">
+        <span style="font-size: 1.5rem;">👤</span>
+        <div>
+          <div style="font-weight: 600; color: #f1f5f9;">Grooming Detection</div>
+          <div style="font-size: 0.8rem; color: #888;">Suspicious behaviour check</div>
+        </div>
+      </button>
+      <button class="guardian-function-btn" id="guardian-func-harassment" style="display: flex; align-items: center; gap: 12px; padding: 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; cursor: pointer; text-align: left; transition: all 0.2s;">
+        <span style="font-size: 1.5rem;">🛑</span>
+        <div>
+          <div style="font-weight: 600; color: #f1f5f9;">Harassment Check</div>
+          <div style="font-size: 0.8rem; color: #888;">Threat assessment</div>
+        </div>
+      </button>
+      <button class="guardian-function-btn" id="guardian-func-family" style="display: flex; align-items: center; gap: 12px; padding: 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; cursor: pointer; text-align: left; transition: all 0.2s;">
+        <span style="font-size: 1.5rem;">👨‍👩‍👧</span>
+        <div>
+          <div style="font-weight: 600; color: #f1f5f9;">Family Safe Mode</div>
+          <div style="font-size: 0.8rem; color: #888;">Child-safe guardrails</div>
+        </div>
+      </button>
+      <button class="guardian-function-btn" id="guardian-func-crisis" style="display: flex; align-items: center; gap: 12px; padding: 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; cursor: pointer; text-align: left; transition: all 0.2s;">
+        <span style="font-size: 1.5rem;">💚</span>
+        <div>
+          <div style="font-weight: 600; color: #f1f5f9;">Crisis Support</div>
+          <div style="font-size: 0.8rem; color: #888;">Route to Uplift</div>
+        </div>
+      </button>
+      <button class="guardian-function-btn" id="guardian-func-osint" style="display: flex; align-items: center; gap: 12px; padding: 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; cursor: pointer; text-align: left; transition: all 0.2s;">
+        <span style="font-size: 1.5rem;">🔍</span>
+        <div>
+          <div style="font-weight: 600; color: #f1f5f9;">OSINT Check</div>
+          <div style="font-size: 0.8rem; color: #888;">Ethical intel support</div>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- Risk Assessment Panel -->
+  <div class="builder-card" id="guardian-assessment-card">
+    <h2>📋 Quick Risk Assessment</h2>
+    <p class="hint">Answer a few questions to help Guardian understand the situation.</p>
+
+    <div class="guardian-assessment" style="margin-top: 16px;">
+      <div class="assessment-question" style="margin-bottom: 16px;">
+        <label style="display: block; margin-bottom: 8px; font-weight: 500;">What type of concern is this?</label>
+        <select id="guardian-concern-type" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #f1f5f9;">
+          <option value="">Select type...</option>
+          <option value="online-safety">Online safety (social media, messaging)</option>
+          <option value="physical-safety">Physical safety (real-world threat)</option>
+          <option value="suspicious-person">Suspicious person or behaviour</option>
+          <option value="child-safety">Child or vulnerable person safety</option>
+          <option value="harassment">Harassment or bullying</option>
+          <option value="financial">Financial scam or fraud</option>
+          <option value="mental-health">Mental health crisis</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+
+      <div class="assessment-question" style="margin-bottom: 16px;">
+        <label style="display: block; margin-bottom: 8px; font-weight: 500;">How urgent is this?</label>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <label style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; cursor: pointer;">
+            <input type="radio" name="urgency" value="low"> Low - General question
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 8px; cursor: pointer;">
+            <input type="radio" name="urgency" value="medium"> Medium - Needs attention
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: rgba(220, 38, 38, 0.1); border: 1px solid rgba(220, 38, 38, 0.3); border-radius: 8px; cursor: pointer;">
+            <input type="radio" name="urgency" value="high"> High - Immediate concern
+          </label>
+        </div>
+      </div>
+
+      <div class="assessment-question" style="margin-bottom: 16px;">
+        <label style="display: block; margin-bottom: 8px; font-weight: 500;">Describe the situation:</label>
+        <textarea id="guardian-situation" rows="3" placeholder="Tell Guardian what's happening..." style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #f1f5f9; resize: vertical;"></textarea>
+      </div>
+
+      <button class="builder-btn gx-btn-primary" id="guardian-assess-btn" style="width: 100%;">
+        🛡️ Get Guardian Assessment
+      </button>
+    </div>
+  </div>
+
+  <!-- Safeguarding Info -->
+  <div class="builder-card" id="guardian-info-card">
+    <h2>ℹ️ About Guardian</h2>
+    
+    <div class="guardian-info-section" style="margin-bottom: 16px;">
+      <h3 style="font-size: 1rem; margin-bottom: 8px; color: #10b981;">✅ What Guardian Does</h3>
+      <ul style="margin: 0; padding-left: 20px; color: #94a3b8; font-size: 0.9rem;">
+        <li>Continuous background monitoring (context-aware, not invasive)</li>
+        <li>Behavioural pattern detection</li>
+        <li>Risk flagging and escalation logic</li>
+        <li>Safeguarding for children and vulnerable users</li>
+        <li>Threat awareness (digital + real-world indicators)</li>
+        <li>Calm, authoritative intervention when needed</li>
+      </ul>
+    </div>
+
+    <div class="guardian-info-section" style="margin-bottom: 16px;">
+      <h3 style="font-size: 1rem; margin-bottom: 8px; color: #ef4444;">🚫 What Guardian Does NOT Do</h3>
+      <ul style="margin: 0; padding-left: 20px; color: #94a3b8; font-size: 0.9rem;">
+        <li>Surveillance abuse or invasive monitoring</li>
+        <li>Punitive behaviour or judgement</li>
+        <li>Override user autonomy (unless safety thresholds crossed)</li>
+        <li>Replace emergency services or professional help</li>
+      </ul>
+    </div>
+
+    <div class="guardian-info-section">
+      <h3 style="font-size: 1rem; margin-bottom: 8px; color: #8b5cf6;">🔗 Works With</h3>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+        <span style="padding: 4px 12px; background: rgba(6, 182, 212, 0.2); border-radius: 20px; font-size: 0.85rem;">Core™ - Coordination</span>
+        <span style="padding: 4px 12px; background: rgba(168, 85, 247, 0.2); border-radius: 20px; font-size: 0.85rem;">Family™ - Safeguarding sync</span>
+        <span style="padding: 4px 12px; background: rgba(249, 115, 22, 0.2); border-radius: 20px; font-size: 0.85rem;">Uplift™ - Crisis handoff</span>
+        <span style="padding: 4px 12px; background: rgba(100, 116, 139, 0.2); border-radius: 20px; font-size: 0.85rem;">OSINT™ - Ethical intel</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Emergency Resources -->
+  <div class="builder-card" id="guardian-resources-card" style="border-left: 3px solid #ef4444;">
+    <h2>🆘 Emergency Resources (UK)</h2>
+    <p class="hint">If you or someone else is in immediate danger, contact emergency services.</p>
+
+    <div class="guardian-resources" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 16px;">
+      <div style="background: rgba(239, 68, 68, 0.1); padding: 16px; border-radius: 12px; border: 1px solid rgba(239, 68, 68, 0.3);">
+        <div style="font-weight: 600; margin-bottom: 4px;">🚨 Emergency</div>
+        <div style="font-size: 1.5rem; font-weight: 700; color: #ef4444;">999</div>
+        <div style="font-size: 0.8rem; color: #888;">Police, Fire, Ambulance</div>
+      </div>
+      <div style="background: rgba(16, 185, 129, 0.1); padding: 16px; border-radius: 12px; border: 1px solid rgba(16, 185, 129, 0.3);">
+        <div style="font-weight: 600; margin-bottom: 4px;">💚 Samaritans</div>
+        <div style="font-size: 1.5rem; font-weight: 700; color: #10b981;">116 123</div>
+        <div style="font-size: 0.8rem; color: #888;">24/7 emotional support</div>
+      </div>
+      <div style="background: rgba(59, 130, 246, 0.1); padding: 16px; border-radius: 12px; border: 1px solid rgba(59, 130, 246, 0.3);">
+        <div style="font-weight: 600; margin-bottom: 4px;">👧 Childline</div>
+        <div style="font-size: 1.5rem; font-weight: 700; color: #3b82f6;">0800 1111</div>
+        <div style="font-size: 0.8rem; color: #888;">For young people</div>
+      </div>
+      <div style="background: rgba(139, 92, 246, 0.1); padding: 16px; border-radius: 12px; border: 1px solid rgba(139, 92, 246, 0.3);">
+        <div style="font-weight: 600; margin-bottom: 4px;">🏠 Domestic Abuse</div>
+        <div style="font-size: 1.5rem; font-weight: 700; color: #8b5cf6;">0808 2000 247</div>
+        <div style="font-size: 0.8rem; color: #888;">National helpline</div>
+      </div>
+    </div>
+
+    <p style="margin-top: 16px; padding: 12px; background: rgba(245, 158, 11, 0.1); border-radius: 8px; font-size: 0.85rem; color: #f59e0b;">
+      ⚠️ Guardian is an AI assistant and cannot replace professional emergency services. 
+      If someone is in immediate danger, always call 999 first.
+    </p>
+  </div>
+
+  <!-- Voice Panel (MOVED LOWER) -->
+  <div class="builder-card">
+    <h2>🎙️ Voice Input</h2>
+    <p class="hint">Use voice to report concerns or ask Guardian questions.</p>
+    
+    <div class="module-voice-panel" data-module="guardian" style="background: transparent; padding: 0; margin: 0;">
+      <button type="button" class="module-voice-btn">🎙 Talk to Guardian</button>
+      <span class="module-voice-status">Mic off</span>
+      <textarea class="module-voice-text" placeholder="Voice transcript appears here…" rows="3"></textarea>
+      <div class="module-voice-reply"></div>
+    </div>
+  </div>
+</section>

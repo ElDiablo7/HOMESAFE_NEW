@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Risk & Safety - GRACE-X</title>
+  <link rel="stylesheet" href="../assets/css/risk-safety.css">
+</head>
+<body>
+  <div class="safety-container">
+    <!-- Header -->
+    <div class="safety-header">
+      <div class="header-left">
+        <h1>🛡️ Risk & Safety Management</h1>
+        <p>Incident Reporting · Safety Checklists · Compliance Tracking</p>
+      </div>
+      <div class="header-right">
+        <div class="compliance-badge" id="compliance-badge">
+          <span class="badge-label">Compliance</span>
+          <span class="badge-score" id="compliance-score">—</span>
+        </div>
+        <button class="btn btn-danger" id="report-incident-btn">🚨 Report Incident</button>
+      </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="safety-dashboard">
+      <!-- Stats Cards -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">⚠️</div>
+          <div class="stat-info">
+            <div class="stat-value" id="stat-incidents">0</div>
+            <div class="stat-label">Open Incidents</div>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon">✅</div>
+          <div class="stat-info">
+            <div class="stat-value" id="stat-checklists">0</div>
+            <div class="stat-label">Checklists Completed</div>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon">📊</div>
+          <div class="stat-info">
+            <div class="stat-value" id="stat-risks">0</div>
+            <div class="stat-label">Active Risks</div>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon">👷</div>
+          <div class="stat-info">
+            <div class="stat-value" id="stat-inductions">0</div>
+            <div class="stat-label">Valid Inductions</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Tabs -->
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="incidents">Incidents</button>
+        <button class="tab-btn" data-tab="checklists">Safety Checklists</button>
+        <button class="tab-btn" data-tab="risks">Risk Register</button>
+        <button class="tab-btn" data-tab="inductions">Inductions</button>
+        <button class="tab-btn" data-tab="compliance">Compliance</button>
+      </div>
+
+      <!-- Tab: Incidents -->
+      <div class="tab-content active" id="tab-incidents">
+        <div class="tab-header">
+          <h2>Incident Reports</h2>
+          <div class="filters">
+            <select id="filter-severity">
+              <option value="">All Severities</option>
+              <option value="critical">Critical</option>
+              <option value="high">High</option>
+              <option value="medium">Medium</option>
+              <option value="low">Low</option>
+            </select>
+            <select id="filter-status">
+              <option value="">All Status</option>
+              <option value="open">Open</option>
+              <option value="closed">Closed</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="incidents-list" id="incidents-list"></div>
+      </div>
+
+      <!-- Tab: Safety Checklists -->
+      <div class="tab-content" id="tab-checklists">
+        <div class="tab-header">
+          <h2>Safety Checklists</h2>
+          <button class="btn btn-primary" id="new-checklist-btn">+ New Checklist</button>
+        </div>
+        
+        <div class="checklists-grid" id="checklists-grid"></div>
+      </div>
+
+      <!-- Tab: Risk Register -->
+      <div class="tab-content" id="tab-risks">
+        <div class="tab-header">
+          <h2>Risk Register</h2>
+          <button class="btn btn-primary" id="new-risk-btn">+ Register Risk</button>
+        </div>
+        
+        <div class="risk-matrix">
+          <h3>Risk Matrix</h3>
+          <div class="matrix-grid">
+            <div class="matrix-cell critical">
+              <h4>Critical (>20)</h4>
+              <div id="risks-critical"></div>
+            </div>
+            <div class="matrix-cell high">
+              <h4>High (16-20)</h4>
+              <div id="risks-high"></div>
+            </div>
+            <div class="matrix-cell medium">
+              <h4>Medium (11-15)</h4>
+              <div id="risks-medium"></div>
+            </div>
+            <div class="matrix-cell low">
+              <h4>Low (≤10)</h4>
+              <div id="risks-low"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Inductions -->
+      <div class="tab-content" id="tab-inductions">
+        <div class="tab-header">
+          <h2>Safety Inductions</h2>
+          <button class="btn btn-primary" id="new-induction-btn">+ Record Induction</button>
+        </div>
+        
+        <div class="inductions-list" id="inductions-list"></div>
+      </div>
+
+      <!-- Tab: Compliance -->
+      <div class="tab-content" id="tab-compliance">
+        <div class="tab-header">
+          <h2>Compliance Dashboard</h2>
+        </div>
+        
+        <div class="compliance-overview">
+          <div class="compliance-chart">
+            <canvas id="compliance-chart"></canvas>
+          </div>
+          
+          <div class="compliance-details" id="compliance-details"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Report Incident -->
+  <div class="modal" id="incident-modal" style="display: none;">
+    <div class="modal-content large">
+      <div class="modal-header">
+        <h2>🚨 Report Incident</h2>
+        <button class="modal-close" onclick="document.getElementById('incident-modal').style.display='none'">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Incident Type *</label>
+            <select id="incident-type">
+              <option value="injury">Injury</option>
+              <option value="near_miss">Near Miss</option>
+              <option value="property_damage">Property Damage</option>
+              <option value="environmental">Environmental</option>
+              <option value="security">Security</option>
+              <option value="equipment_failure">Equipment Failure</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label>Severity *</label>
+            <select id="incident-severity">
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+              <option value="critical">Critical</option>
+            </select>
+          </div>
+          
+          <div class="form-group full-width">
+            <label>Title *</label>
+            <input type="text" id="incident-title" placeholder="Brief description" />
+          </div>
+          
+          <div class="form-group full-width">
+            <label>Description *</label>
+            <textarea id="incident-description" rows="4" placeholder="Detailed description of what happened"></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label>Site/Location *</label>
+            <input type="text" id="incident-site" placeholder="Site name or location" />
+          </div>
+          
+          <div class="form-group">
+            <label>Date/Time *</label>
+            <input type="datetime-local" id="incident-date" />
+          </div>
+          
+          <div class="form-group full-width">
+            <label>Immediate Actions Taken</label>
+            <textarea id="incident-actions" rows="3" placeholder="What was done immediately after the incident"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="document.getElementById('incident-modal').style.display='none'">Cancel</button>
+        <button class="btn btn-danger" id="submit-incident-btn">Submit Report</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../assets/js/risk-safety.js"></script>
+  <script src="../assets/js/risk-safety-ui.js"></script>
+</body>
+</html>

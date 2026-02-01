@@ -1,0 +1,400 @@
+<section class="module-section osint-container">
+
+  <!-- LOCKED STATE OVERLAY (shown when module is locked) -->
+  <div id="osint-locked-overlay" class="osint-locked-overlay" style="display: none;">
+    <div class="osint-locked-card">
+      <div class="osint-locked-icon">🔐</div>
+      <h2 class="osint-locked-title">GRACE-X OSINT™ - Access Required</h2>
+      <p class="osint-locked-description">
+        This module contains professional investigative tools. Access is restricted to authorized users who agree to use this tool ethically and legally.
+      </p>
+      
+      <div class="osint-unlock-form">
+        <input type="password" id="osint-unlock-passphrase" class="osint-unlock-input" placeholder="Enter access passphrase..." />
+        
+        <div class="osint-professional-toggle">
+          <input type="checkbox" id="osint-professional-mode" />
+          <label for="osint-professional-mode">I am a professional researcher/investigator</label>
+        </div>
+        
+        <button class="builder-btn gx-btn-primary" id="osint-unlock-btn">🔓 Unlock Module</button>
+      </div>
+      
+      <div class="osint-disclaimer">
+        <strong>⚠️ Legal Notice:</strong> By unlocking this module, you agree to:
+        <ul style="margin: 8px 0 0 16px; font-size: 0.85rem;">
+          <li>Use this tool only for lawful purposes</li>
+          <li>Access only publicly available information</li>
+          <li>Not use this for harassment, stalking, or illegal activities</li>
+          <li>Accept full responsibility for your actions</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODULE HEADER -->
+  <div class="module-header">
+    <div class="module-logo-slot">
+      <span class="module-logo-text">OS</span>
+    </div>
+    <div class="module-header-text">
+      <h1 class="module-title">GRACE-X OSINT™</h1>
+      <p class="module-subtitle">
+        White-hat Open Source Intelligence · Ethical · Legal · Professional
+      </p>
+    </div>
+    <div style="margin-left: auto; display: flex; gap: 8px;">
+      <span class="gx-badge" id="osint-status-badge">🔒 Locked</span>
+      <button class="builder-btn" id="osint-lock-btn" style="display: none;">🔒 Lock Module</button>
+    </div>
+  </div>
+
+  <!-- STATUS BAR -->
+  <div class="osint-status-bar" id="osint-status-bar" style="display: none;">
+    <div class="osint-status-item">
+      <span class="osint-status-indicator active"></span>
+      <span>Module Active</span>
+    </div>
+    <div class="osint-status-item">
+      <span id="osint-evidence-count">0</span> Evidence Items
+    </div>
+    <div class="osint-status-item">
+      <span id="osint-audit-count">0</span> Actions Logged
+    </div>
+  </div>
+
+  <!-- MAIN UNLOCKED CONTENT -->
+  <div id="osint-main-content" style="display: none;">
+
+    <!-- OSINT LAYOUT: 3 Column Grid -->
+    <div class="osint-layout">
+
+      <!-- LEFT PANEL: Mode Selector -->
+      <div class="osint-modes-panel">
+        <div class="osint-modes-title">🧠 OSINT Modes</div>
+        
+        <button class="osint-mode-btn active" data-mode="person">
+          <span class="osint-mode-icon">👤</span>
+          <div class="osint-mode-info">
+            <div class="osint-mode-name">Person OSINT</div>
+            <div class="osint-mode-desc">Username, email, social footprint</div>
+          </div>
+        </button>
+        
+        <button class="osint-mode-btn" data-mode="company">
+          <span class="osint-mode-icon">🏢</span>
+          <div class="osint-mode-info">
+            <div class="osint-mode-name">Company/Business</div>
+            <div class="osint-mode-desc">Registries, directors, domains</div>
+          </div>
+        </button>
+        
+        <button class="osint-mode-btn" data-mode="domain">
+          <span class="osint-mode-icon">🌐</span>
+          <div class="osint-mode-info">
+            <div class="osint-mode-name">Domain/IP</div>
+            <div class="osint-mode-desc">WHOIS, DNS, SSL, reputation</div>
+          </div>
+        </button>
+        
+        <button class="osint-mode-btn" data-mode="media">
+          <span class="osint-mode-icon">🖼️</span>
+          <div class="osint-mode-info">
+            <div class="osint-mode-name">Media OSINT</div>
+            <div class="osint-mode-desc">Image, video verification</div>
+          </div>
+        </button>
+        
+        <button class="osint-mode-btn" data-mode="threat">
+          <span class="osint-mode-icon">🛡️</span>
+          <div class="osint-mode-info">
+            <div class="osint-mode-name">Threat Analysis</div>
+            <div class="osint-mode-desc">Scam, grooming, impersonation</div>
+          </div>
+        </button>
+        
+        <button class="osint-mode-btn" data-mode="academy">
+          <span class="osint-mode-icon">📚</span>
+          <div class="osint-mode-info">
+            <div class="osint-mode-name">OSINT Academy</div>
+            <div class="osint-mode-desc">Learn OSINT methodology</div>
+          </div>
+        </button>
+      </div>
+
+      <!-- CENTER PANEL: Search & Analysis -->
+      <div class="osint-main-panel">
+        
+        <!-- PERSON OSINT MODE -->
+        <div class="osint-mode-content active" id="osint-mode-person">
+          <div class="osint-search-header">
+            <span>👤</span>
+            <h2>Person OSINT</h2>
+          </div>
+          
+          <p class="hint">Search for usernames, emails, or names across public sources. All searches are user-initiated only.</p>
+          
+          <div class="osint-search-form">
+            <input type="text" class="osint-search-input" id="osint-person-query" placeholder="Enter username, email, or name..." />
+            <button class="osint-search-btn" id="osint-person-search">🔍 Search</button>
+          </div>
+          
+          <h4>Quick Search Links</h4>
+          <div class="osint-linkout-grid" id="osint-person-links">
+            <!-- Populated by JS -->
+          </div>
+          
+          <div id="osint-person-results" class="osint-results" style="margin-top: 20px;">
+            <!-- Results appear here -->
+          </div>
+        </div>
+
+        <!-- COMPANY OSINT MODE -->
+        <div class="osint-mode-content" id="osint-mode-company">
+          <div class="osint-search-header">
+            <span>🏢</span>
+            <h2>Company/Business OSINT</h2>
+          </div>
+          
+          <p class="hint">Research company registrations, directors, financial indicators through official registries.</p>
+          
+          <div class="osint-search-form">
+            <input type="text" class="osint-search-input" id="osint-company-query" placeholder="Enter company name..." />
+            <button class="osint-search-btn" id="osint-company-search">🔍 Search</button>
+          </div>
+          
+          <h4>Company Research Links</h4>
+          <div class="osint-linkout-grid" id="osint-company-links">
+            <!-- Populated by JS -->
+          </div>
+          
+          <div id="osint-company-results" class="osint-results" style="margin-top: 20px;">
+            <!-- Results appear here -->
+          </div>
+        </div>
+
+        <!-- DOMAIN/IP OSINT MODE -->
+        <div class="osint-mode-content" id="osint-mode-domain">
+          <div class="osint-search-header">
+            <span>🌐</span>
+            <h2>Domain/IP OSINT</h2>
+          </div>
+          
+          <p class="hint">Analyze domain registration, DNS records, SSL certificates, and reputation.</p>
+          
+          <div class="osint-search-form">
+            <input type="text" class="osint-search-input" id="osint-domain-query" placeholder="Enter domain or IP address..." />
+            <button class="osint-search-btn" id="osint-domain-search">🔍 Analyze</button>
+          </div>
+          
+          <h4>Domain Analysis Tools</h4>
+          <div class="osint-linkout-grid" id="osint-domain-links">
+            <!-- Populated by JS -->
+          </div>
+          
+          <div id="osint-domain-results" class="osint-results" style="margin-top: 20px;">
+            <!-- Results appear here -->
+          </div>
+        </div>
+
+        <!-- MEDIA OSINT MODE -->
+        <div class="osint-mode-content" id="osint-mode-media">
+          <div class="osint-search-header">
+            <span>🖼️</span>
+            <h2>Media OSINT</h2>
+          </div>
+          
+          <p class="hint">Verify images and videos. Upload images for EXIF analysis or use reverse image search.</p>
+          
+          <div class="builder-card" style="margin-bottom: 20px;">
+            <h4>📷 Image EXIF Viewer</h4>
+            <p class="hint">Upload an image to extract metadata (user files only - nothing leaves your browser).</p>
+            <input type="file" id="osint-media-upload" accept="image/*" style="margin: 10px 0;" />
+            <div id="osint-exif-results" style="margin-top: 15px;">
+              <!-- EXIF data appears here -->
+            </div>
+          </div>
+          
+          <h4>Reverse Image Search (Link-out)</h4>
+          <p class="hint">Click to open, then upload your image manually to the service.</p>
+          <div class="osint-linkout-grid" id="osint-media-links">
+            <!-- Populated by JS -->
+          </div>
+          
+          <div class="builder-card" style="margin-top: 20px;">
+            <h4>🎬 Deepfake Risk Checklist (Educational)</h4>
+            <p class="hint">Signs that video/audio may be artificially generated:</p>
+            <ul class="osint-list" style="padding-left: 20px;">
+              <li>Unnatural blinking patterns or eye movement</li>
+              <li>Face-body proportion inconsistencies</li>
+              <li>Lighting/shadow anomalies on face vs background</li>
+              <li>Audio-visual sync issues (lip sync problems)</li>
+              <li>Blurry or morphing edges around face/hair</li>
+              <li>Unusual skin texture or "smoothing" artifacts</li>
+              <li>Background inconsistencies or warping</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- THREAT ANALYSIS MODE -->
+        <div class="osint-mode-content" id="osint-mode-threat">
+          <div class="osint-search-header">
+            <span>🛡️</span>
+            <h2>Threat Pattern Analysis</h2>
+          </div>
+          
+          <p class="hint">Analyze text for grooming indicators, scam patterns, and impersonation red flags. Rule-based, explainable analysis.</p>
+          
+          <div style="margin-bottom: 20px;">
+            <label for="osint-threat-text"><strong>Paste suspicious text to analyze:</strong></label>
+            <textarea id="osint-threat-text" class="osint-search-input" rows="5" placeholder="Paste message or text to analyze for threat patterns..." style="width: 100%; margin-top: 8px;"></textarea>
+            <button class="osint-search-btn" id="osint-threat-analyze" style="margin-top: 10px;">🔍 Analyze Patterns</button>
+          </div>
+          
+          <div id="osint-threat-results" class="osint-threat-grid">
+            <!-- Results appear here -->
+          </div>
+          
+          <div class="builder-card" style="margin-top: 20px;">
+            <h4>📋 Pattern Categories Detected</h4>
+            <p class="hint">This analyzer checks for:</p>
+            <ul class="osint-list" style="padding-left: 20px;">
+              <li><strong>Grooming Indicators:</strong> Secrecy requests, isolation tactics, inappropriate requests</li>
+              <li><strong>Scam/Phishing:</strong> Urgency, prize claims, financial requests, suspicious links</li>
+              <li><strong>Impersonation:</strong> Authority claims, government threats, tech support scams</li>
+            </ul>
+            <p class="hint" style="margin-top: 15px;">
+              <strong>Note:</strong> This is rule-based analysis. High-confidence detections should be reported to appropriate authorities.
+            </p>
+          </div>
+        </div>
+
+        <!-- OSINT ACADEMY MODE -->
+        <div class="osint-mode-content" id="osint-mode-academy">
+          <div class="osint-search-header">
+            <span>📚</span>
+            <h2>OSINT Academy</h2>
+          </div>
+          
+          <p class="hint">Learn OSINT methodology, ethics, and best practices. Education-first approach.</p>
+          
+          <div class="osint-academy-grid">
+            <div class="osint-lesson-card" data-lesson="intro">
+              <div class="osint-lesson-icon">🎯</div>
+              <div class="osint-lesson-title">What is OSINT?</div>
+              <div class="osint-lesson-desc">Introduction to Open Source Intelligence</div>
+            </div>
+            
+            <div class="osint-lesson-card" data-lesson="ethics">
+              <div class="osint-lesson-icon">⚖️</div>
+              <div class="osint-lesson-title">Ethics & Legality</div>
+              <div class="osint-lesson-desc">Responsible intelligence gathering</div>
+            </div>
+            
+            <div class="osint-lesson-card" data-lesson="methodology">
+              <div class="osint-lesson-icon">📋</div>
+              <div class="osint-lesson-title">OSINT Methodology</div>
+              <div class="osint-lesson-desc">Step-by-step investigation process</div>
+            </div>
+            
+            <div class="osint-lesson-card" data-lesson="sources">
+              <div class="osint-lesson-icon">🔍</div>
+              <div class="osint-lesson-title">Finding Sources</div>
+              <div class="osint-lesson-desc">Public data repositories</div>
+            </div>
+            
+            <div class="osint-lesson-card" data-lesson="verification">
+              <div class="osint-lesson-icon">✅</div>
+              <div class="osint-lesson-title">Verification Techniques</div>
+              <div class="osint-lesson-desc">Confirming information accuracy</div>
+            </div>
+            
+            <div class="osint-lesson-card" data-lesson="reporting">
+              <div class="osint-lesson-icon">📝</div>
+              <div class="osint-lesson-title">Report Writing</div>
+              <div class="osint-lesson-desc">Professional documentation</div>
+            </div>
+          </div>
+          
+          <div id="osint-lesson-content" class="builder-card" style="margin-top: 20px; display: none;">
+            <!-- Lesson content appears here -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT PANEL: Evidence & Confidence -->
+      <div class="osint-evidence-panel">
+        <div class="osint-evidence-title">
+          📎 Evidence Collection
+          <button class="builder-btn" id="osint-clear-evidence" style="padding: 2px 8px; font-size: 0.75rem;">Clear</button>
+        </div>
+        
+        <div id="osint-evidence-list" class="osint-evidence-list">
+          <div class="osint-empty">
+            <div class="osint-empty-icon">📭</div>
+            <div class="osint-empty-desc">No evidence collected yet</div>
+          </div>
+        </div>
+        
+        <div class="osint-notes-section">
+          <h4>📝 Investigation Notes</h4>
+          <textarea id="osint-notes" class="osint-notes-input" placeholder="Add notes about your investigation..."></textarea>
+        </div>
+        
+        <div class="osint-export-section">
+          <h4 style="margin-bottom: 10px;">📄 Export Report</h4>
+          <div class="osint-export-buttons">
+            <button class="osint-export-btn" id="osint-export-html">📄 Export HTML</button>
+            <button class="osint-export-btn" id="osint-export-md">📝 Export Markdown</button>
+            <button class="osint-export-btn" id="osint-export-json">📋 Export JSON</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- AUDIT LOG (Bottom) -->
+    <div class="osint-audit-panel">
+      <div class="osint-audit-header">
+        <span class="osint-audit-title">📜 Audit Log (Immutable)</span>
+        <span class="hint" id="osint-audit-count-display">0 entries</span>
+      </div>
+      <div id="osint-audit-log" class="osint-audit-log">
+        <div class="osint-empty" style="padding: 20px;">
+          <div class="osint-empty-desc">No actions logged yet</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- BRAIN ASSISTANT CARD (Always visible after unlock) -->
+  <div class="builder-card" id="osint-brain-card" style="display: none; margin-top: 20px;">
+    <h2>🧠 GRACE-X OSINT Assistant</h2>
+    <p class="hint">
+      Ask about OSINT methodology, verification techniques, or ethical considerations. I'm here to educate, not to help with harmful activities.
+    </p>
+
+    <div class="module-brain" id="osint-brain-panel">
+      <div id="osint-brain-output" class="brain-output">
+        <div class="brain-message brain-message-system">
+          I'm your OSINT assistant. I can help with ethical research methodology, verification techniques, and understanding OSINT best practices. What would you like to learn?
+        </div>
+      </div>
+
+      <div class="brain-input-row">
+        <button type="button" class="brain-mic-btn" id="osint-brain-mic" title="Voice input">
+          🎙️
+        </button>
+        <input id="osint-brain-input" type="text" placeholder="Ask about OSINT methodology..." />
+        <button id="osint-brain-send">Ask</button>
+      </div>
+
+      <div class="brain-actions">
+        <button class="builder-btn" id="osint-brain-clear">Clear conversation</button>
+      </div>
+    </div>
+  </div>
+
+</section>

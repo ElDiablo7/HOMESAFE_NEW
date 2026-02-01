@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 GRACE-X CORE 2.0™ - AI Command Center</title>
+    <link rel="icon" type="image/png" href="assets/img/gracex_main_logo.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0a0e1a 0%, #1a0a1a 100%);
+            color: #ffffff;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            overflow-x: hidden;
+            height: 100vh;
+        }
+        
+        /* Particle Background */
+        #particles-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+        }
+        
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            inset: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(0,240,255,0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255,0,255,0.12) 0%, transparent 50%),
+                radial-gradient(circle at 40% 60%, rgba(136,0,255,0.08) 0%, transparent 50%);
+            animation: pulseGlow 20s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 1; transform: scale(1) rotate(0deg); }
+            50% { opacity: 0.8; transform: scale(1.05) rotate(2deg); }
+        }
+        
+        .container {
+            position: relative;
+            z-index: 2;
+            padding: 20px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Top Bar */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo-img {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+        }
+        
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00f0ff, #ff00ff, #8800ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .system-status {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .status-badge {
+            padding: 6px 12px;
+            background: rgba(0,255,136,0.1);
+            border: 1px solid rgba(0,255,136,0.3);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background: #00ff88;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .nav-btn {
+            padding: 8px 16px;
+            background: rgba(136,0,255,0.2);
+            border: 1px solid rgba(136,0,255,0.5);
+            border-radius: 8px;
+            color: #8800ff;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+        
+        .nav-btn:hover {
+            background: rgba(136,0,255,0.3);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(136,0,255,0.3);
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 20px;
+            overflow: hidden;
+        }
+        
+        /* AI Chat Panel */
+        .ai-chat-panel {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(30px);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        
+        .chat-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255,255,255,0.02);
+        }
+        
+        .chat-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .chat-controls {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .chat-btn {
+            padding: 6px 12px;
+            background: rgba(0,240,255,0.2);
+            border: 1px solid rgba(0,240,255,0.5);
+            border-radius: 6px;
+            color: #00f0ff;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .chat-btn:hover {
+            background: rgba(0,240,255,0.3);
+            box-shadow: 0 0 15px rgba(0,240,255,0.2);
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .message {
+            max-width: 80%;
+            padding: 12px 18px;
+            border-radius: 16px;
+            position: relative;
+            animation: fadeInUp 0.4s ease;
+            line-height: 1.5;
+        }
+        
+        .message.user {
+            background: linear-gradient(135deg, #00f0ff, #0099ff);
+            color: #000;
+            align-self: flex-end;
+            margin-left: auto;
+            font-weight: 500;
+        }
+        
+        .message.assistant {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            align-self: flex-start;
+        }
+        
+        .message-time {
+            font-size: 0.75rem;
+            opacity: 0.5;
+            margin-top: 6px;
+        }
+        
+        .chat-input-area {
+            padding: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            gap: 12px;
+            background: rgba(255,255,255,0.02);
+        }
+        
+        .chat-input {
+            flex: 1;
+            padding: 12px 20px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 25px;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+        
+        .chat-input:focus {
+            background: rgba(255,255,255,0.12);
+            border-color: rgba(0,240,255,0.5);
+            box-shadow: 0 0 20px rgba(0,240,255,0.1);
+        }
+        
+        .chat-input::placeholder {
+            color: rgba(255,255,255,0.4);
+        }
+        
+        .send-btn, .voice-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .send-btn {
+            background: linear-gradient(135deg, #00f0ff, #ff00ff);
+            color: #000;
+        }
+        
+        .send-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(0,240,255,0.4);
+        }
+        
+        .voice-btn {
+            background: rgba(255,0,255,0.2);
+            border: 1px solid rgba(255,0,255,0.5);
+            color: #ff00ff;
+        }
+        
+        .voice-btn:hover {
+            background: rgba(255,0,255,0.3);
+        }
+        
+        .voice-btn.active {
+            background: #ff00ff;
+            color: #000;
+            animation: pulseVoice 1s infinite;
+        }
+        
+        @keyframes pulseVoice {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        /* Right Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            overflow-y: auto;
+        }
+        
+        .widget {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 18px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+        
+        .widget-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #00f0ff;
+        }
+        
+        /* System Stats */
+        .system-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 8px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 8px;
+        }
+        
+        .stat-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #00f0ff;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+        
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        
+        .action-btn {
+            padding: 10px;
+            background: rgba(136,0,255,0.15);
+            border: 1px solid rgba(136,0,255,0.4);
+            border-radius: 10px;
+            color: #bb88ff;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .action-btn:hover {
+            background: rgba(136,0,255,0.25);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(136,0,255,0.2);
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        
+        /* Typing indicator */
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 12px 18px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 16px;
+            width: fit-content;
+        }
+        
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: #00f0ff;
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+        
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+            30% { transform: translateY(-8px); opacity: 1; }
+        }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                flex-direction: row;
+                gap: 15px;
+            }
+            
+            .widget {
+                min-width: 250px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .logo-text {
+                font-size: 1.4rem;
+            }
+            
+            .system-status {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+        
+        /* Performance optimizations */
+        .ai-chat-panel {
+            contain: layout style paint;
+        }
+        
+        .chat-messages {
+            will-change: scroll-position;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+    
+    <div class="container">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="logo-section">
+                <img src="assets/img/gracex_main_logo.png" alt="GRACE-X" class="logo-img">
+                <div>
+                    <div class="logo-text">GRACE-X CORE 2.0™</div>
+                    <div style="font-size: 0.8rem; opacity: 0.6; margin-top: 2px;">Advanced AI Command Center</div>
+                </div>
+            </div>
+            
+            <div class="system-status">
+                <div class="status-badge">
+                    <div class="status-dot"></div>
+                    <span>AI Online</span>
+                </div>
+                <div class="status-badge" style="background: rgba(255,0,255,0.1); border-color: rgba(255,0,255,0.3);">
+                    <div class="status-dot" style="background: #ff00ff;"></div>
+                    <span id="connection-status">Connected</span>
+                </div>
+            </div>
+            
+            <div class="nav-buttons">
+                <a href="index.html" class="nav-btn">🏠 Home</a>
+                <button class="nav-btn" onclick="openSystemTest()">🧪 System Test</button>
+                <button class="nav-btn" onclick="toggleFullscreen()">⛶ Fullscreen</button>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- AI Chat Panel -->
+            <div class="ai-chat-panel">
+                <div class="chat-header">
+                    <h2 class="chat-title">🧠 GRACE AI Assistant</h2>
+                    <div class="chat-controls">
+                        <button class="chat-btn" onclick="clearChat()">Clear</button>
+                        <button class="chat-btn" onclick="exportChat()">Export</button>
+                        <button class="chat-btn" onclick="toggleAdvanced()">⚙️</button>
+                    </div>
+                </div>
+                
+                <div class="chat-messages" id="chat-messages">
+                    <div class="message assistant">
+                        <div>🚀 Welcome to GRACE-X CORE 2.0™! I'm your advanced AI assistant, engineered by Zac Crockett. I have real-time access to Claude AI and can help you with anything from system management to creative projects. What would you like to explore today?</div>
+                        <div class="message-time" id="welcome-time"></div>
+                    </div>
+                </div>
+                
+                <div class="chat-input-area">
+                    <input type="text" class="chat-input" id="chat-input" placeholder="Ask me anything... Press Enter or click 🚀 to send">
+                    <button class="voice-btn" id="voice-btn" onclick="toggleVoiceInput()">🎙️</button>
+                    <button class="send-btn" onclick="sendMessage()">🚀</button>
+                </div>
+            </div>
+            
+            <!-- Right Sidebar -->
+            <div class="sidebar">
+                <!-- System Performance -->
+                <div class="widget">
+                    <h3 class="widget-title">⚡ System Performance</h3>
+                    <div class="system-stats">
+                        <div class="stat-item">
+                            <div class="stat-value" id="uptime">0:00</div>
+                            <div class="stat-label">Session</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="message-count">0</div>
+                            <div class="stat-label">Messages</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="response-time">--ms</div>
+                            <div class="stat-label">Response</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="tokens-used">0</div>
+                            <div class="stat-label">Tokens</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Commands -->
+                <div class="widget">
+                    <h3 class="widget-title">⚡ Quick Commands</h3>
+                    <div class="quick-actions">
+                        <button class="action-btn" onclick="quickCommand('weather')">🌤️ Weather</button>
+                        <button class="action-btn" onclick="quickCommand('time')">🕐 Time</button>
+                        <button class="action-btn" onclick="quickCommand('news')">📰 News</button>
+                        <button class="action-btn" onclick="quickCommand('system')">💻 System</button>
+                        <button class="action-btn" onclick="quickCommand('crypto')">₿ Crypto</button>
+                        <button class="action-btn" onclick="quickCommand('code')">💻 Code</button>
+                        <button class="action-btn" onclick="quickCommand('help')">❓ Help</button>
+                        <button class="action-btn" onclick="quickCommand('creative')">🎨 Create</button>
+                    </div>
+                </div>
+                
+                <!-- Active Modules -->
+                <div class="widget">
+                    <h3 class="widget-title">🧩 Active Modules</h3>
+                    <div id="active-modules">
+                        <div style="padding: 10px; background: rgba(0,255,136,0.1); border-radius: 8px; margin-bottom: 8px; font-size: 0.9rem;">
+                            <div style="font-weight: 600;">GRACE-X CORE 2.0™</div>
+                            <div style="opacity: 0.7; font-size: 0.8rem;">Status: Online & Ready</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Activity -->
+                <div class="widget">
+                    <h3 class="widget-title">📊 Recent Activity</h3>
+                    <div id="recent-activity" style="font-size: 0.85rem;">
+                        <div style="padding: 6px 0; opacity: 0.7; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                            System initialized
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Global state
+        let messageCount = 0;
+        let startTime = Date.now();
+        let isVoiceActive = false;
+        let recognition = null;
+        let conversations = [];
+        let totalTokens = 0;
+        let lastResponseTime = 0;
+        
+        // Initialize Core 2.0
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 GRACE-X CORE 2.0™ Full Launch Mode Activated');
+            initializeCore2();
+            startSystemMonitoring();
+            addActivityLog('Core 2.0 initialized');
+        });
+        
+        function initializeCore2() {
+            updateWelcomeTime();
+            setupSpeechRecognition();
+            setupEventListeners();
+            
+            // Performance monitoring
+            if ('performance' in window) {
+                const navTiming = performance.getEntriesByType('navigation')[0];
+                if (navTiming) {
+                    const loadTime = Math.round(navTiming.loadEventEnd - navTiming.fetchStart);
+                    addActivityLog(`Loaded in ${loadTime}ms`);
+                }
+            }
+        }
+        
+        function setupSpeechRecognition() {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                recognition.continuous = false;
+                recognition.interimResults = false;
+                recognition.lang = 'en-US';
+                
+                recognition.onstart = () => {
+                    isVoiceActive = true;
+                    document.getElementById('voice-btn').classList.add('active');
+                    addActivityLog('Voice input started');
+                };
+                
+                recognition.onend = () => {
+                    isVoiceActive = false;
+                    document.getElementById('voice-btn').classList.remove('active');
+                };
+                
+                recognition.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    document.getElementById('chat-input').value = transcript;
+                    addActivityLog(`Voice: "${transcript}"`);
+                    sendMessage();
+                };
+            }
+        }
+        
+        function setupEventListeners() {
+            // Enter key to send
+            document.getElementById('chat-input').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') sendMessage();
+            });
+            
+            // Network monitoring
+            window.addEventListener('online', () => updateConnectionStatus('Connected'));
+            window.addEventListener('offline', () => updateConnectionStatus('Offline'));
+        }
+        
+        function updateWelcomeTime() {
+            document.getElementById('welcome-time').textContent = new Date().toLocaleTimeString();
+        }
+        
+        async function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            input.value = '';
+            addMessage(message, 'user');
+            showTypingIndicator();
+            
+            const requestStart = performance.now();
+            
+            try {
+                const response = await fetch('https://api.anthropic.com/v1/messages', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        model: 'claude-sonnet-4-20250514',
+                        max_tokens: 1500,
+                        messages: [{
+                            role: 'user',
+                            content: `You are GRACE, the AI assistant for GRACE-X CORE 2.0™, engineered by Zac Crockett. You have advanced capabilities and real-time access. Respond professionally and helpfully. Current time: ${new Date().toLocaleString()}. User: ${message}`
+                        }]
+                    })
+                });
+                
+                const requestEnd = performance.now();
+                lastResponseTime = Math.round(requestEnd - requestStart);
+                
+                removeTypingIndicator();
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.content && data.content[0]) {
+                        const assistantMessage = data.content[0].text;
+                        addMessage(assistantMessage, 'assistant');
+                        
+                        // Update token count (estimate)
+                        totalTokens += Math.round((message.length + assistantMessage.length) / 4);
+                        
+                        addActivityLog(`Response in ${lastResponseTime}ms`);
+                    }
+                } else {
+                    throw new Error(`API Error: ${response.status}`);
+                }
+                
+            } catch (error) {
+                console.error('API Error:', error);
+                removeTypingIndicator();
+                addMessage('⚠️ I\'m experiencing connection issues. Please check your network and try again. If the problem persists, the API key may need to be configured.', 'assistant');
+                addActivityLog(`Error: ${error.message}`);
+            }
+            
+            messageCount++;
+            updateStats();
+        }
+        
+        function addMessage(content, type) {
+            const container = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            
+            const timeString = new Date().toLocaleTimeString();
+            messageDiv.innerHTML = `
+                <div>${content}</div>
+                <div class="message-time">${timeString}</div>
+            `;
+            
+            container.appendChild(messageDiv);
+            container.scrollTop = container.scrollHeight;
+            
+            conversations.push({ content, type, timestamp: new Date() });
+        }
+        
+        function showTypingIndicator() {
+            const container = document.getElementById('chat-messages');
+            const indicator = document.createElement('div');
+            indicator.className = 'typing-indicator';
+            indicator.id = 'typing-indicator';
+            indicator.innerHTML = `
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            `;
+            container.appendChild(indicator);
+            container.scrollTop = container.scrollHeight;
+        }
+        
+        function removeTypingIndicator() {
+            const indicator = document.getElementById('typing-indicator');
+            if (indicator) indicator.remove();
+        }
+        
+        function quickCommand(type) {
+            const commands = {
+                weather: 'What\'s the current weather in my location?',
+                time: 'What\'s the current time and date?',
+                news: 'What are the latest news headlines?',
+                system: 'Show me system information and performance metrics',
+                crypto: 'What are the current Bitcoin and Ethereum prices?',
+                code: 'Help me write some code - what would you like to create?',
+                help: 'What can you help me with? Show me your capabilities.',
+                creative: 'Help me brainstorm creative ideas for a project'
+            };
+            
+            if (commands[type]) {
+                document.getElementById('chat-input').value = commands[type];
+                sendMessage();
+            }
+        }
+        
+        function toggleVoiceInput() {
+            if (!recognition) {
+                addMessage('⚠️ Speech recognition is not supported in this browser.', 'assistant');
+                return;
+            }
+            
+            if (isVoiceActive) {
+                recognition.stop();
+            } else {
+                recognition.start();
+            }
+        }
+        
+        function clearChat() {
+            document.getElementById('chat-messages').innerHTML = `
+                <div class="message assistant">
+                    <div>🚀 Chat cleared. I'm ready for your next question!</div>
+                    <div class="message-time">${new Date().toLocaleTimeString()}</div>
+                </div>
+            `;
+            conversations = [];
+            messageCount = 0;
+            totalTokens = 0;
+            updateStats();
+            addActivityLog('Chat cleared');
+        }
+        
+        function exportChat() {
+            const exportData = {
+                timestamp: new Date().toISOString(),
+                conversations,
+                session: {
+                    messageCount,
+                    startTime: new Date(startTime).toISOString(),
+                    totalTokens,
+                    averageResponseTime: lastResponseTime
+                }
+            };
+            
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `gracex-core2-chat-${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            addActivityLog('Chat exported');
+        }
+        
+        function startSystemMonitoring() {
+            setInterval(() => {
+                updateUptime();
+                updateStats();
+            }, 1000);
+        }
+        
+        function updateUptime() {
+            const elapsed = Date.now() - startTime;
+            const hours = Math.floor(elapsed / (1000 * 60 * 60));
+            const minutes = Math.floor((elapsed % (1000 * 60 * 60)) / (1000 * 60));
+            document.getElementById('uptime').textContent = `${hours}:${minutes.toString().padStart(2, '0')}`;
+        }
+        
+        function updateStats() {
+            document.getElementById('message-count').textContent = messageCount;
+            document.getElementById('response-time').textContent = `${lastResponseTime}ms`;
+            document.getElementById('tokens-used').textContent = totalTokens;
+        }
+        
+        function updateConnectionStatus(status) {
+            document.getElementById('connection-status').textContent = status;
+        }
+        
+        function addActivityLog(activity) {
+            const container = document.getElementById('recent-activity');
+            const item = document.createElement('div');
+            item.style.cssText = 'padding: 6px 0; opacity: 0.7; border-bottom: 1px solid rgba(255,255,255,0.1); animation: fadeInUp 0.3s ease;';
+            item.innerHTML = `${new Date().toLocaleTimeString()} - ${activity}`;
+            
+            container.insertBefore(item, container.firstChild);
+            
+            // Keep only last 5 items
+            while (container.children.length > 5) {
+                container.removeChild(container.lastChild);
+            }
+        }
+        
+        function openSystemTest() {
+            window.open('SYSTEM_TEST.html', '_blank');
+        }
+        
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                document.exitFullscreen();
+            }
+        }
+        
+        function toggleAdvanced() {
+            alert('Advanced settings coming soon! This will include API configuration, model selection, and advanced parameters.');
+        }
+        
+        // Performance monitoring
+        window.addEventListener('load', () => {
+            const loadTime = performance.now();
+            console.log(`🚀 GRACE-X CORE 2.0 loaded in ${Math.round(loadTime)}ms`);
+        });
+        
+        // Debug
+        console.log('🔥 GRACE-X CORE 2.0™ Full Version Ready!');
+        console.log('© 2026 Zachary Charles Anthony Crockett');
+        console.log('Features: Real Claude AI • Voice Input • System Monitoring • Export');
+    </script>
+</body>
+</html>

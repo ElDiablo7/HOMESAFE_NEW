@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRACE-X Connection Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0a0e1a 0%, #1a0a1a 100%);
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #00f0ff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 40px;
+        }
+        
+        .test-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+        
+        .test-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .test-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+        
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        
+        .status-pending {
+            background: rgba(255,165,0,0.2);
+            border: 1px solid rgba(255,165,0,0.5);
+            color: #ffaa00;
+        }
+        
+        .status-success {
+            background: rgba(0,255,136,0.2);
+            border: 1px solid rgba(0,255,136,0.5);
+            color: #00ff88;
+        }
+        
+        .status-error {
+            background: rgba(255,68,68,0.2);
+            border: 1px solid rgba(255,68,68,0.5);
+            color: #ff4444;
+        }
+        
+        .test-details {
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .test-details pre {
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #00f0ff, #ff00ff);
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0,240,255,0.4);
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .actions {
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #00f0ff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .success-icon { color: #00ff88; }
+        .error-icon { color: #ff4444; }
+        .pending-icon { color: #ffaa00; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 GRACE-X Connection Test</h1>
+        <p class="subtitle">Verify backend/frontend communication</p>
+        
+        <!-- Test 1: Backend Server -->
+        <div class="test-card">
+            <div class="test-header">
+                <div class="test-title">1️⃣ Backend Server (Port 3000)</div>
+                <div class="status-badge status-pending" id="test1-status">
+                    <span class="spinner"></span> Testing...
+                </div>
+            </div>
+            <div class="test-details" id="test1-details">
+                Checking if backend server is running on http://localhost:3000...
+            </div>
+        </div>
+        
+        <!-- Test 2: Health Endpoint -->
+        <div class="test-card">
+            <div class="test-header">
+                <div class="test-title">2️⃣ Health Check Endpoint</div>
+                <div class="status-badge status-pending" id="test2-status">
+                    <span class="spinner"></span> Waiting...
+                </div>
+            </div>
+            <div class="test-details" id="test2-details">
+                Will check /health endpoint after backend test completes...
+            </div>
+        </div>
+        
+        <!-- Test 3: API Key Configuration -->
+        <div class="test-card">
+            <div class="test-header">
+                <div class="test-title">3️⃣ API Key Configuration</div>
+                <div class="status-badge status-pending" id="test3-status">
+                    <span class="spinner"></span> Waiting...
+                </div>
+            </div>
+            <div class="test-details" id="test3-details">
+                Will verify API key is configured in server/.env...
+            </div>
+        </div>
+        
+        <!-- Test 4: Brain API Call -->
+        <div class="test-card">
+            <div class="test-header">
+                <div class="test-title">4️⃣ Brain API Test Message</div>
+                <div class="status-badge status-pending" id="test4-status">
+                    <span class="spinner"></span> Waiting...
+                </div>
+            </div>
+            <div class="test-details" id="test4-details">
+                Will send test message to Brain API...
+            </div>
+        </div>
+        
+        <!-- Actions -->
+        <div class="actions">
+            <button onclick="runTests()" id="run-btn">🔄 Run Tests</button>
+            <button onclick="openMainApp()">🚀 Open GRACE-X</button>
+            <button onclick="openDocs()">📖 Setup Guide</button>
+        </div>
+    </div>
+    
+    <script>
+        let testsRunning = false;
+        
+        // Auto-run tests on load
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(runTests, 500);
+        });
+        
+        async function runTests() {
+            if (testsRunning) return;
+            testsRunning = true;
+            
+            document.getElementById('run-btn').disabled = true;
+            
+            console.log('🔧 Starting GRACE-X Connection Tests...');
+            
+            // Test 1: Backend Server
+            await test1_BackendServer();
+            
+            // Test 2: Health Check
+            await test2_HealthCheck();
+            
+            // Test 3: API Key
+            await test3_APIKey();
+            
+            // Test 4: Brain API
+            await test4_BrainAPI();
+            
+            testsRunning = false;
+            document.getElementById('run-btn').disabled = false;
+            
+            console.log('✅ All tests complete!');
+        }
+        
+        async function test1_BackendServer() {
+            const statusEl = document.getElementById('test1-status');
+            const detailsEl = document.getElementById('test1-details');
+            
+            try {
+                statusEl.innerHTML = '<span class="spinner"></span> Testing...';
+                detailsEl.textContent = 'Attempting to connect to http://localhost:3000...';
+                
+                const response = await fetch('http://localhost:3000/health', {
+                    method: 'GET',
+                    signal: AbortSignal.timeout(5000)
+                });
+                
+                if (response.ok) {
+                    statusEl.innerHTML = '<span class="success-icon">✅</span> RUNNING';
+                    statusEl.className = 'status-badge status-success';
+                    detailsEl.innerHTML = `
+✅ Backend server is running!
+<pre>
+URL: http://localhost:3000
+Status: ${response.status} ${response.statusText}
+Server: Online and responding
+</pre>`;
+                    return true;
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                statusEl.innerHTML = '<span class="error-icon">❌</span> OFFLINE';
+                statusEl.className = 'status-badge status-error';
+                detailsEl.innerHTML = `
+❌ Cannot connect to backend server!
+
+Error: ${error.message}
+
+<strong>SOLUTION:</strong>
+1. Open a terminal/command prompt
+2. Navigate to your GRACE-X folder
+3. Run: <code>START.bat</code> (Windows) or <code>./START.sh</code> (Linux/Mac)
+4. Wait for "Server ready" message
+5. Refresh this page
+
+<strong>If server won't start:</strong>
+- Check if Node.js is installed: <code>node --version</code>
+- Make sure port 3000 is not in use
+- Check server/server.js for errors`;
+                return false;
+            }
+        }
+        
+        async function test2_HealthCheck() {
+            const statusEl = document.getElementById('test2-status');
+            const detailsEl = document.getElementById('test2-details');
+            
+            try {
+                statusEl.innerHTML = '<span class="spinner"></span> Testing...';
+                detailsEl.textContent = 'Checking /health endpoint...';
+                
+                const response = await fetch('http://localhost:3000/health', {
+                    signal: AbortSignal.timeout(5000)
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    statusEl.innerHTML = '<span class="success-icon">✅</span> HEALTHY';
+                    statusEl.className = 'status-badge status-success';
+                    detailsEl.innerHTML = `
+✅ Health check passed!
+<pre>${JSON.stringify(data, null, 2)}</pre>`;
+                    return true;
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                statusEl.innerHTML = '<span class="error-icon">❌</span> FAILED';
+                statusEl.className = 'status-badge status-error';
+                detailsEl.textContent = `Error: ${error.message}`;
+                return false;
+            }
+        }
+        
+        async function test3_APIKey() {
+            const statusEl = document.getElementById('test3-status');
+            const detailsEl = document.getElementById('test3-details');
+            
+            try {
+                statusEl.innerHTML = '<span class="spinner"></span> Testing...';
+                detailsEl.textContent = 'Checking API key configuration...';
+                
+                const response = await fetch('http://localhost:3000/api/info', {
+                    signal: AbortSignal.timeout(5000)
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    if (data.apiKeyConfigured) {
+                        statusEl.innerHTML = '<span class="success-icon">✅</span> CONFIGURED';
+                        statusEl.className = 'status-badge status-success';
+                        detailsEl.innerHTML = `
+✅ API key is configured!
+<pre>
+Provider: ${data.provider}
+Version: ${data.version}
+Status: Ready to process requests
+</pre>`;
+                        return true;
+                    } else {
+                        statusEl.innerHTML = '<span class="error-icon">❌</span> NOT SET';
+                        statusEl.className = 'status-badge status-error';
+                        detailsEl.innerHTML = `
+❌ API key not configured!
+
+<strong>SOLUTION:</strong>
+1. Go to https://console.anthropic.com/settings/keys
+2. Create a new API key (starts with sk-ant-...)
+3. Open: <code>server/.env</code>
+4. Replace "sk-ant-YOUR-ACTUAL-KEY-HERE" with your real key
+5. Save the file
+6. Restart the server (close terminal and run START.bat again)
+
+Example:
+<code>ANTHROPIC_API_KEY=sk-ant-api03-abc123xyz...</code>`;
+                        return false;
+                    }
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                statusEl.innerHTML = '<span class="error-icon">❌</span> ERROR';
+                statusEl.className = 'status-badge status-error';
+                detailsEl.textContent = `Error checking API key: ${error.message}`;
+                return false;
+            }
+        }
+        
+        async function test4_BrainAPI() {
+            const statusEl = document.getElementById('test4-status');
+            const detailsEl = document.getElementById('test4-details');
+            
+            try {
+                statusEl.innerHTML = '<span class="spinner"></span> Testing...';
+                detailsEl.textContent = 'Sending test message to Brain API...';
+                
+                const response = await fetch('http://localhost:3000/api/brain', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: 'Connection test',
+                        module: 'test'
+                    }),
+                    signal: AbortSignal.timeout(30000)
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    statusEl.innerHTML = '<span class="success-icon">✅</span> SUCCESS';
+                    statusEl.className = 'status-badge status-success';
+                    detailsEl.innerHTML = `
+✅ Brain API working perfectly!
+
+<strong>Test Message Sent:</strong> "Connection test"
+
+<strong>AI Response:</strong>
+<pre>${data.reply ? data.reply.substring(0, 200) + '...' : 'Response received'}</pre>
+
+<strong>Status:</strong> All systems operational!
+<strong>Result:</strong> 🚀 GRACE-X is ready to use!`;
+                    return true;
+                } else {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.error || `HTTP ${response.status}`);
+                }
+            } catch (error) {
+                statusEl.innerHTML = '<span class="error-icon">❌</span> FAILED';
+                statusEl.className = 'status-badge status-error';
+                detailsEl.innerHTML = `
+❌ Brain API test failed!
+
+Error: ${error.message}
+
+<strong>Common causes:</strong>
+- API key not configured (see Test 3)
+- Invalid API key format
+- No internet connection
+- API rate limit exceeded
+
+<strong>Next steps:</strong>
+1. Fix issues in previous tests first
+2. Check server console for detailed errors
+3. Verify your API key is valid`;
+                return false;
+            }
+        }
+        
+        function openMainApp() {
+            window.open('http://localhost:8080', '_blank');
+        }
+        
+        function openDocs() {
+            window.open('FIRST_TIME_SETUP.md', '_blank');
+        }
+    </script>
+</body>
+</html>

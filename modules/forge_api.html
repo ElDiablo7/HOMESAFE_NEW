@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GRACE-X Forge — API Reference</title>
+  <style>
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#050812;color:#e5e7eb}
+    header{padding:18px 20px;border-bottom:1px solid rgba(148,163,184,.2);background:rgba(10,16,32,.75);backdrop-filter:blur(10px)}
+    h1{margin:0;font-size:18px;letter-spacing:.6px}
+    main{max-width:960px;margin:0 auto;padding:20px}
+    .card{background:rgba(15,23,42,.65);border:1px solid rgba(148,163,184,.22);border-radius:16px;padding:16px;margin:12px 0}
+    code,pre{background:rgba(2,6,23,.75);border:1px solid rgba(148,163,184,.18);border-radius:12px}
+    code{padding:2px 6px}
+    pre{padding:12px;overflow:auto}
+    .muted{color:#94a3b8}
+    a{color:#93c5fd}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🔧 GRACE-X Forge — API Reference</h1>
+  </header>
+  <main>
+    <div class="card">
+      <p class="muted">This page was missing in the build (Forge link was dead). Below is a practical, copy‑paste reference for the APIs Forge and the modules commonly use.</p>
+    </div>
+
+    <div class="card">
+      <h3 style="margin:0 0 10px">Common globals</h3>
+      <pre><code>// TTS
+window.GRACEX_TTS?.isEnabled?.()
+window.GRACEX_TTS?.speak?.('Hello Zac')
+
+// Brain router
+window.runModuleBrain?.('core', 'Status check')
+
+// Brain panel helper
+window.initBrainV5?.('core')
+window.wireBrainMic?.('core')
+
+// Voice Assistant (wake word)
+window.GRACEX_VoiceAssistant?.start?.()
+window.GRACEX_VoiceAssistant?.stop?.()
+window.GRACEX_VoiceAssistant?.toggle?.()</code></pre>
+    </div>
+
+    <div class="card">
+      <h3 style="margin:0 0 10px">Forge — Laser prompt helper</h3>
+      <pre><code>// Usually available inside Forge module context:
+// ForgeLaser.setActive(true)
+// ForgeLaser.setTarget('Uplift')
+// ForgeLaser.formatPrompt('Make me a patch plan')
+</code></pre>
+      <p class="muted">If you want this to be globally accessible from Core, we can expose a safe subset later.</p>
+    </div>
+
+    <div class="card">
+      <h3 style="margin:0 0 10px">What I fixed in this build</h3>
+      <ul>
+        <li>Core mic no longer flips off instantly (auto‑restart + voice‑system coordination).</li>
+        <li>Forge “Structure Map / API Reference / Documentation” links now open real pages.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <p class="muted">Back to Forge: <a href="modules/forge.html" target="_blank">Open Forge</a></p>
+    </div>
+  </main>
+</body>
+</html>

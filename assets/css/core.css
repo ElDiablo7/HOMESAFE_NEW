@@ -1,0 +1,843 @@
+
+:root { --bg:#0b0f1a; --panel:#111827; --accent:#60a5fa; --accent-2:#a78bfa; --text:#e5e7eb; --muted:#9ca3af; --ring:rgba(96,165,250,0.3); }
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;color:var(--text);background:radial-gradient(1200px 800px at 20% 10%, rgba(96,165,250,0.08), transparent),
+radial-gradient(1000px 700px at 80% 30%, rgba(167,139,250,0.08), transparent), var(--bg);
+font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial}
+#app{display:grid;grid-template-columns:280px 1fr;grid-template-rows:1fr 64px;height:100%}
+.aside{background:linear-gradient(180deg,rgba(17,24,39,0.95),rgba(17,24,39,0.6));border-right:1px solid rgba(255,255,255,0.06);padding:16px;overflow:auto}
+
+.brand{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  gap:10px;
+  margin-bottom:32px;
+}
+
+.brand img{
+  width:100%;
+  max-width:240px;
+  height:auto;
+  border-radius:18px;
+  box-shadow:0 0 0 4px var(--ring),0 18px 40px rgba(0,0,0,0.75);
+}
+
+.brand h1{
+  font-size:18px;
+  margin:0;
+  line-height:1.2;
+}
+
+.small{font-size:12px;color:var(--muted)}
+.section-title{margin:16px 0 8px;color:var(--muted);font-size:12px;letter-spacing:.12em;text-transform:uppercase}
+.module-list{display:grid;gap:8px}
+.module-btn{color:#c0c0c0;display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;cursor:pointer;user-select:none;transition:transform .06s,background .2s,border-color .2s,box-shadow .2s}
+.module-btn:hover{background:rgba(255,255,255,0.07)} .module-btn:active{transform:translateY(1px) scale(0.998)}
+.module-btn.active{border-color:rgba(96,165,250,0.4);box-shadow:0 0 0 3px var(--ring)}
+.module-icon{width:22px;height:22px;border-radius:8px;background:linear-gradient(135deg,rgba(96,165,250,0.85),rgba(167,139,250,0.85))}
+
+.main{
+  flex:1;
+  min-height:100vh;
+  overflow-y:auto;
+}
+
+.card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:16px;box-shadow:0 10px 30px rgba(0,0,0,0.35)}
+.taskbar{grid-column:1/span 2;display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-top:1px solid rgba(255,255,255,0.06);
+background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,0.25)),rgba(17,24,39,0.75);backdrop-filter:blur(6px)}
+.taskbar-left,.taskbar-right{display:flex;align-items:center;gap:10px}
+.tb-btn{height:40px;min-width:40px;padding:0 12px;border-radius:12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);color:var(--text);cursor:pointer}
+.tb-btn:hover{background:rgba(255,255,255,0.08)} .tb-btn:active{transform:translateY(1px)}
+.badge{padding:4px 8px;border-radius:999px;font-size:12px;color:var(--text);background:rgba(96,165,250,0.15);border:1px solid rgba(96,165,250,0.25)}
+#boot{position:fixed;inset:0;display:grid;place-items:center;background:radial-gradient(900px 600px at 50% 30%,rgba(96,165,250,0.08),transparent),var(--bg);
+z-index:50;transition:opacity .35s,visibility .35s}
+#boot.hidden{opacity:0;visibility:hidden}
+.boot-card{text-align:center;width:min(540px,92vw);padding:28px;border-radius:20px;border:1px solid rgba(255,255,255,0.1);background:rgba(17,24,39,0.6);box-shadow:0 12px 40px rgba(0,0,0,0.5)}
+.boot-title{font-size:18px;margin:12px 0 2px}.boot-sub{color:var(--muted);font-size:13px}
+.progress{margin-top:16px;height:10px;border-radius:999px;background:rgba(255,255,255,0.06);overflow:hidden}
+.progress>div{height:100%;width:20%;border-radius:inherit;background:linear-gradient(90deg,var(--accent),var(--accent-2));animation:load 2.4s infinite}
+@keyframes load{0%{transform:translateX(-40%)}50%{transform:translateX(120%)}100%{transform:translateX(220%)}}
+.modal{position:fixed;inset:0;display:none;place-items:center;z-index:60;background:rgba(0,0,0,0.5)}
+.modal.open{display:grid}.modal .panel{width:min(520px,92vw);background:rgba(17,24,39,0.9);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:16px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:8px 0}
+label{font-size:14px;color:var(--text)} input[type=range]{width:200px}
+.locked{color:var(--muted)} .lock-badge{padding:2px 6px;border-radius:6px;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.25);color:#fecaca;font-size:12px}
+
+/* ---- Sidebar module nav (anchor-based) ---- */
+.module-nav {
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.module-nav a {
+  display: block;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(148,163,184,0.6);
+  background:
+    radial-gradient(circle at 0 0, rgba(148,163,184,0.18), transparent),
+    radial-gradient(circle at 100% 0, rgba(96,165,250,0.25), transparent),
+    rgba(15,23,42,0.9);
+  color: inherit;
+  text-decoration: none;
+  font-size: 14px;
+  cursor: pointer;
+  transition: transform .06s, background .2s, border-color .2s, box-shadow .2s;
+}
+
+.module-nav a:hover {
+  background: rgba(255,255,255,0.06);
+}
+
+.module-nav a:active {
+  transform: translateY(1px) scale(0.998);
+}
+
+.module-nav a.active {
+  border-color: rgba(96,165,250,0.4);
+  box-shadow: 0 0 0 3px rgba(96,165,250,0.25);
+}
+
+
+/* Voice intro buttons under module titles */
+.module-voice-row {
+  margin-bottom: 1rem;
+}
+
+
+
+/* ---- Module headers (logo + title strip) ---- */
+.module-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.module-logo-slot {
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  border: 2px solid rgba(96,165,250,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.module-header-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.module-header-text .module-title {
+  margin: 0;
+}
+
+.module-subtitle {
+  margin: 0.15rem 0 0;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+/* ==== GRACEX NEON THEME PASS 1 ==== */
+
+/* App background & cards */
+body {
+  background: radial-gradient(circle at top, #020617 0%, #020617 30%, #000000 100%);
+}
+
+.module-section {
+  color: #e5e7eb;
+}
+
+.builder-card {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  box-shadow:
+    0 0 18px rgba(56, 189, 248, 0.2),
+    0 18px 40px rgba(0, 0, 0, 0.8);
+}
+
+/* Header strip */
+.module-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.module-logo-slot {
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  border: 2px solid rgba(56, 189, 248, 0.8); /* electric blue ring */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #e5e7eb;
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.8);
+}
+
+.module-header-text .module-title {
+  margin: 0;
+  color: #e5e7eb;
+}
+
+.module-subtitle {
+  margin: 0.15rem 0 0;
+  font-size: 0.9rem;
+  color: #a5b4fc;
+  opacity: 0.85;
+}
+
+/* Hints, labels */
+.hint,
+.small,
+label {
+  color: #9ca3af;
+}
+
+/* Buttons: idle blue, hover magenta edge, active neon green */
+.builder-btn,
+button,
+.brain-input-row button {
+  background: linear-gradient(135deg, #0ea5e9, #38bdf8);
+  color: #e5e7eb;
+  border: 1px solid rgba(56, 189, 248, 0.7);
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition:
+    transform 0.08s ease-out,
+    box-shadow 0.1s ease-out,
+    background 0.1s ease-out,
+    border-color 0.1s ease-out;
+  box-shadow:
+    0 0 10px rgba(56, 189, 248, 0.9),
+    0 10px 25px rgba(0, 0, 0, 0.8);
+}
+
+.builder-btn:hover,
+button:hover,
+.brain-input-row button:hover {
+  border-color: #a21caf; /* magenta edge */
+  box-shadow:
+    0 0 14px rgba(162, 28, 175, 0.9),
+    0 14px 30px rgba(0, 0, 0, 0.9);
+}
+
+/* PRESS = neon green */
+.builder-btn:active,
+button:active,
+.brain-input-row button:active {
+  background: linear-gradient(135deg, #16a34a, #22c55e);
+  border-color: #22c55e;
+  transform: translateY(1px) scale(0.98);
+  box-shadow:
+    0 0 16px rgba(34, 197, 94, 1),
+    0 8px 20px rgba(0, 0, 0, 0.9);
+}
+
+/* Inputs / textareas */
+input[type="text"],
+input[type="number"],
+textarea,
+select {
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(51, 65, 85, 0.9);
+  color: #e5e7eb;
+  border-radius: 0.45rem;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: #38bdf8;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.8);
+}
+
+/* 3D chrome button style */
+.builder-btn,
+button,
+.brain-input-row button {
+  background: linear-gradient(145deg, #a6a6a6, #e0e0e0);
+  color: #111; /* darker text for chrome */
+  border: 1px solid #888;
+  box-shadow: 
+    0 4px 6px rgba(0, 0, 0, 0.2),
+    inset 0 0 0px rgba(255, 255, 255, 0.1);
+  /* Slight 3D lift */
+  transform: translateY(-2px);
+  transition: all 0.1s ease-in-out;
+}
+
+.builder-btn:active,
+button:active,
+.brain-input-row button:active {
+  transform: translateY(1px); /* slight press inwards */
+  background: linear-gradient(145deg, #c1c1c1, #f7f7f7);
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.25) inset;
+}
+
+/* Text slight 3D effect */
+h1, h2, h3, label, .module-subtitle, .hint, button {
+  text-shadow: 
+    1px 1px 0px rgba(0,0,0,0.2),
+    -1px -1px 1px rgba(255,255,255,0.1);
+}
+
+/* Enhanced 3D Chrome for Module Buttons */
+.builder-btn, button, .brain-input-row button {
+  background: linear-gradient(145deg, #d1d5db, #f9fafb); /* Lighter chrome gradient */
+  border: 1px solid #a0a0a0;
+  box-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.3),
+    inset 0 0 6px rgba(255, 255, 255, 0.3),
+    inset 0 0 12px rgba(0, 0, 0, 0.2);
+  transform: translateY(-3px); /* Lift them a bit more */
+}
+
+.builder-btn:active, button:active, .brain-input-row button:active {
+  transform: translateY(1px); /* Slight push down on press */
+}
+
+/* Even more 3D text effect */
+h1, h2, h3, label, .module-subtitle, .hint, button {
+  text-shadow: 
+    2px 2px 3px rgba(0,0,0,0.3), /* Stronger shadow */
+    -1px -1px 1px rgba(255,255,255,0.15); /* Subtle highlight */
+}
+.boot-bg-video{
+  position:fixed;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  background:#000;
+  opacity:0.9;
+  pointer-events:none;
+}
+
+.boot-card{
+  position:relative;
+  z-index:1;
+}
+
+.app-shell{
+  display:flex;
+  min-height:100vh;
+}
+
+.sidebar{
+  width:260px;
+  flex-shrink:0;
+  padding:24px;
+  background:#050814;
+  display:flex;
+  flex-direction:column;
+  position:sticky;
+  top:0;
+  max-height:100vh;
+  overflow-y:auto;
+}
+
+.uplift-chat{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+#uplift-log{
+  max-height:calc(100vh - 260px);
+  overflow-y:auto;
+}
+
+
+/* GRACE-X generic module voice panel */
+.module-voice-panel {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 16px;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.module-voice-btn {
+  font-size: 0.9rem;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+}
+
+.module-voice-status {
+  margin-left: 8px;
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+.module-voice-text {
+  width: 100%;
+  min-height: 40px;
+  margin-top: 8px;
+  resize: vertical;
+}
+
+.module-voice-reply {
+  margin-top: 8px;
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+
+:root { --bg:#0b0f1a; --panel:#111827; --accent:#60a5fa; --accent-2:#a78bfa; --text:#e5e7eb; --muted:#9ca3af; --ring:rgba(96,165,250,0.3); }
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;color:var(--text);background:radial-gradient(1200px 800px at 20% 10%, rgba(96,165,250,0.08), transparent),
+radial-gradient(1000px 700px at 80% 30%, rgba(167,139,250,0.08), transparent), var(--bg);
+font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial}
+#app{display:grid;grid-template-columns:280px 1fr;grid-template-rows:1fr 64px;height:100%}
+.aside{background:linear-gradient(180deg,rgba(17,24,39,0.95),rgba(17,24,39,0.6));border-right:1px solid rgba(255,255,255,0.06);padding:16px;overflow:auto}
+
+.brand{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  gap:10px;
+  margin-bottom:32px;
+}
+
+.brand img{
+  width:100%;
+  max-width:240px;
+  height:auto;
+  border-radius:18px;
+  box-shadow:0 0 0 4px var(--ring),0 18px 40px rgba(0,0,0,0.75);
+}
+
+.brand h1{
+  font-size:18px;
+  margin:0;
+  line-height:1.2;
+}
+
+.small{font-size:12px;color:var(--muted)}
+.section-title{margin:16px 0 8px;color:var(--muted);font-size:12px;letter-spacing:.12em;text-transform:uppercase}
+.module-list{display:grid;gap:8px}
+.module-btn{color:#c0c0c0;display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;cursor:pointer;user-select:none;transition:transform .06s,background .2s,border-color .2s,box-shadow .2s}
+.module-btn:hover{background:rgba(255,255,255,0.07)} .module-btn:active{transform:translateY(1px) scale(0.998)}
+.module-btn.active{border-color:rgba(96,165,250,0.4);box-shadow:0 0 0 3px var(--ring)}
+.module-icon{width:22px;height:22px;border-radius:8px;background:linear-gradient(135deg,rgba(96,165,250,0.85),rgba(167,139,250,0.85))}
+
+.main{
+  flex:1;
+  min-height:100vh;
+  overflow-y:auto;
+}
+
+.card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:16px;box-shadow:0 10px 30px rgba(0,0,0,0.35)}
+.taskbar{grid-column:1/span 2;display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-top:1px solid rgba(255,255,255,0.06);
+background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,0.25)),rgba(17,24,39,0.75);backdrop-filter:blur(6px)}
+.taskbar-left,.taskbar-right{display:flex;align-items:center;gap:10px}
+.tb-btn{height:40px;min-width:40px;padding:0 12px;border-radius:12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);color:var(--text);cursor:pointer}
+.tb-btn:hover{background:rgba(255,255,255,0.08)} .tb-btn:active{transform:translateY(1px)}
+.badge{padding:4px 8px;border-radius:999px;font-size:12px;color:var(--text);background:rgba(96,165,250,0.15);border:1px solid rgba(96,165,250,0.25)}
+#boot{position:fixed;inset:0;display:grid;place-items:center;background:radial-gradient(900px 600px at 50% 30%,rgba(96,165,250,0.08),transparent),var(--bg);
+z-index:50;transition:opacity .35s,visibility .35s}
+#boot.hidden{opacity:0;visibility:hidden}
+.boot-card{text-align:center;width:min(540px,92vw);padding:28px;border-radius:20px;border:1px solid rgba(255,255,255,0.1);background:rgba(17,24,39,0.6);box-shadow:0 12px 40px rgba(0,0,0,0.5)}
+.boot-title{font-size:18px;margin:12px 0 2px}.boot-sub{color:var(--muted);font-size:13px}
+.progress{margin-top:16px;height:10px;border-radius:999px;background:rgba(255,255,255,0.06);overflow:hidden}
+.progress>div{height:100%;width:20%;border-radius:inherit;background:linear-gradient(90deg,var(--accent),var(--accent-2));animation:load 2.4s infinite}
+@keyframes load{0%{transform:translateX(-40%)}50%{transform:translateX(120%)}100%{transform:translateX(220%)}}
+.modal{position:fixed;inset:0;display:none;place-items:center;z-index:60;background:rgba(0,0,0,0.5)}
+.modal.open{display:grid}.modal .panel{width:min(520px,92vw);background:rgba(17,24,39,0.9);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:16px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:8px 0}
+label{font-size:14px;color:var(--text)} input[type=range]{width:200px}
+.locked{color:var(--muted)} .lock-badge{padding:2px 6px;border-radius:6px;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.25);color:#fecaca;font-size:12px}
+
+/* ---- Sidebar module nav (anchor-based) ---- */
+.module-nav {
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.module-nav a {
+  display: block;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(148,163,184,0.6);
+  background:
+    radial-gradient(circle at 0 0, rgba(148,163,184,0.18), transparent),
+    radial-gradient(circle at 100% 0, rgba(96,165,250,0.25), transparent),
+    rgba(15,23,42,0.9);
+  color: inherit;
+  text-decoration: none;
+  font-size: 14px;
+  cursor: pointer;
+  transition: transform .06s, background .2s, border-color .2s, box-shadow .2s;
+}
+
+.module-nav a:hover {
+  background: rgba(255,255,255,0.06);
+}
+
+.module-nav a:active {
+  transform: translateY(1px) scale(0.998);
+}
+
+.module-nav a.active {
+  border-color: rgba(96,165,250,0.4);
+  box-shadow: 0 0 0 3px rgba(96,165,250,0.25);
+}
+
+
+/* Voice intro buttons under module titles */
+.module-voice-row {
+  margin-bottom: 1rem;
+}
+
+
+
+/* ---- Module headers (logo + title strip) ---- */
+.module-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.module-logo-slot {
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  border: 2px solid rgba(96,165,250,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.module-header-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.module-header-text .module-title {
+  margin: 0;
+}
+
+.module-subtitle {
+  margin: 0.15rem 0 0;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+/* ==== GRACEX NEON THEME PASS 1 ==== */
+
+/* App background & cards */
+body {
+  background: radial-gradient(circle at top, #020617 0%, #020617 30%, #000000 100%);
+}
+
+.module-section {
+  color: #e5e7eb;
+}
+
+.builder-card {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  box-shadow:
+    0 0 18px rgba(56, 189, 248, 0.2),
+    0 18px 40px rgba(0, 0, 0, 0.8);
+}
+
+/* Header strip */
+.module-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.module-logo-slot {
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  border: 2px solid rgba(56, 189, 248, 0.8); /* electric blue ring */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #e5e7eb;
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.8);
+}
+
+.module-header-text .module-title {
+  margin: 0;
+  color: #e5e7eb;
+}
+
+.module-subtitle {
+  margin: 0.15rem 0 0;
+  font-size: 0.9rem;
+  color: #a5b4fc;
+  opacity: 0.85;
+}
+
+/* Hints, labels */
+.hint,
+.small,
+label {
+  color: #9ca3af;
+}
+
+/* Buttons: idle blue, hover magenta edge, active neon green */
+.builder-btn,
+button,
+.brain-input-row button {
+  background: linear-gradient(135deg, #0ea5e9, #38bdf8);
+  color: #e5e7eb;
+  border: 1px solid rgba(56, 189, 248, 0.7);
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition:
+    transform 0.08s ease-out,
+    box-shadow 0.1s ease-out,
+    background 0.1s ease-out,
+    border-color 0.1s ease-out;
+  box-shadow:
+    0 0 10px rgba(56, 189, 248, 0.9),
+    0 10px 25px rgba(0, 0, 0, 0.8);
+}
+
+.builder-btn:hover,
+button:hover,
+.brain-input-row button:hover {
+  border-color: #a21caf; /* magenta edge */
+  box-shadow:
+    0 0 14px rgba(162, 28, 175, 0.9),
+    0 14px 30px rgba(0, 0, 0, 0.9);
+}
+
+/* PRESS = neon green */
+.builder-btn:active,
+button:active,
+.brain-input-row button:active {
+  background: linear-gradient(135deg, #16a34a, #22c55e);
+  border-color: #22c55e;
+  transform: translateY(1px) scale(0.98);
+  box-shadow:
+    0 0 16px rgba(34, 197, 94, 1),
+    0 8px 20px rgba(0, 0, 0, 0.9);
+}
+
+/* Inputs / textareas */
+input[type="text"],
+input[type="number"],
+textarea,
+select {
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(51, 65, 85, 0.9);
+  color: #e5e7eb;
+  border-radius: 0.45rem;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: #38bdf8;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.8);
+}
+
+/* 3D chrome button style */
+.builder-btn,
+button,
+.brain-input-row button {
+  background: linear-gradient(145deg, #a6a6a6, #e0e0e0);
+  color: #111; /* darker text for chrome */
+  border: 1px solid #888;
+  box-shadow: 
+    0 4px 6px rgba(0, 0, 0, 0.2),
+    inset 0 0 0px rgba(255, 255, 255, 0.1);
+  /* Slight 3D lift */
+  transform: translateY(-2px);
+  transition: all 0.1s ease-in-out;
+}
+
+.builder-btn:active,
+button:active,
+.brain-input-row button:active {
+  transform: translateY(1px); /* slight press inwards */
+  background: linear-gradient(145deg, #c1c1c1, #f7f7f7);
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.25) inset;
+}
+
+/* Text slight 3D effect */
+h1, h2, h3, label, .module-subtitle, .hint, button {
+  text-shadow: 
+    1px 1px 0px rgba(0,0,0,0.2),
+    -1px -1px 1px rgba(255,255,255,0.1);
+}
+
+/* Enhanced 3D Chrome for Module Buttons */
+.builder-btn, button, .brain-input-row button {
+  background: linear-gradient(145deg, #d1d5db, #f9fafb); /* Lighter chrome gradient */
+  border: 1px solid #a0a0a0;
+  box-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.3),
+    inset 0 0 6px rgba(255, 255, 255, 0.3),
+    inset 0 0 12px rgba(0, 0, 0, 0.2);
+  transform: translateY(-3px); /* Lift them a bit more */
+}
+
+.builder-btn:active, button:active, .brain-input-row button:active {
+  transform: translateY(1px); /* Slight push down on press */
+}
+
+/* Even more 3D text effect */
+h1, h2, h3, label, .module-subtitle, .hint, button {
+  text-shadow: 
+    2px 2px 3px rgba(0,0,0,0.3), /* Stronger shadow */
+    -1px -1px 1px rgba(255,255,255,0.15); /* Subtle highlight */
+}
+.boot-bg-video{
+  position:fixed;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  background:#000;
+  opacity:0.9;
+  pointer-events:none;
+}
+
+.boot-card{
+  position:relative;
+  z-index:1;
+}
+
+.app-shell{
+  display:flex;
+  min-height:100vh;
+}
+
+.sidebar{
+  width:260px;
+  flex-shrink:0;
+  padding:24px;
+  background:#050814;
+  display:flex;
+  flex-direction:column;
+  position:sticky;
+  top:0;
+  max-height:100vh;
+  overflow-y:auto;
+}
+
+.uplift-chat{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+#uplift-log{
+  max-height:calc(100vh - 260px);
+  overflow-y:auto;
+}
+
+
+/* GRACE-X generic module voice panel */
+.module-voice-panel {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 16px;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.module-voice-btn {
+  font-size: 0.9rem;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+}
+
+.module-voice-status {
+  margin-left: 8px;
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+.module-voice-text {
+  width: 100%;
+  min-height: 40px;
+  margin-top: 8px;
+  resize: vertical;
+}
+
+.module-voice-reply {
+  margin-top: 8px;
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+/* GRACE-X Core™ – make boot placeholder transparent and docked at bottom */
+.boot-card,
+.boot-placeholder {
+  /* make the card itself see-through */
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  backdrop-filter: none !important;
+
+  /* move it down to the bottom over the video */
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 2rem;           /* adjust if you want it higher/lower */
+  margin: 0 auto;
+  max-width: 640px;       /* keeps it nice on wide screens */
+  padding: 1rem 1.5rem;
+
+  /* keep it clickable */
+  pointer-events: auto;
+}
+
+/* keep the text readable over the video */
+.boot-card h1,
+.boot-card p,
+.boot-card button,
+.boot-placeholder h1,
+.boot-placeholder p,
+.boot-placeholder button {
+  color: #ffffff;
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.8);
+}
+

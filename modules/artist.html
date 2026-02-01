@@ -1,0 +1,122 @@
+<section class="module-section artist-container">
+  <!-- Module Header -->
+        <div class="module-header">
+        <div class="module-logo-slot">
+          <span class="module-logo-text">AR</span>
+        </div>
+        <div class="module-header-text">
+          <h1 class="module-title">GRACE-X Artist™</h1>
+          <p class="module-subtitle">
+        Prompts and planning for creators – your creative companion.
+      </p>
+    </div>
+  </div>
+
+  <!-- GRACE-X Artist Assistant (RIGHT AFTER HEADER) -->
+  <div class="builder-card" id="artist-brain-card">
+    <h2>🧠 GRACE-X Artist Assistant</h2>
+    <p class="hint">
+      Ask me for creative ideas, prompts, or visual concepts.
+          </p>
+
+    <div class="module-brain" id="artist-brain-panel">
+      <div id="artist-brain-output" class="brain-output">
+        <div class="brain-message brain-message-system">
+          Ready to spark your creativity! Ask me for prompts, ideas, or help with your artistic projects.
+        </div>
+      </div>
+
+      <div class="brain-input-row">
+        <button type="button" class="brain-mic-btn" id="artist-brain-mic" title="Voice input">
+          🎙️
+        </button>
+        <input
+          id="artist-brain-input"
+          type="text"
+          placeholder="Ask about creative ideas, prompts, or visual concepts…"
+        />
+        <button id="artist-brain-send">Ask</button>
+      </div>
+
+      <div class="brain-actions">
+        <button class="builder-btn" id="artist-brain-clear">
+          Clear conversation
+        </button>
+      </div>
+    </div>
+  </div>
+
+        <!-- PROMPT GENERATOR CARD -->
+        <div class="builder-card" id="artist-prompt-card">
+          <h2>🎨 Creative Prompt</h2>
+          <p class="hint">
+            Quick ideas for drawing, painting, or digital art. Pick a mode and tap the button.
+          </p>
+
+          <div class="artist-row">
+            <label>
+              Mode
+              <select id="artist-mode">
+                <option value="any">Surprise me…</option>
+                <option value="characters">Characters</option>
+                <option value="environments">Environments</option>
+                <option value="objects">Objects</option>
+                <option value="practice">Practice drills</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="artist-row">
+            <button class="builder-btn" id="artist-prompt-btn">
+              Give me a prompt
+            </button>
+          </div>
+
+          <pre id="artist-prompt-output" class="artist-output">
+Tap "Give me a prompt" to get an idea…
+          </pre>
+        </div>
+
+        <!-- QUICK IDEA LIST CARD -->
+        <div class="builder-card" id="artist-quick-card">
+          <h2>✏️ Quick Practice Ideas</h2>
+          <p class="hint">
+      Use these when you want to draw but don't know where to start.
+          </p>
+
+          <ul class="artist-idea-list">
+            <li>Draw your favourite object from 3 different angles.</li>
+            <li>Pick 3 random colours and design a logo.</li>
+            <li>Sketch 5 quick faces with different emotions.</li>
+            <li>Design a hero, a villain, and a sidekick.</li>
+            <li>Redesign the cover of a film or game you like.</li>
+          </ul>
+        </div>
+
+        <!-- SKETCH NOTE SCRATCHPAD -->
+        <div class="builder-card" id="artist-notes-card">
+          <h2>📝 Sketch Notes</h2>
+          <p class="hint">
+            Jot down ideas, colour palettes, or notes while you work. Just stored locally in the page.
+          </p>
+
+          <textarea id="artist-notes" rows="6" placeholder="Warm colours for background, cool colours for character…"></textarea>
+
+          <div class="artist-row">
+            <button class="builder-btn" id="artist-clear-notes-btn">Clear notes</button>
+          </div>
+        </div>
+
+  <!-- Voice Panel (MOVED LOWER) -->
+  <div class="builder-card">
+    <h2>🎙️ Voice Dictation</h2>
+    <p class="hint">Use this for continuous voice input and transcript viewing.</p>
+    
+    <div class="module-voice-panel" data-module="artist" style="background: transparent; padding: 0; margin: 0;">
+      <button type="button" class="module-voice-btn">🎙 Talk to GRACE-X Artist</button>
+      <span class="module-voice-status">Mic off</span>
+      <textarea class="module-voice-text" placeholder="Voice transcript appears here…" rows="3"></textarea>
+      <div class="module-voice-reply"></div>
+    </div>
+   </div>
+  </section>

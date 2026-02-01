@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GRACE-X Master Valuation - Strategic Analysis</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="valuation.css">
+</head>
+<body>
+  <div class="valuation-container">
+    <!-- Header -->
+    <header class="valuation-header">
+      <div class="header-content">
+        <div class="logo-section">
+          <h1>🎯 GRACE-X AI™</h1>
+          <p class="subtitle">Master Valuation & Strategic Analysis</p>
+        </div>
+        <div class="date-section">
+          <div class="date-label">Valuation Date</div>
+          <div class="date-value" id="current-date">—</div>
+          <div class="build-version">v6.5.1 GALVANIZED</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Executive Summary -->
+    <section class="exec-summary">
+      <h2>Executive Summary</h2>
+      
+      <div class="summary-grid">
+        <div class="summary-card primary">
+          <div class="card-icon">💰</div>
+          <div class="card-content">
+            <div class="card-label">Current Est. Value</div>
+            <div class="card-value" id="current-value">£5K - £15K</div>
+            <div class="card-sublabel">As code/IP (no users)</div>
+          </div>
+        </div>
+        
+        <div class="summary-card">
+          <div class="card-icon">🚀</div>
+          <div class="card-content">
+            <div class="card-label">12-Month Projection</div>
+            <div class="card-value" id="projected-value">£50K - £200K</div>
+            <div class="card-sublabel">With polish + initial users</div>
+          </div>
+        </div>
+        
+        <div class="summary-card">
+          <div class="card-icon">📈</div>
+          <div class="card-content">
+            <div class="card-label">Peak Potential (3-5 years)</div>
+            <div class="card-value" id="peak-value">£3M - £10M+</div>
+            <div class="card-sublabel">With execution & scale</div>
+          </div>
+        </div>
+        
+        <div class="summary-card highlight">
+          <div class="card-icon">🏛️</div>
+          <div class="card-content">
+            <div class="card-label">Government Tender</div>
+            <div class="card-value" id="tender-value">£47M</div>
+            <div class="card-sublabel">MOD/Cabinet Office</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="key-insights">
+        <h3>Key Value Drivers</h3>
+        <div class="insights-grid">
+          <div class="insight-item">
+            <span class="insight-icon">✅</span>
+            <span><strong>18 Integrated Modules</strong> - Multi-tool platform vs single-purpose apps</span>
+          </div>
+          <div class="insight-item">
+            <span class="insight-icon">🧠</span>
+            <span><strong>5-Brain AI Architecture</strong> - Sophisticated orchestration system</span>
+          </div>
+          <div class="insight-item">
+            <span class="insight-icon">🏗️</span>
+            <span><strong>5 Commercial Modules</strong> - Proven revenue potential (Builder, Sport, OSINT, Accounting, SiteOps)</span>
+          </div>
+          <div class="insight-item">
+            <span class="insight-icon">🛡️</span>
+            <span><strong>Government Grade</strong> - MOD/Cabinet Office deployment capability</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Module Valuation Breakdown -->
+    <section class="chart-section">
+      <h2>Module Valuation Breakdown (with 100 users each)</h2>
+      <div class="chart-container">
+        <canvas id="moduleValuationChart"></canvas>
+      </div>
+      <p class="chart-note">Note: Values represent potential ARR and valuation at 6-10x multiple with 100 paying users per module</p>
+    </section>
+
+    <!-- Revenue Scenarios -->
+    <section class="chart-section">
+      <h2>Revenue Growth Scenarios</h2>
+      <div class="chart-container">
+        <canvas id="revenueGrowthChart"></canvas>
+      </div>
+      <div class="scenario-details">
+        <div class="scenario-card">
+          <h4>Conservative (70% probability)</h4>
+          <p>Slow steady growth, limited marketing, word-of-mouth</p>
+          <ul>
+            <li>6 months: 10-20 users</li>
+            <li>12 months: 50-100 users</li>
+            <li>24 months: 100-200 users</li>
+          </ul>
+          <div class="scenario-value">Exit: £300K - £500K</div>
+        </div>
+        
+        <div class="scenario-card">
+          <h4>Moderate (20% probability)</h4>
+          <p>Active marketing, product-market fit achieved</p>
+          <ul>
+            <li>6 months: 50-100 users</li>
+            <li>12 months: 200-400 users</li>
+            <li>24 months: 500-1,000 users</li>
+          </ul>
+          <div class="scenario-value">Exit: £1M - £3M</div>
+        </div>
+        
+        <div class="scenario-card highlight">
+          <h4>Optimistic (10% probability)</h4>
+          <p>Viral growth, strong PMF, enterprise adoption</p>
+          <ul>
+            <li>6 months: 200-500 users</li>
+            <li>12 months: 1,000-2,000 users</li>
+            <li>24 months: 5,000+ users</li>
+          </ul>
+          <div class="scenario-value">Exit: £10M - £20M</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Valuation Multiples -->
+    <section class="chart-section">
+      <h2>Valuation by ARR (Annual Recurring Revenue)</h2>
+      <div class="chart-container">
+        <canvas id="valuationMultiplesChart"></canvas>
+      </div>
+      <div class="multiples-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Stage</th>
+              <th>ARR</th>
+              <th>Multiple Range</th>
+              <th>Valuation Range</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Pre-Revenue</td>
+              <td>£0</td>
+              <td>N/A</td>
+              <td>£5K - £15K</td>
+            </tr>
+            <tr>
+              <td>Early Traction</td>
+              <td>£24K</td>
+              <td>3-6x</td>
+              <td>£72K - £144K</td>
+            </tr>
+            <tr>
+              <td>Growth</td>
+              <td>£120K</td>
+              <td>5-8x</td>
+              <td>£600K - £960K</td>
+            </tr>
+            <tr>
+              <td>Scale</td>
+              <td>£240K</td>
+              <td>6-10x</td>
+              <td>£1.4M - £2.4M</td>
+            </tr>
+            <tr class="highlight">
+              <td>Mature</td>
+              <td>£600K+</td>
+              <td>8-12x</td>
+              <td>£4.8M - £7.2M+</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Comparable Sales -->
+    <section class="comparables-section">
+      <h2>Comparable SaaS Acquisitions</h2>
+      <div class="comparables-grid">
+        <div class="comparable-card">
+          <h4>Baremetrics</h4>
+          <div class="comp-metric">
+            <span class="metric-label">Exit Value:</span>
+            <span class="metric-value">£3.2M</span>
+          </div>
+          <div class="comp-metric">
+            <span class="metric-label">ARR:</span>
+            <span class="metric-value">£48K</span>
+          </div>
+          <div class="comp-metric">
+            <span class="metric-label">Multiple:</span>
+            <span class="metric-value">6.7x</span>
+          </div>
+          <p class="comp-note">SaaS analytics platform, indie-built</p>
+        </div>
+        
+        <div class="comparable-card">
+          <h4>Mobile Text Alerts</h4>
+          <div class="comp-metric">
+            <span class="metric-label">Exit Value:</span>
+            <span class="metric-value">£600K</span>
+          </div>
+          <div class="comp-metric">
+            <span class="metric-label">MRR:</span>
+            <span class="metric-value">£16K</span>
+          </div>
+          <div class="comp-metric">
+            <span class="metric-label">Multiple:</span>
+            <span class="metric-value">3.1x</span>
+          </div>
+          <p class="comp-note">SMS marketing platform, bootstrapped</p>
+        </div>
+        
+        <div class="comparable-card">
+          <h4>Indie SaaS Avg</h4>
+          <div class="comp-metric">
+            <span class="metric-label">Exit Range:</span>
+            <span class="metric-value">£40K - £400K</span>
+          </div>
+          <div class="comp-metric">
+            <span class="metric-label">ARR:</span>
+            <span class="metric-value">£16K - £80K</span>
+          </div>
+          <div class="comp-metric">
+            <span class="metric-label">Multiple:</span>
+            <span class="metric-value">3-5x</span>
+          </div>
+          <p class="comp-note">Typical indie hacker exits (MicroAcquire, Tiny)</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Strategic Acquisition Scenarios -->
+    <section class="acquisition-section">
+      <h2>Acquisition Scenarios</h2>
+      <div class="acquisition-grid">
+        <div class="acquisition-card">
+          <div class="acq-header">
+            <h4>Acqui-hire</h4>
+            <span class="acq-badge">Developer + Code</span>
+          </div>
+          <div class="acq-value">£50K - £200K + Job</div>
+          <ul class="acq-details">
+            <li>Tech company wants the developer(s)</li>
+            <li>Code is secondary to talent</li>
+            <li>Typical for solo/small team projects</li>
+            <li>Includes employment contract</li>
+          </ul>
+        </div>
+        
+        <div class="acquisition-card highlight">
+          <h4>Strategic Acquisition</h4>
+          <span class="acq-badge">Specific Modules</span>
+          <div class="acq-value">£100K - £500K per module</div>
+          <ul class="acq-details">
+            <li>Competitor wants specific functionality</li>
+            <li>Example: Construction firm buys Builder™</li>
+            <li>Sports betting co. buys Sport™</li>
+            <li>Value: proven revenue + strategic fit</li>
+          </ul>
+        </div>
+        
+        <div class="acquisition-card">
+          <h4>Platform Acquisition</h4>
+          <span class="acq-badge">Entire Ecosystem</span>
+          <div class="acq-value">£3M - £10M+</div>
+          <ul class="acq-details">
+            <li>Buyer wants the entire platform</li>
+            <li>Multi-module architecture is unique</li>
+            <li>Requires: 1,000+ users, £500K+ ARR</li>
+            <li>PE firms or large SaaS companies</li>
+          </ul>
+        </div>
+        
+        <div class="acquisition-card enterprise">
+          <h4>Government Contract</h4>
+          <span class="acq-badge">MOD/Cabinet Office</span>
+          <div class="acq-value">£47M Tender</div>
+          <ul class="acq-details">
+            <li>Enterprise-grade deployment</li>
+            <li>Security clearance requirements</li>
+            <li>Multi-year support contract</li>
+            <li>Changes valuation dynamics entirely</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Live System Metrics -->
+    <section class="live-metrics">
+      <h2>Live System Metrics</h2>
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-label">Backend Status</div>
+          <div class="metric-value" id="backend-status">—</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">System Uptime</div>
+          <div class="metric-value" id="system-uptime">—</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Modules Active</div>
+          <div class="metric-value" id="modules-active">—</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Brain Wiring</div>
+          <div class="metric-value" id="brain-status">18/18</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="valuation-footer">
+      <p>© 2026 GRACE-X AI™ - Confidential Strategic Valuation Analysis</p>
+      <p class="disclaimer">This valuation is based on comparable market data, industry multiples, and projected scenarios. Actual value depends on execution, market conditions, and buyer strategic value. For government tender discussions, contact directly.</p>
+    </footer>
+  </div>
+
+  <script src="charts.js"></script>
+</body>
+</html>

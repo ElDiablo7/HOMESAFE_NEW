@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>GRACE-X AI™ ULTIMATE Edition</title>
+
+    <!-- FAVICON -->
+    <link rel="icon" type="image/svg+xml" href="assets/img/logo.svg">
+    <link rel="icon" type="image/png" href="assets/img/gracex_main_logo.png">
+
+    <!-- MAIN CSS - Complete GRACE-X styling -->
+    <link rel="stylesheet" href="assets/css/gracex-v6.css?v=TITAN">
+    <link rel="stylesheet" href="assets/css/core.css?v=TITAN">
+    <link rel="stylesheet" href="assets/css/forge.css?v=TITAN">
+    <link rel="stylesheet" href="assets/css/laser.css?v=TITAN">
+    <link rel="stylesheet" href="assets/css/guardian-alerts.css?v=TITAN">
+    <link rel="stylesheet" href="assets/css/polish-enhancements.css?v=TITAN">
+    <link rel="stylesheet" href="assets/css/accounting.css?v=TITAN">
+    <link rel="stylesheet" href="assets/css/osint.css?v=TITAN">
+    <!-- THEME SYSTEM - Loaded last to override -->
+    <link rel="stylesheet" href="assets/css/gracex-themes.css?v=TITAN">
+    <!-- BOOT SCREEN - Enterprise Startup -->
+    <link rel="stylesheet" href="assets/css/boot-screen.css?v=TITAN">
+</head>
+
+<body>
+  <!-- ENTERPRISE BOOT SCREEN (Loads first via boot-screen.js) -->
+  <script src="assets/js/boot-screen.js?v=TITAN"></script>
+  
+  <!-- Build tag - ULTIMATE EDITION v6.6.0 -->
+  <div style="position:fixed;bottom:8px;left:8px;font-size:11px;opacity:0.7;z-index:9999;font-weight:600;color:#10b981;">🦁 GRACE-X v6.6.0 ULTIMATE</div>
+
+    <!-- Boot overlay (Legacy - now handled by boot-screen.js) -->
+    <div id="boot" style="display:none;">
+        <video id="boot-video" class="boot-bg-video" src="assets/video/gracex_boot_intro.mp4" autoplay muted loop playsinline></video>
+        <!-- MP3 boot voice disabled - video will unmute on user click to play with sound -->
+        <div class="boot-card">
+            <div class="boot-title">GRACE-X AI™</div>
+            <div class="boot-sub">Initialising Core Systems…</div>
+            <div class="progress">ENGAGE!<div></div></div>
+            <p class="small" style="margin-top:10px">Tap or press any key to start &amp; enter Core.</p>
+        </div>
+    </div>
+
+    <!-- Main App Shell -->
+    <div id="app" style="display:none;">
+
+        <!-- Left Sidebar -->
+        <aside class="aside">
+            <div class="brand">
+                <img src="assets/img/gracex_main_logo.png" alt="GRACE-X logo">
+                <div>
+                    <h1>GRACE-X AI™</h1>
+                    <div class="small">Anchored Workflow Build</div>
+                </div>
+            </div>
+
+            <div class="section-title">Core &amp; Primary Modules</div>
+
+            <!-- Module Buttons -->
+            <nav class="module-nav">
+  <button class="module-btn" data-module="core">GRACE-X Core™</button>
+  <button class="module-btn" data-module="core2" style="background: linear-gradient(135deg, #00f0ff 0%, #ff00ff 50%, #8800ff 100%); box-shadow: 0 0 20px rgba(0,240,255,0.3);">🚀 GRACE-X CORE 2.0™</button>
+  <button class="module-btn" data-module="builder">GRACE-X Builder™</button>
+  <button class="module-btn" data-module="siteops">GRACE-X SiteOps™</button>
+  <button class="module-btn" data-module="tradelink">GRACE-X TradeLink™</button>
+  <button class="module-btn" data-module="beauty">GRACE-X Beauty™</button>
+  <button class="module-btn" data-module="fit">GRACE-X Fit™</button>
+  <button class="module-btn" data-module="yoga">GRACE-X Yoga™</button>
+  <button class="module-btn" data-module="uplift">GRACE-X Uplift™</button>
+  <button class="module-btn" data-module="chef">GRACE-X Chef™</button>
+  <button class="module-btn" data-module="artist">GRACE-X Artist™</button>
+  <button class="module-btn" data-module="family">GRACE-X Family™</button>
+  <button class="module-btn" data-module="gamer">GRACE-X Gamer Mode™</button>
+  <button class="module-btn" data-module="accounting">GRACE-X Accounting™</button>
+  <button class="module-btn" data-module="osint">GRACE-X OSINT™</button>
+  <button class="module-btn" data-module="sport" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">GRACE-X Sport™</button>
+  <button class="module-btn" data-module="guardian" style="background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);">🛡️ GRACE-X Guardian™</button>
+  <button class="module-btn" data-module="forge" style="background: linear-gradient(135deg, #00d4ff 0%, #0066aa 100%);">⚒️ GRACE-X Forge™</button>
+  <button class="module-btn" data-module="gallery" style="background: linear-gradient(135deg, #ff00ff 0%, #8800ff 100%);">🎨 GRACE-X Gallery™</button>
+</nav>
+
+            <div class="section-title" style="margin-top:12px;">Account</div>
+            <div style="padding:0 8px;">
+              <button id="gracex-auth-btn" type="button" class="module-btn" style="width:100%; font-size:0.9em;">Login</button>
+            </div>
+
+            <!-- Auth Modal -->
+            <div id="gracex-auth-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:10000; align-items:center; justify-content:center;">
+              <div style="background:var(--panel, #1e293b); border:1px solid rgba(148,163,184,0.2); border-radius:16px; padding:24px; max-width:360px; width:90%;">
+                <h3 style="margin:0 0 16px;">Login / Register</h3>
+                <input id="gracex-auth-email" type="email" placeholder="Email" style="width:100%; padding:10px; margin-bottom:8px; border-radius:8px; border:1px solid #334155; background:#0f172a; color:#f1f5f9; box-sizing:border-box;">
+                <input id="gracex-auth-password" type="password" placeholder="Password" style="width:100%; padding:10px; margin-bottom:8px; border-radius:8px; border:1px solid #334155; background:#0f172a; color:#f1f5f9; box-sizing:border-box;">
+                <input id="gracex-auth-name" type="text" placeholder="Name (optional, for register)" style="width:100%; padding:10px; margin-bottom:12px; border-radius:8px; border:1px solid #334155; background:#0f172a; color:#f1f5f9; box-sizing:border-box;">
+                <div id="gracex-auth-message" style="font-size:0.85em; color:#94a3b8; margin-bottom:12px;"></div>
+                <div style="display:flex; gap:8px;">
+                  <button id="gracex-auth-login" type="button" class="builder-btn" style="flex:1;">Login</button>
+                  <button id="gracex-auth-register" type="button" class="builder-btn" style="flex:1;">Register</button>
+                  <button id="gracex-auth-close" type="button" class="builder-btn">Close</button>
+                </div>
+              </div>
+            </div>
+            <script>
+              (function() {
+                var modal = document.getElementById('gracex-auth-modal');
+                var btn = document.getElementById('gracex-auth-btn');
+                var closeBtn = document.getElementById('gracex-auth-close');
+                var loginBtn = document.getElementById('gracex-auth-login');
+                var regBtn = document.getElementById('gracex-auth-register');
+                var emailEl = document.getElementById('gracex-auth-email');
+                var passEl = document.getElementById('gracex-auth-password');
+                var nameEl = document.getElementById('gracex-auth-name');
+                var msgEl = document.getElementById('gracex-auth-message');
+                function showModal() { if (modal) { modal.style.display = 'flex'; } }
+                function hideModal() { if (modal) modal.style.display = 'none'; }
+                function setMsg(t) { if (msgEl) msgEl.textContent = t || ''; }
+                function updateAuthBtn() {
+                  if (btn && window.GRACEX_Auth) {
+                    btn.textContent = GRACEX_Auth.isLoggedIn() ? 'Logout' : 'Login';
+                  }
+                }
+                if (btn) btn.addEventListener('click', function() {
+                  if (window.GRACEX_Auth && GRACEX_Auth.isLoggedIn()) {
+                    GRACEX_Auth.logout();
+                    setMsg('Logged out.');
+                    updateAuthBtn();
+                    if (window.GRACEX_Utils) GRACEX_Utils.showToast('Logged out', 'info');
+                  } else showModal();
+                });
+                if (closeBtn) closeBtn.addEventListener('click', hideModal);
+                if (modal) modal.addEventListener('click', function(e) { if (e.target === modal) hideModal(); });
+                if (loginBtn) loginBtn.addEventListener('click', function() {
+                  var email = emailEl && emailEl.value.trim();
+                  var pass = passEl && passEl.value;
+                  if (!email || !pass) { setMsg('Email and password required'); return; }
+                  setMsg('Logging in...');
+                  window.GRACEX_Auth.login(email, pass).then(function() {
+                    setMsg('Logged in.');
+                    updateAuthBtn();
+                    hideModal();
+                    if (window.GRACEX_Utils) GRACEX_Utils.showToast('Logged in', 'success');
+                  }).catch(function(e) { setMsg(e.message || 'Login failed'); });
+                });
+                if (regBtn) regBtn.addEventListener('click', function() {
+                  var email = emailEl && emailEl.value.trim();
+                  var pass = passEl && passEl.value;
+                  var name = nameEl && nameEl.value.trim();
+                  if (!email || !pass) { setMsg('Email and password required'); return; }
+                  setMsg('Registering...');
+                  window.GRACEX_Auth.register(email, pass, name).then(function() {
+                    setMsg('Registered and logged in.');
+                    updateAuthBtn();
+                    hideModal();
+                    if (window.GRACEX_Utils) GRACEX_Utils.showToast('Registered', 'success');
+                  }).catch(function(e) { setMsg(e.message || 'Register failed'); });
+                });
+                document.addEventListener('DOMContentLoaded', updateAuthBtn);
+              })();
+            </script>
+
+            <!-- Voice Settings Button -->
+            <button id="gracex-voice-toggle" style="position: fixed; bottom: 20px; right: 20px; width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; color: white; font-size: 24px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 9998; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Click: Toggle Voice | Right-click: Settings">🔊</button>
+            
+            <script>
+              // Wire up voice settings button
+              document.addEventListener('DOMContentLoaded', () => {
+                const voiceBtn = document.getElementById('gracex-voice-toggle');
+                if (voiceBtn) {
+                  // Update button based on TTS state
+                  function updateVoiceBtn() {
+                    if (window.GRACEX_TTS) {
+                      const enabled = GRACEX_TTS.isEnabled();
+                      voiceBtn.textContent = enabled ? '🔊' : '🔇';
+                      voiceBtn.style.background = enabled 
+                        ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+                        : 'linear-gradient(135deg, #4b5563 0%, #374151 100%)';
+                      voiceBtn.title = enabled 
+                        ? 'Voice ON - Click to toggle, Right-click for settings'
+                        : 'Voice OFF - Click to enable';
+                    }
+                  }
+                  
+                  // Left click: Toggle TTS on/off
+                  voiceBtn.addEventListener('click', () => {
+                    if (window.GRACEX_TTS) {
+                      GRACEX_TTS.toggle();
+                      updateVoiceBtn();
+                      // Speak confirmation if just enabled
+                      if (GRACEX_TTS.isEnabled()) {
+                        GRACEX_TTS.preview('Voice enabled.');
+                      }
+                    }
+                  });
+                  
+                  // Right click: Open settings
+                  voiceBtn.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    if (window.GRACEX_TTS) {
+                      GRACEX_TTS.showSettings();
+                    }
+                  });
+                  
+                  // Update button state after TTS loads
+                  setTimeout(updateVoiceBtn, 1000);
+                  setTimeout(updateVoiceBtn, 3000);
+                }
+              });
+            </script>
+        </aside>
+
+        <!-- Main Content Window -->
+        <main id="content">
+  <div id="view" class="module-view"></div>
+</main>
+
+    </div>
+
+    <!-- Main JS -->
+    <!-- GALVANIZED RECOVERY LAYER - Ultimate Error Handling -->
+    <script src="assets/js/galvanized-recovery.js?v=GALVANIZED"></script>
+    <!-- Level 5 API Configuration - ENABLED -->
+    <script>
+      // Level 5 Brain API - PRODUCTION READY
+      // FIXED: Point to backend server on port 3000
+      window.GRACEX_BRAIN_API = 'http://localhost:3000/api/brain';
+      window.GRACEX_SPORT_API = 'http://localhost:3000/api/sport';
+      // Version tracking for cache-busting
+      window.GRACEX_VERSION = 'ULTIMATE_v6.6.0';
+      // Enable dev tools on localhost
+      window.GRACEX_DEV_MODE = window.location.hostname === 'localhost';
+      
+      // Log configuration for debugging
+      console.log('%c═══════════════════════════════════════════════════════════', 'color: #10b981');
+      console.log('%c🦁 GRACE-X ULTIMATE EDITION v6.6.0', 'color: #10b981; font-weight: bold; font-size: 18px');
+      console.log('%c   AI PRO FILM PRODUCTION SUITE', 'color: #00d4ff; font-weight: bold;');
+      console.log('%c   £47M MOD/Cabinet Office Tender Ready', 'color: #10b981; font-weight: bold;');
+      console.log('%c═══════════════════════════════════════════════════════════', 'color: #10b981');
+      console.log('   Backend API:', window.GRACEX_BRAIN_API);
+      console.log('   Sport API:', window.GRACEX_SPORT_API);
+      console.log('   Version:', window.GRACEX_VERSION);
+      console.log('   🦁 ULTIMATE PACK ACTIVE');
+    </script>
+    <!-- CORE NETWORK MANAGER - Internet access through Core -->
+    <script src="assets/js/core-network.js?v=TITAN"></script>
+    <!-- UI CONTROLS - Sidebar & Theme System -->
+    <script src="assets/js/gracex-ui-controls.js?v=TITAN"></script>
+    <!-- TITAN EDITION - Production-grade enhancements -->
+    <script src="assets/js/utils-enhanced.js?v=TITAN"></script>
+    <!-- PATCH: Performance.js now conditionally loaded via dev-tools.js -->
+    <script src="assets/js/dev-tools.js?v=TITAN"></script>
+    <!-- PATCH: Removed laser.js redundancy - using laser-ultra.js only -->
+    <!-- Core System -->
+    <script src="assets/js/utils.js?v=TITAN"></script>
+    <script src="assets/js/gracex-v6-utils.js?v=TITAN"></script>
+    <script src="assets/js/exports.js?v=TITAN"></script>
+    <script src="assets/js/auth.js?v=TITAN"></script>
+    <script src="assets/js/speechQueue.js?v=TITAN"></script>
+    <script src="assets/js/audioManager.js?v=TITAN"></script>
+    <script src="assets/js/voiceTTS.js?v=TITAN"></script>
+    <script src="assets/js/voiceAssistant.js?v=TITAN"></script>
+    <script src="assets/js/firewall.js?v=TITAN"></script>
+    <!-- Brain System - PATCHED: Added RAM + Analytics -->
+    <script src="assets/js/brain/gracex.state.js?v=TITAN"></script>
+    <script src="assets/js/brain/gracex.router.js?v=TITAN"></script>
+    <script src="assets/js/brain/gracex.ram.js?v=TITAN"></script>
+    <script src="assets/js/brain/gracex.analytics.js?v=TITAN"></script>
+    <script src="assets/js/brain/gracex.brain.js?v=TITAN"></script>
+    <!-- MASTER CONTROL - Enterprise Orchestration -->
+    <script src="assets/js/gracex-master-control.js?v=TITAN"></script>
+    <!-- Enterprise Systems -->
+    <script src="assets/js/callsheets.js?v=TITAN"></script>
+    <script src="assets/js/risk-safety.js?v=TITAN"></script>
+    <!-- Module Scripts -->
+    <script src="assets/js/core.js?v=TITAN"></script>
+    <script src="assets/js/brainLevel5.js?v=TITAN"></script>
+    <script src="assets/js/brainV5Helper.js?v=TITAN"></script>
+    <script src="assets/js/GRACEX_LIVE_DATA_INTEGRATION_v1.js?v=TITAN"></script>
+    <script src="assets/js/sport.js?v=TITAN"></script>
+    <script src="assets/js/guardian-alert-system.js?v=TITAN"></script>
+    <script src="assets/js/guardian.js?v=TITAN"></script>
+    <script src="assets/js/osint_engine.js?v=TITAN"></script>
+    <script src="assets/js/osint_sources.js?v=TITAN"></script>
+    <script src="assets/js/osint_report.js?v=TITAN"></script>
+    <script src="assets/js/osint.js?v=TITAN"></script>
+    <script src="assets/js/accounting_engine.js?v=TITAN"></script>
+    <script src="assets/js/accounting_reports.js?v=TITAN"></script>
+    <script src="assets/js/accounting.js?v=TITAN"></script>
+    <script src="assets/js/coreDashboard.js?v=TITAN"></script>
+    <script src="assets/js/forge.js?v=TITAN"></script>
+    <!-- LASER Inspector - Ultra version only -->
+    <script src="assets/js/laser-ultra.js?v=TITAN"></script>
+    <!-- App Entry Point -->
+    <script type="module" src="assets/js/app.js?v=TITAN"></script>
+</body>
+</html>

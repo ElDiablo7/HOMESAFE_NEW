@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>GRACE-X AI™ TITAN Edition</title>
+
+    <!-- FAVICON -->
+    <link rel="icon" type="image/svg+xml" href="assets/img/logo.svg">
+    <link rel="icon" type="image/png" href="assets/img/gracex_main_logo.png">
+
+    <!-- MAIN CSS -->
+    <link rel="stylesheet" href="assets/css/core.css?v=TITAN">
+    <link rel="stylesheet" href="assets/css/builder.css?v=TITAN">
+    <link rel="stylesheet" href="assets/css/gracex-v6.css?v=TITAN">
+    <link rel="stylesheet" href="assets/css/forge.css?v=TITAN">
+    <link rel="stylesheet" href="assets/css/osint.css?v=TITAN">
+    <link rel="stylesheet" href="assets/css/accounting.css?v=TITAN">
+    <!-- POLISH ENHANCEMENTS TITAN -->
+    <link rel="stylesheet" href="assets/css/polish-enhancements.css?v=TITAN">
+    <!-- LASER INSPECTOR TITAN -->
+    <link rel="stylesheet" href="assets/css/laser.css?v=TITAN">
+</head>
+
+<body>
+  <!-- Build tag - TITAN EDITION v6.5.0 PATCHED -->
+  <div style="position:fixed;bottom:8px;right:8px;font-size:11px;opacity:0.7;z-index:9999;font-weight:600;color:#06b6d4;">GRACE-X v6.5.0 TITAN</div>
+
+    <!-- Boot overlay -->
+    <div id="boot">
+        <video id="boot-video" class="boot-bg-video" src="assets/video/gracex_boot_intro.mp4" autoplay muted loop playsinline></video>
+        <!-- MP3 boot voice disabled - video will unmute on user click to play with sound -->
+        <div class="boot-card">
+            <div class="boot-title">GRACE-X AI™</div>
+            <div class="boot-sub">Initialising Core Systems…</div>
+            <div class="progress">ENGAGE!<div></div></div>
+            <p class="small" style="margin-top:10px">Tap or press any key to start &amp; enter Core.</p>
+        </div>
+    </div>
+
+    <!-- Main App Shell -->
+    <div id="app" style="display:none;">
+
+        <!-- Left Sidebar -->
+        <aside class="aside">
+            <div class="brand">
+                <img src="assets/img/gracex_main_logo.png" alt="GRACE-X logo">
+                <div>
+                    <h1>GRACE-X AI™</h1>
+                    <div class="small">Anchored Workflow Build</div>
+                </div>
+            </div>
+
+            <div class="section-title">Core &amp; Primary Modules</div>
+
+            <!-- Module Buttons -->
+            <nav class="module-nav">
+  <button class="module-btn" data-module="core">GRACE-X Core™</button>
+  <button class="module-btn" data-module="builder">GRACE-X Builder™</button>
+  <button class="module-btn" data-module="siteops">GRACE-X SiteOps™</button>
+  <button class="module-btn" data-module="tradelink">GRACE-X TradeLink™</button>
+  <button class="module-btn" data-module="beauty">GRACE-X Beauty™</button>
+  <button class="module-btn" data-module="fit">GRACE-X Fit™</button>
+  <button class="module-btn" data-module="yoga">GRACE-X Yoga™</button>
+  <button class="module-btn" data-module="uplift">GRACE-X Uplift™</button>
+  <button class="module-btn" data-module="chef">GRACE-X Chef™</button>
+  <button class="module-btn" data-module="artist">GRACE-X Artist™</button>
+  <button class="module-btn" data-module="family">GRACE-X Family™</button>
+  <button class="module-btn" data-module="gamer">GRACE-X Gamer Mode™</button>
+  <button class="module-btn" data-module="accounting">GRACE-X Accounting™</button>
+  <button class="module-btn" data-module="osint">GRACE-X OSINT™</button>
+  <button class="module-btn" data-module="sport" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">GRACE-X Sport™</button>
+  <button class="module-btn" data-module="guardian" style="background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);">🛡️ GRACE-X Guardian™</button>
+  <button class="module-btn" data-module="forge" style="background: linear-gradient(135deg, #00d4ff 0%, #0066aa 100%);">⚒️ GRACE-X Forge™</button>
+</nav>
+
+            <!-- Voice Settings Button -->
+            <button id="gracex-voice-toggle" style="position: fixed; bottom: 20px; right: 20px; width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; color: white; font-size: 24px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 9998; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Click: Toggle Voice | Right-click: Settings">🔊</button>
+            
+            <script>
+              // Wire up voice settings button
+              document.addEventListener('DOMContentLoaded', () => {
+                const voiceBtn = document.getElementById('gracex-voice-toggle');
+                if (voiceBtn) {
+                  // Update button based on TTS state
+                  function updateVoiceBtn() {
+                    if (window.GRACEX_TTS) {
+                      const enabled = GRACEX_TTS.isEnabled();
+                      voiceBtn.textContent = enabled ? '🔊' : '🔇';
+                      voiceBtn.style.background = enabled 
+                        ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+                        : 'linear-gradient(135deg, #4b5563 0%, #374151 100%)';
+                      voiceBtn.title = enabled 
+                        ? 'Voice ON - Click to toggle, Right-click for settings'
+                        : 'Voice OFF - Click to enable';
+                    }
+                  }
+                  
+                  // Left click: Toggle TTS on/off
+                  voiceBtn.addEventListener('click', () => {
+                    if (window.GRACEX_TTS) {
+                      GRACEX_TTS.toggle();
+                      updateVoiceBtn();
+                      // Speak confirmation if just enabled
+                      if (GRACEX_TTS.isEnabled()) {
+                        GRACEX_TTS.preview('Voice enabled.');
+                      }
+                    }
+                  });
+                  
+                  // Right click: Open settings
+                  voiceBtn.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    if (window.GRACEX_TTS) {
+                      GRACEX_TTS.showSettings();
+                    }
+                  });
+                  
+                  // Update button state after TTS loads
+                  setTimeout(updateVoiceBtn, 1000);
+                  setTimeout(updateVoiceBtn, 3000);
+                }
+              });
+            </script>
+        </aside>
+
+        <!-- Main Content Window -->
+        <main id="content">
+  <div id="view" class="module-view"></div>
+</main>
+
+    </div>
+
+    <!-- Main JS -->
+    <!-- Level 5 API Configuration - ENABLED -->
+    <script>
+      // Level 5 Brain API - PRODUCTION READY
+      window.GRACEX_BRAIN_API = 'http://localhost:3000/api/brain';
+      // Version tracking for cache-busting
+      window.GRACEX_VERSION = 'TITAN';
+    </script>
+    <!-- TITAN EDITION - Production-grade enhancements -->
+    <script src="assets/js/utils-enhanced.js?v=TITAN"></script>
+    <!-- PATCH: Performance.js now conditionally loaded via dev-tools.js -->
+    <script src="assets/js/dev-tools.js?v=TITAN"></script>
+    <!-- PATCH: Removed laser.js redundancy - using laser-ultra.js only -->
+    <!-- Core System -->
+    <script src="assets/js/utils.js?v=TITAN"></script>
+    <script src="assets/js/gracex-v6-utils.js?v=TITAN"></script>
+    <script src="assets/js/speechQueue.js?v=TITAN"></script>
+    <script src="assets/js/audioManager.js?v=TITAN"></script>
+    <script src="assets/js/voiceTTS.js?v=TITAN"></script>
+    <script src="assets/js/voiceAssistant.js?v=TITAN"></script>
+    <script src="assets/js/firewall.js?v=TITAN"></script>
+    <!-- Brain System - PATCHED: Added RAM + Analytics -->
+    <script src="assets/js/brain/gracex.state.js?v=TITAN"></script>
+    <script src="assets/js/brain/gracex.router.js?v=TITAN"></script>
+    <script src="assets/js/brain/gracex.ram.js?v=TITAN"></script>
+    <script src="assets/js/brain/gracex.analytics.js?v=TITAN"></script>
+    <script src="assets/js/brain/gracex.brain.js?v=TITAN"></script>
+    <!-- Module Scripts -->
+    <script src="assets/js/core.js?v=TITAN"></script>
+    <script src="assets/js/brainLevel5.js?v=TITAN"></script>
+    <script src="assets/js/brainV5Helper.js?v=TITAN"></script>
+    <script src="assets/js/GRACEX_LIVE_DATA_INTEGRATION_v1.js?v=TITAN"></script>
+    <script src="assets/js/sport.js?v=TITAN"></script>
+    <script src="assets/js/guardian.js?v=TITAN"></script>
+    <script src="assets/js/osint_engine.js?v=TITAN"></script>
+    <script src="assets/js/osint_sources.js?v=TITAN"></script>
+    <script src="assets/js/osint_report.js?v=TITAN"></script>
+    <script src="assets/js/osint.js?v=TITAN"></script>
+    <script src="assets/js/accounting_engine.js?v=TITAN"></script>
+    <script src="assets/js/accounting_reports.js?v=TITAN"></script>
+    <script src="assets/js/accounting.js?v=TITAN"></script>
+    <script src="assets/js/coreDashboard.js?v=TITAN"></script>
+    <script src="assets/js/forge.js?v=TITAN"></script>
+    <!-- LASER Inspector - Ultra version only -->
+    <script src="assets/js/laser-ultra.js?v=TITAN"></script>
+    <!-- App Entry Point -->
+    <script type="module" src="assets/js/app.js?v=TITAN"></script>
+</body>
+</html>

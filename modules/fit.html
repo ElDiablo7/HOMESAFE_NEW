@@ -1,0 +1,388 @@
+<section class="module-section fit-container">
+  <!-- Module Header -->
+  <div class="module-header">
+    <div class="module-logo-slot">
+      <span class="module-logo-text">FT</span>
+    </div>
+    <div class="module-header-text">
+      <h1 class="module-title">GRACE-X Fit™</h1>
+      <p class="module-subtitle">
+        Movement, strength and fitness plans – your personal fitness companion.
+      </p>
+    </div>
+        </div>
+
+  <!-- GRACE-X Fit Assistant (RIGHT AFTER HEADER) -->
+  <div class="builder-card" id="fit-brain-card">
+    <h2>🧠 GRACE-X Fit Assistant</h2>
+    <p class="hint">
+      Ask about workouts, nutrition, recovery, or get personalized fitness advice.
+    </p>
+
+    <div class="module-brain" id="fit-brain-panel">
+      <div id="fit-brain-output" class="brain-output">
+        <div class="brain-message brain-message-system">
+          Ready to help with your fitness journey. Ask me anything about workouts, nutrition, or wellness!
+        </div>
+      </div>
+
+      <div class="brain-input-row">
+        <button type="button" class="brain-mic-btn" id="fit-brain-mic" title="Voice input">
+          🎙️
+        </button>
+        <input
+          id="fit-brain-input"
+          type="text"
+          placeholder="Ask about workouts, diet, or recovery…"
+        />
+        <button id="fit-brain-btn">Ask</button>
+      </div>
+
+      <div class="brain-actions">
+        <button class="builder-btn" id="fit-brain-clear">
+          Clear conversation
+        </button>
+        <button class="builder-btn" id="fit-brain-export">
+          Export chat
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Dashboard -->
+  <div class="builder-card" id="fit-stats-card">
+    <h2>📊 Today's Progress</h2>
+    <div id="fit-stats-grid" class="gx-stats-grid">
+      <div class="gx-stat-card">
+        <div class="gx-stat-value" id="fit-stat-steps">0</div>
+        <div class="gx-stat-label">Steps</div>
+      </div>
+      <div class="gx-stat-card">
+        <div class="gx-stat-value" id="fit-stat-minutes">0</div>
+        <div class="gx-stat-label">Active Minutes</div>
+      </div>
+      <div class="gx-stat-card">
+        <div class="gx-stat-value" id="fit-stat-water">0</div>
+        <div class="gx-stat-label">Water (L)</div>
+      </div>
+      <div class="gx-stat-card">
+        <div class="gx-stat-value" id="fit-stat-streak">0</div>
+        <div class="gx-stat-label">Day Streak</div>
+      </div>
+    </div>
+    
+    <!-- Progress Bars -->
+    <div style="margin-top: 16px;">
+      <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+        <span class="hint">Steps Goal (10,000)</span>
+        <span class="hint" id="fit-steps-percent">0%</span>
+      </div>
+      <div id="fit-steps-progress" class="gx-progress">
+        <div class="gx-progress-bar" style="width: 0%"></div>
+      </div>
+    </div>
+    
+    <div style="margin-top: 12px;">
+      <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+        <span class="hint">Active Minutes Goal (30)</span>
+        <span class="hint" id="fit-minutes-percent">0%</span>
+      </div>
+      <div id="fit-minutes-progress" class="gx-progress gx-progress-success">
+        <div class="gx-progress-bar" style="width: 0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Daily Check-In -->
+  <div class="builder-card" id="fit-checkin-card">
+    <h2>✅ Daily Check-In</h2>
+    <p class="hint">
+      Log your daily activity and track your progress over time.
+    </p>
+
+    <div class="summary-grid">
+      <label>
+        Steps taken
+        <input type="number" id="fit-steps" placeholder="e.g. 8000" min="0" />
+      </label>
+      <label>
+        Active minutes
+        <input type="number" id="fit-minutes" placeholder="e.g. 45" min="0" />
+      </label>
+      <label>
+        Mood after exercise
+        <select id="fit-mood">
+          <option value="">Select mood…</option>
+          <option value="energized">💪 Energized</option>
+          <option value="good">😊 Good</option>
+          <option value="neutral">😐 Neutral</option>
+          <option value="tired">😴 Tired</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="builder-controls">
+      <button class="builder-btn gx-btn-primary" id="fit-submit-checkin">Log Activity</button>
+      <button class="builder-btn" id="fit-view-history">View History</button>
+    </div>
+        </div>
+
+        <!-- Hydration Tracker -->
+  <div class="builder-card" id="fit-hydration-card">
+    <h2>💧 Hydration Tracker</h2>
+    <p class="hint">
+      Stay hydrated! Track your water intake throughout the day.
+    </p>
+
+    <div class="gx-stats-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 16px;">
+      <button class="builder-btn" data-water="0.25" style="flex-direction: column; padding: 12px;">
+        <span style="font-size: 1.5rem;">🥤</span>
+        <span>250ml</span>
+      </button>
+      <button class="builder-btn" data-water="0.33" style="flex-direction: column; padding: 12px;">
+        <span style="font-size: 1.5rem;">🥛</span>
+        <span>330ml</span>
+      </button>
+      <button class="builder-btn" data-water="0.5" style="flex-direction: column; padding: 12px;">
+        <span style="font-size: 1.5rem;">🍶</span>
+        <span>500ml</span>
+      </button>
+      <button class="builder-btn" data-water="1.0" style="flex-direction: column; padding: 12px;">
+        <span style="font-size: 1.5rem;">🫗</span>
+        <span>1 Litre</span>
+      </button>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+      <span class="hint">Daily Goal (2.5L)</span>
+      <span class="hint" id="fit-water-percent">0%</span>
+    </div>
+    <div id="fit-water-progress" class="gx-progress">
+      <div class="gx-progress-bar" style="width: 0%"></div>
+    </div>
+    
+    <div class="builder-controls" style="margin-top: 12px;">
+      <button class="builder-btn" id="fit-water-reset">Reset Today</button>
+      <span class="hint" id="fit-water-display">Today: 0L / 2.5L</span>
+    </div>
+  </div>
+
+  <!-- Quick Workouts -->
+  <div class="builder-card" id="fit-workout-card">
+    <h2>🏋️ Quick Workouts</h2>
+    <p class="hint">
+      Choose a quick workout based on your available time and equipment.
+    </p>
+
+    <div class="summary-grid">
+      <label>
+        Time available
+        <select id="fit-workout-time">
+          <option value="5">5 minutes</option>
+          <option value="10">10 minutes</option>
+          <option value="15" selected>15 minutes</option>
+          <option value="20">20 minutes</option>
+          <option value="30">30 minutes</option>
+        </select>
+      </label>
+      <label>
+        Focus area
+        <select id="fit-workout-focus">
+          <option value="full">Full body</option>
+          <option value="upper">Upper body</option>
+          <option value="lower">Lower body</option>
+          <option value="core">Core</option>
+          <option value="cardio">Cardio</option>
+        </select>
+      </label>
+      <label>
+        Equipment
+        <select id="fit-workout-equipment">
+          <option value="none">No equipment</option>
+          <option value="dumbbells">Dumbbells</option>
+          <option value="bands">Resistance bands</option>
+          <option value="full">Full gym</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="builder-controls">
+      <button class="builder-btn gx-btn-primary" id="fit-generate-workout">Generate Workout</button>
+    </div>
+
+    <div id="fit-workout-output" class="builder-results" style="display: none;">
+      <!-- Workout will be generated here -->
+    </div>
+        </div>
+
+        <!-- Gentle Stretch Ideas -->
+  <div class="builder-card" id="fit-stretch-card">
+    <h2>🧘 Stretch & Mobility</h2>
+    <p class="hint">
+      Quick stretches to loosen up tight muscles and improve flexibility.
+    </p>
+
+    <div class="gx-tabs" id="fit-stretch-tabs">
+      <button class="gx-tab active" data-tab="desk">Desk Stretches</button>
+      <button class="gx-tab" data-tab="morning">Morning Routine</button>
+      <button class="gx-tab" data-tab="recovery">Post-Workout</button>
+    </div>
+
+    <div id="fit-stretch-content">
+      <div class="gx-tab-content active" data-tab-content="desk">
+        <ul class="gx-list" style="list-style: none; padding: 0;">
+          <li class="gx-list-item">
+            <span>🔄</span>
+            <div class="gx-list-content">
+              <strong>Neck Rolls</strong>
+              <div style="font-size: 0.85rem; opacity: 0.8;">Slowly roll head in circles, 5 each direction</div>
+            </div>
+            <span class="gx-badge">30s</span>
+          </li>
+          <li class="gx-list-item">
+            <span>🙆</span>
+            <div class="gx-list-content">
+              <strong>Shoulder Shrugs</strong>
+              <div style="font-size: 0.85rem; opacity: 0.8;">Raise shoulders to ears, hold 3s, release. Repeat 10x</div>
+            </div>
+            <span class="gx-badge">45s</span>
+          </li>
+          <li class="gx-list-item">
+            <span>🤸</span>
+            <div class="gx-list-content">
+              <strong>Seated Twist</strong>
+              <div style="font-size: 0.85rem; opacity: 0.8;">Twist torso left, hold 15s. Repeat right side</div>
+            </div>
+            <span class="gx-badge">30s</span>
+          </li>
+          <li class="gx-list-item">
+            <span>✋</span>
+            <div class="gx-list-content">
+              <strong>Wrist Circles</strong>
+              <div style="font-size: 0.85rem; opacity: 0.8;">Circle wrists 10 times each direction</div>
+            </div>
+            <span class="gx-badge">20s</span>
+          </li>
+        </ul>
+      </div>
+      <div class="gx-tab-content" data-tab-content="morning">
+        <ul class="gx-list" style="list-style: none; padding: 0;">
+          <li class="gx-list-item">
+            <span>🌅</span>
+            <div class="gx-list-content">
+              <strong>Cat-Cow Stretch</strong>
+              <div style="font-size: 0.85rem; opacity: 0.8;">On all fours, arch and round spine alternately</div>
+            </div>
+            <span class="gx-badge">1 min</span>
+          </li>
+          <li class="gx-list-item">
+            <span>🐕</span>
+            <div class="gx-list-content">
+              <strong>Downward Dog</strong>
+              <div style="font-size: 0.85rem; opacity: 0.8;">Hold inverted V position, pedal feet</div>
+            </div>
+            <span class="gx-badge">45s</span>
+          </li>
+          <li class="gx-list-item">
+            <span>🦵</span>
+            <div class="gx-list-content">
+              <strong>Standing Quad Stretch</strong>
+              <div style="font-size: 0.85rem; opacity: 0.8;">Pull foot to glutes, hold each leg 30s</div>
+            </div>
+            <span class="gx-badge">1 min</span>
+          </li>
+        </ul>
+      </div>
+      <div class="gx-tab-content" data-tab-content="recovery">
+        <ul class="gx-list" style="list-style: none; padding: 0;">
+          <li class="gx-list-item">
+            <span>🦋</span>
+            <div class="gx-list-content">
+              <strong>Butterfly Stretch</strong>
+              <div style="font-size: 0.85rem; opacity: 0.8;">Seated, soles together, gently press knees down</div>
+            </div>
+            <span class="gx-badge">1 min</span>
+          </li>
+          <li class="gx-list-item">
+            <span>🧎</span>
+            <div class="gx-list-content">
+              <strong>Hip Flexor Stretch</strong>
+              <div style="font-size: 0.85rem; opacity: 0.8;">Lunge position, push hips forward, each side</div>
+            </div>
+            <span class="gx-badge">1 min</span>
+          </li>
+          <li class="gx-list-item">
+            <span>🛏️</span>
+            <div class="gx-list-content">
+              <strong>Figure-4 Stretch</strong>
+              <div style="font-size: 0.85rem; opacity: 0.8;">Lying, cross ankle over knee, pull toward chest</div>
+            </div>
+            <span class="gx-badge">1 min</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Weekly Goals -->
+  <div class="builder-card" id="fit-goals-card">
+    <h2>🎯 Weekly Goals</h2>
+    <p class="hint">
+      Set and track your fitness goals for the week.
+    </p>
+
+    <div class="summary-grid">
+      <label>
+        New goal
+        <input type="text" id="fit-goal-input" placeholder="e.g. Run 5km, Do 100 pushups…" />
+      </label>
+      <label>
+        Target
+        <input type="number" id="fit-goal-target" placeholder="e.g. 3 times" min="1" />
+      </label>
+    </div>
+
+    <div class="builder-controls">
+      <button class="builder-btn gx-btn-primary" id="fit-goal-add">Add Goal</button>
+      <button class="builder-btn" id="fit-goals-clear">Clear All</button>
+    </div>
+
+    <ul id="fit-goals-list" class="gx-list" style="margin-top: 16px; list-style: none; padding: 0;">
+      <!-- Goals will be added here -->
+    </ul>
+  </div>
+
+  <!-- Activity History -->
+  <div class="builder-card" id="fit-history-card">
+    <h2>📅 Activity History</h2>
+    <p class="hint">
+      View your logged activities from the past 7 days.
+    </p>
+
+    <div id="fit-history-list" class="builder-results">
+      <div class="gx-empty-state">
+        <div class="gx-empty-state-icon">📊</div>
+        <div class="gx-empty-state-title">No activity logged yet</div>
+        <div class="gx-empty-state-message">Use the Daily Check-In to start tracking</div>
+        </div>
+    </div>
+
+    <div class="builder-controls" style="margin-top: 12px;">
+      <button class="builder-btn" id="fit-export-history">Export Data</button>
+      <button class="builder-btn" id="fit-clear-history">Clear History</button>
+    </div>
+  </div>
+
+  <!-- Voice Panel (MOVED LOWER) -->
+  <div class="builder-card">
+    <h2>🎙️ Voice Dictation</h2>
+    <p class="hint">Use this for continuous voice input and transcript viewing.</p>
+    
+    <div class="module-voice-panel" data-module="fit" style="background: transparent; padding: 0; margin: 0;">
+      <button type="button" class="module-voice-btn">🎙 Talk to GRACE-X Fit</button>
+      <span class="module-voice-status">Mic off</span>
+      <textarea class="module-voice-text" placeholder="Voice transcript appears here…" rows="3"></textarea>
+      <div class="module-voice-reply"></div>
+    </div>
+  </div>
+</section>

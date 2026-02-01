@@ -1,0 +1,166 @@
+/* ============================================
+   GRACE-X THEME SYSTEM v6.5.0
+   Overlay theme colors on top of base styles
+   © 2026 Zachary Charles Anthony Crockett
+   ============================================ */
+
+/* THEME: TITAN (Default - Cyan/Magenta) */
+:root,
+:root[data-theme="titan"] {
+    --theme-primary: #00f0ff;
+    --theme-secondary: #ff00ff;
+    --theme-accent: #8800ff;
+}
+
+/* THEME: SENTINEL (Professional Blue) */
+:root[data-theme="sentinel"] {
+    --theme-primary: #3b82f6;
+    --theme-secondary: #1e40af;
+    --theme-accent: #60a5fa;
+    --gx-accent-cyan: #3b82f6;
+    --gx-accent-blue: #1e40af;
+}
+
+/* THEME: FORGE (Matrix Green) */
+:root[data-theme="forge"] {
+    --theme-primary: #00ff88;
+    --theme-secondary: #00d4ff;
+    --theme-accent: #00ffcc;
+    --gx-accent-cyan: #00ff88;
+    --gx-accent-emerald: #00d4ff;
+}
+
+/* THEME: VENUS (Pink/Purple) */
+:root[data-theme="venus"] {
+    --theme-primary: #ff00ff;
+    --theme-secondary: #ff88ff;
+    --theme-accent: #ff44ff;
+    --gx-accent-pink: #ff00ff;
+    --gx-accent-violet: #ff88ff;
+}
+
+/* THEME: STEALTH (Dark Gray) */
+:root[data-theme="stealth"] {
+    --theme-primary: #64748b;
+    --theme-secondary: #475569;
+    --theme-accent: #94a3b8;
+    --gx-accent-cyan: #64748b;
+    --gx-bg-dark: #000000;
+    --gx-bg-panel: rgba(10, 10, 10, 0.9);
+}
+
+/* THEME: SOLAR (Light Mode) */
+:root[data-theme="solar"] {
+    --theme-primary: #f59e0b;
+    --theme-secondary: #d97706;
+    --theme-accent: #fbbf24;
+    --gx-bg-dark: #fef3c7;
+    --gx-bg-panel: rgba(255, 255, 255, 0.9);
+    --gx-bg-card: rgba(255, 255, 255, 0.8);
+    --gx-text-primary: #18181b;
+    --gx-text-secondary: #52525b;
+    --gx-border: rgba(0, 0, 0, 0.1);
+}
+
+/* Theme Selector UI */
+.theme-selector {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    background: var(--gx-glass-bg);
+    backdrop-filter: var(--gx-glass-blur);
+    border: 1px solid var(--gx-glass-border);
+    border-radius: 16px;
+    padding: 12px;
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 9997;
+    box-shadow: var(--gx-shadow-lg);
+}
+
+.theme-selector.show {
+    display: flex;
+    animation: slideUp 0.3s ease;
+}
+
+.theme-option {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.theme-option:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.theme-option.active {
+    border-color: var(--gx-accent-cyan);
+    box-shadow: 0 0 12px var(--gx-accent-cyan);
+}
+
+.theme-titan { background: linear-gradient(135deg, #00f0ff, #ff00ff); }
+.theme-sentinel { background: linear-gradient(135deg, #3b82f6, #1e40af); }
+.theme-forge { background: linear-gradient(135deg, #00ff88, #00d4ff); }
+.theme-venus { background: linear-gradient(135deg, #ff00ff, #ff88ff); }
+.theme-stealth { background: linear-gradient(135deg, #64748b, #475569); }
+.theme-solar { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Sidebar collapse button */
+.sidebar-toggle {
+    position: fixed;
+    left: 20px;
+    top: 20px;
+    width: 44px;
+    height: 44px;
+    background: var(--gx-glass-bg);
+    backdrop-filter: var(--gx-glass-blur);
+    border: 1px solid var(--gx-glass-border);
+    border-radius: 12px;
+    color: var(--gx-accent-cyan);
+    font-size: 24px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 1001;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.aside.collapsed ~ .sidebar-toggle {
+    display: flex;
+}
+
+.sidebar-toggle:hover {
+    background: var(--gx-accent-cyan);
+    color: var(--gx-bg-dark);
+    box-shadow: 0 0 20px var(--gx-accent-cyan);
+}
+
+/* Sidebar collapse state */
+.aside.collapsed {
+    transform: translateX(-100%);
+}
+
+#content {
+    transition: margin-left 0.3s ease;
+}
+
+.aside.collapsed ~ #app #content {
+    margin-left: 0;
+}

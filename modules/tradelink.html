@@ -1,0 +1,108 @@
+<section class="module-section tradelink-container">
+  <!-- Module Header -->
+        <div class="module-header">
+        <div class="module-logo-slot">
+          <span class="module-logo-text">TL</span>
+        </div>
+        <div class="module-header-text">
+          <h1 class="module-title">GRACE-X TradeLink™</h1>
+          <p class="module-subtitle">
+        Match the right trade to the right job – your job management assistant.
+      </p>
+    </div>
+  </div>
+
+  <!-- TradeLink assistant (RIGHT AFTER HEADER) -->
+  <div class="builder-card" id="tl-brain-card">
+    <h2>🧠 GRACE-X TradeLink Assistant</h2>
+    <p class="hint">
+      Ask me about jobs, quotes, or which trade you need – I'm here to help manage your projects.
+          </p>
+
+    <div class="module-brain" id="tradelink-brain-panel">
+      <div id="tradelink-brain-output" class="brain-output">
+        <div class="brain-message brain-message-system">
+          Ready to help with job management, quotes, and trade matching. What do you need?
+        </div>
+      </div>
+
+      <div class="brain-input-row">
+        <button type="button" class="brain-mic-btn" id="tradelink-brain-mic" title="Voice input">
+          🎙️
+        </button>
+        <input
+          id="tradelink-brain-input"
+          type="text"
+          placeholder="Ask about your job, quotes, or trades…"
+        />
+        <button id="tradelink-brain-send">Ask</button>
+      </div>
+
+      <div class="brain-actions">
+        <button class="builder-btn" id="tradelink-brain-clear">
+          Clear conversation
+        </button>
+      </div>
+    </div>
+  </div>
+
+        <!-- JOB LIST -->
+        <div class="builder-card" id="tl-joblist-card">
+          <h2>📋 Job Board</h2>
+          <p class="hint">
+            Prototype job list – these are sample jobs stored in the browser only.
+          </p>
+
+          <div id="tl-job-list" class="tl-job-list">
+            <!-- Jobs injected by tradelink.js -->
+          </div>
+        </div>
+
+        <!-- JOB DETAILS / ACTIONS -->
+        <div class="builder-card" id="tl-detail-card">
+          <h2>🧱 Job Details & Actions</h2>
+          <p class="hint">
+            Pick a job on the left to see details, then choose what you want to do with it.
+          </p>
+
+          <div class="tl-detail-header">
+            <div>
+              <div id="tl-detail-title" class="tl-detail-title">No job selected</div>
+              <div id="tl-detail-meta" class="tl-detail-meta">—</div>
+            </div>
+            <div id="tl-detail-status" class="tl-detail-status">Status: —</div>
+          </div>
+
+          <div id="tl-detail-body" class="tl-detail-body">
+            Select a job from the board to see the full description here…
+          </div>
+
+          <div class="tl-actions">
+            <button class="builder-btn" id="tl-btn-request">Request quote</button>
+            <button class="builder-btn" id="tl-btn-assign">Assign trade</button>
+            <button class="builder-btn" id="tl-btn-complete">Mark as completed</button>
+          </div>
+        </div>
+
+        <!-- ACTIVITY LOG -->
+        <div class="builder-card" id="tl-log-card">
+          <h2>📡 Activity Log (Local)</h2>
+          <p class="hint">
+            This is just a local log so you can see what buttons you pressed. Later this would sync with a backend.
+          </p>
+          <pre id="tl-log" class="tl-log">No actions yet…</pre>
+        </div>
+
+  <!-- Voice Panel (MOVED LOWER) -->
+  <div class="builder-card">
+    <h2>🎙️ Voice Dictation</h2>
+    <p class="hint">Use this for continuous voice input and transcript viewing.</p>
+    
+    <div class="module-voice-panel" data-module="tradelink" style="background: transparent; padding: 0; margin: 0;">
+      <button type="button" class="module-voice-btn">🎙 Talk to GRACE-X TradeLink</button>
+      <span class="module-voice-status">Mic off</span>
+      <textarea class="module-voice-text" placeholder="Voice transcript appears here…" rows="3"></textarea>
+      <div class="module-voice-reply"></div>
+    </div>
+  </div>
+      </section>

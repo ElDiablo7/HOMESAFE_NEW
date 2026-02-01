@@ -1,0 +1,47 @@
+GRACE-X AI™ DEVELOPMENT WORKFLOW (MASTER)
+
+1. WORK IN gracex_dev/ FOLDER ONLY
+   - This is your active development version.
+   - Do not edit inside releases/ or backups/.
+
+2. BEFORE EVERY CHANGE (BACKUP FIRST)
+   - Go to backups/
+   - Create a zip: YYYY-MM-DD_HHMM_description.zip
+   - Example: 2025-11-15_1530_pre-builder-ui.zip
+
+3. MAKE ONE CHANGE AT A TIME
+   - Edit modules/<module>.html
+   - Edit assets/js/*.js
+   - Edit index.html
+   - Use consistent paths: assets/img/*, assets/audio/*
+
+4. TEST LOCALLY USING PYTHON SERVER
+   - Open terminal inside gracex_dev/
+   - Run: python -m http.server 8000
+   - Open in Firefox: http://localhost:8000/index.html
+
+5. SMOKE TEST (EVERY TIME)
+   - Boot loads
+   - No console errors
+   - Sidebar buttons switch modules
+   - OSINT locked
+   - Images load
+   - Audio loads
+
+6. FIX ANY ERRORS → RE-TEST → CONFIRM
+   - Make sure everything works twice in a row.
+
+7. DOCUMENT THE CHANGE
+   - Update CHANGELOG.md (short, factual)
+
+8. CREATE POST-FIX BACKUP
+   - Save a new zip to backups/
+
+9. OPTIONAL: CREATE DEV/PROD RELEASE
+   - Dev release: full readable version
+   - Prod release: cleaned/minified version
+
+10. RECOVERY
+   - If anything breaks: unzip the last backup and replace gracex_dev/
+
+END.

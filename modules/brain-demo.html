@@ -1,0 +1,700 @@
+<section class="module-section brain-demo-container">
+  <!-- Module Header -->
+  <div class="module-header">
+    <div class="module-logo-slot">
+      <span class="module-logo-text">🧠</span>
+    </div>
+    <div class="module-header-text">
+      <h1 class="module-title">Brain Control Center™</h1>
+      <p class="module-subtitle">
+        RAM Brain & Analytics Brain testing and demonstration suite
+      </p>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- RAM BRAIN SECTION -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  
+  <div class="builder-card">
+    <h2>💾 RAM Brain Status</h2>
+    <p class="hint">Working memory buffer for temporary context and multi-step reasoning</p>
+    
+    <div class="brain-stats" id="ram-stats">
+      <div class="stat-row">
+        <span class="stat-label">Buffers:</span>
+        <span class="stat-value" id="ram-buffers">0/10</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Active Chains:</span>
+        <span class="stat-value" id="ram-chains">0/5</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Scratch Items:</span>
+        <span class="stat-value" id="ram-scratch">0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Last Access:</span>
+        <span class="stat-value" id="ram-last-access">Never</span>
+      </div>
+    </div>
+
+    <div class="brain-actions">
+      <button class="builder-btn" id="ram-refresh">🔄 Refresh Stats</button>
+      <button class="builder-btn" id="ram-summary">📊 Full Summary</button>
+      <button class="builder-btn btn-warning" id="ram-clear">🗑️ Clear RAM</button>
+    </div>
+
+    <!-- Buffer Management -->
+    <div class="brain-subsection">
+      <h3>Buffer Management</h3>
+      <div class="input-group">
+        <input type="text" id="buffer-name" placeholder="Buffer name (e.g., 'calculation')">
+        <input type="text" id="buffer-data" placeholder="Data to store">
+        <button class="builder-btn" id="buffer-set">Set Buffer</button>
+      </div>
+      <div class="input-group">
+        <input type="text" id="buffer-get-name" placeholder="Buffer name to retrieve">
+        <button class="builder-btn" id="buffer-get">Get Buffer</button>
+      </div>
+      <div id="buffer-result" class="result-display"></div>
+      <div id="buffer-list" class="buffer-list"></div>
+    </div>
+
+    <!-- Reasoning Chain -->
+    <div class="brain-subsection">
+      <h3>Reasoning Chains</h3>
+      <div class="input-group">
+        <input type="text" id="chain-id" placeholder="Chain ID">
+        <button class="builder-btn" id="chain-start">Start Chain</button>
+        <button class="builder-btn" id="chain-step">Add Step</button>
+        <button class="builder-btn" id="chain-complete">Complete</button>
+      </div>
+      <div id="chain-display" class="result-display"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- ANALYTICS BRAIN SECTION -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  
+  <div class="builder-card">
+    <h2>🔍 Analytics Brain</h2>
+    <p class="hint">Deep inspection and pattern recognition engine</p>
+
+    <div class="brain-stats" id="analytics-stats">
+      <div class="stat-row">
+        <span class="stat-label">Cache Size:</span>
+        <span class="stat-value" id="analytics-cache">0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Pattern Detection:</span>
+        <span class="stat-value">✓ Enabled</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Anomaly Detection:</span>
+        <span class="stat-value">✓ Enabled</span>
+      </div>
+    </div>
+
+    <!-- Element Inspector -->
+    <div class="brain-subsection">
+      <h3>Element Inspector</h3>
+      <p class="hint">Click any element on the page, then click "Inspect Last Clicked"</p>
+      <button class="builder-btn" id="inspect-element">🎯 Inspect Last Clicked</button>
+      <button class="builder-btn" id="inspect-this">🔍 Inspect This Button</button>
+      <div id="element-analysis" class="analysis-display"></div>
+    </div>
+
+    <!-- Array Analyzer -->
+    <div class="brain-subsection">
+      <h3>Array Analyzer</h3>
+      <div class="input-group">
+        <input type="text" id="array-input" placeholder="Enter array (e.g., [1,2,3,4,5])" style="width: 100%;">
+        <button class="builder-btn" id="array-analyze">Analyze Array</button>
+      </div>
+      <div id="array-analysis" class="analysis-display"></div>
+    </div>
+
+    <!-- Object Analyzer -->
+    <div class="brain-subsection">
+      <h3>Object Inspector</h3>
+      <div class="input-group">
+        <textarea id="object-input" placeholder='Enter JSON object (e.g., {"name": "test", "value": 123})' rows="4" style="width: 100%;"></textarea>
+        <button class="builder-btn" id="object-analyze">Analyze Object</button>
+      </div>
+      <div id="object-analysis" class="analysis-display"></div>
+    </div>
+
+    <!-- String Analyzer -->
+    <div class="brain-subsection">
+      <h3>String Analyzer</h3>
+      <div class="input-group">
+        <textarea id="string-input" placeholder="Enter any text to analyze patterns..." rows="3" style="width: 100%;"></textarea>
+        <button class="builder-btn" id="string-analyze">Analyze String</button>
+      </div>
+      <div id="string-analysis" class="analysis-display"></div>
+    </div>
+
+    <div class="brain-actions">
+      <button class="builder-btn" id="analytics-clear-cache">🗑️ Clear Cache</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- INTEGRATION DEMO -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  
+  <div class="builder-card">
+    <h2>🔗 Integration Demo</h2>
+    <p class="hint">See how RAM and Analytics work together</p>
+
+    <div class="demo-scenario">
+      <h3>Scenario: Multi-Step Analysis</h3>
+      <p>This demo shows how to use both brains together for complex tasks</p>
+      
+      <button class="builder-btn btn-primary" id="demo-run">▶️ Run Demo</button>
+      <div id="demo-output" class="result-display"></div>
+    </div>
+
+    <div class="demo-scenario">
+      <h3>Example: Data Pipeline</h3>
+      <ol>
+        <li>Analyze data with Analytics Brain</li>
+        <li>Store results in RAM buffer</li>
+        <li>Create reasoning chain for multi-step processing</li>
+        <li>Retrieve and synthesize final result</li>
+      </ol>
+      <button class="builder-btn" id="demo-pipeline">▶️ Run Pipeline</button>
+      <div id="pipeline-output" class="result-display"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- DOCUMENTATION -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  
+  <div class="builder-card">
+    <h2>📚 Quick Reference</h2>
+    
+    <div class="docs-section">
+      <h3>RAM Brain API</h3>
+      <pre class="code-block">
+// Buffers (clipboard-style)
+GraceX.RAM.setBuffer('myData', data, {ttl: 300000})
+GraceX.RAM.getBuffer('myData')
+GraceX.RAM.deleteBuffer('myData')
+GraceX.RAM.listBuffers()
+
+// Working Context
+GraceX.RAM.setContext({task: 'calculation', step: 1})
+GraceX.RAM.getContext()
+GraceX.RAM.clearContext()
+
+// Reasoning Chains
+GraceX.RAM.startChain('taskId', {goal: 'analyze'})
+GraceX.RAM.addChainStep('taskId', {step: 1, data: {}})
+GraceX.RAM.completeChain('taskId', result)
+
+// Scratch Pad
+GraceX.RAM.setScratch('calc1', 42)
+GraceX.RAM.getScratch('calc1')
+
+// Utilities
+GraceX.RAM.getStats()
+GraceX.RAM.clearAll()
+      </pre>
+    </div>
+
+    <div class="docs-section">
+      <h3>Analytics Brain API</h3>
+      <pre class="code-block">
+// Inspection
+const analysis = GraceX.Analytics.inspect(target, {
+  maxDepth: 5,
+  enablePatterns: true,
+  enableAnomalies: true
+})
+
+// Batch Analysis
+const results = GraceX.Analytics.batchInspect([t1, t2, t3])
+
+// Comparison
+const diff = GraceX.Analytics.compare(target1, target2)
+
+// Cache Management
+GraceX.Analytics.clearCache()
+GraceX.Analytics.getStats()
+      </pre>
+    </div>
+  </div>
+
+</section>
+
+<style>
+  .brain-demo-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .brain-stats {
+    background: rgba(0, 0, 0, 0.05);
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+  }
+
+  .stat-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .stat-row:last-child {
+    border-bottom: none;
+  }
+
+  .stat-label {
+    font-weight: 600;
+    color: #666;
+  }
+
+  .stat-value {
+    font-family: 'Monaco', 'Courier New', monospace;
+    color: #0066cc;
+  }
+
+  .brain-subsection {
+    margin: 2rem 0;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+  }
+
+  .brain-subsection h3 {
+    margin-top: 0;
+    color: #333;
+  }
+
+  .input-group {
+    display: flex;
+    gap: 0.5rem;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+  }
+
+  .input-group input,
+  .input-group textarea {
+    flex: 1;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: 'Monaco', 'Courier New', monospace;
+    font-size: 0.9rem;
+  }
+
+  .result-display,
+  .analysis-display {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 1rem;
+    margin: 1rem 0;
+    min-height: 100px;
+    font-family: 'Monaco', 'Courier New', monospace;
+    font-size: 0.85rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  .buffer-list {
+    margin: 1rem 0;
+  }
+
+  .buffer-item {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 0.5rem;
+    margin: 0.5rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .demo-scenario {
+    margin: 2rem 0;
+    padding: 1rem;
+    background: #f0f7ff;
+    border-left: 4px solid #0066cc;
+    border-radius: 4px;
+  }
+
+  .docs-section {
+    margin: 1rem 0;
+  }
+
+  .code-block {
+    background: #2d2d2d;
+    color: #f8f8f2;
+    padding: 1rem;
+    border-radius: 4px;
+    overflow-x: auto;
+    font-family: 'Monaco', 'Courier New', monospace;
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+
+  .brain-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+  }
+
+  .btn-warning {
+    background: #ff9800 !important;
+  }
+
+  .btn-primary {
+    background: #0066cc !important;
+    color: white !important;
+  }
+</style>
+
+<script>
+  (function() {
+    console.log("[BRAIN DEMO] Initializing...");
+
+    let lastClickedElement = null;
+
+    // Track last clicked element globally
+    document.addEventListener('click', (e) => {
+      lastClickedElement = e.target;
+    }, true);
+
+    // ═══════════════════════════════════════════════════════════════════
+    // RAM BRAIN CONTROLS
+    // ═══════════════════════════════════════════════════════════════════
+    
+    function refreshRAMStats() {
+      const stats = GraceX.RAM.getStats();
+      document.getElementById('ram-buffers').textContent = stats.buffers.usage;
+      document.getElementById('ram-chains').textContent = 
+        `${stats.chains.active}/${stats.chains.count}`;
+      document.getElementById('ram-scratch').textContent = stats.scratch.count;
+      document.getElementById('ram-last-access').textContent = 
+        new Date(stats.meta.lastAccess).toLocaleTimeString();
+    }
+
+    document.getElementById('ram-refresh')?.addEventListener('click', refreshRAMStats);
+
+    document.getElementById('ram-summary')?.addEventListener('click', () => {
+      alert(GraceX.RAM.summary());
+    });
+
+    document.getElementById('ram-clear')?.addEventListener('click', () => {
+      if (confirm('Clear all RAM? This cannot be undone.')) {
+        GraceX.RAM.clearAll();
+        refreshRAMStats();
+        alert('RAM cleared successfully');
+      }
+    });
+
+    // Buffer controls
+    document.getElementById('buffer-set')?.addEventListener('click', () => {
+      const name = document.getElementById('buffer-name').value;
+      const data = document.getElementById('buffer-data').value;
+      
+      if (!name || !data) {
+        alert('Please enter both buffer name and data');
+        return;
+      }
+
+      try {
+        // Try to parse as JSON, otherwise store as string
+        let parsedData;
+        try {
+          parsedData = JSON.parse(data);
+        } catch (e) {
+          parsedData = data;
+        }
+
+        GraceX.RAM.setBuffer(name, parsedData);
+        document.getElementById('buffer-result').textContent = 
+          `✓ Buffer '${name}' set successfully`;
+        refreshRAMStats();
+        updateBufferList();
+      } catch (e) {
+        document.getElementById('buffer-result').textContent = 
+          `✗ Error: ${e.message}`;
+      }
+    });
+
+    document.getElementById('buffer-get')?.addEventListener('click', () => {
+      const name = document.getElementById('buffer-get-name').value;
+      
+      if (!name) {
+        alert('Please enter a buffer name');
+        return;
+      }
+
+      const data = GraceX.RAM.getBuffer(name);
+      const resultEl = document.getElementById('buffer-result');
+      
+      if (data === null) {
+        resultEl.textContent = `✗ Buffer '${name}' not found`;
+      } else {
+        resultEl.textContent = `Buffer '${name}':\n${JSON.stringify(data, null, 2)}`;
+      }
+    });
+
+    function updateBufferList() {
+      const buffers = GraceX.RAM.listBuffers();
+      const listEl = document.getElementById('buffer-list');
+      
+      if (buffers.length === 0) {
+        listEl.innerHTML = '<p style="color: #999;">No buffers stored</p>';
+        return;
+      }
+
+      listEl.innerHTML = '<h4>Active Buffers:</h4>' + buffers.map(b => `
+        <div class="buffer-item">
+          <div>
+            <strong>${b.name}</strong>
+            <span style="color: #666; margin-left: 1rem;">
+              ${b.type} • ${Math.floor(b.age / 1000)}s ago • ${b.module}
+            </span>
+          </div>
+          <button class="builder-btn btn-sm" onclick="GraceX.RAM.deleteBuffer('${b.name}'); updateBufferList(); refreshRAMStats();">
+            Delete
+          </button>
+        </div>
+      `).join('');
+    }
+
+    // Chain controls
+    let currentChainId = null;
+
+    document.getElementById('chain-start')?.addEventListener('click', () => {
+      const id = document.getElementById('chain-id').value;
+      if (!id) {
+        alert('Please enter a chain ID');
+        return;
+      }
+
+      GraceX.RAM.startChain(id, { started: new Date().toISOString() });
+      currentChainId = id;
+      updateChainDisplay();
+      refreshRAMStats();
+    });
+
+    document.getElementById('chain-step')?.addEventListener('click', () => {
+      if (!currentChainId) {
+        alert('Start a chain first');
+        return;
+      }
+
+      GraceX.RAM.addChainStep(currentChainId, {
+        timestamp: new Date().toISOString(),
+        action: 'User added step'
+      });
+      updateChainDisplay();
+    });
+
+    document.getElementById('chain-complete')?.addEventListener('click', () => {
+      if (!currentChainId) {
+        alert('Start a chain first');
+        return;
+      }
+
+      GraceX.RAM.completeChain(currentChainId, { success: true });
+      updateChainDisplay();
+      refreshRAMStats();
+    });
+
+    function updateChainDisplay() {
+      if (!currentChainId) return;
+      
+      const chain = GraceX.RAM.getChain(currentChainId);
+      const displayEl = document.getElementById('chain-display');
+      
+      if (chain) {
+        displayEl.textContent = JSON.stringify(chain, null, 2);
+      }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // ANALYTICS BRAIN CONTROLS
+    // ═══════════════════════════════════════════════════════════════════
+    
+    function displayAnalysis(analysis, targetEl) {
+      const el = document.getElementById(targetEl);
+      el.textContent = JSON.stringify(analysis, null, 2);
+    }
+
+    document.getElementById('inspect-element')?.addEventListener('click', () => {
+      if (!lastClickedElement) {
+        alert('Click an element first, then click this button');
+        return;
+      }
+
+      const analysis = GraceX.Analytics.inspect(lastClickedElement);
+      displayAnalysis(analysis, 'element-analysis');
+    });
+
+    document.getElementById('inspect-this')?.addEventListener('click', function() {
+      const analysis = GraceX.Analytics.inspect(this);
+      displayAnalysis(analysis, 'element-analysis');
+    });
+
+    document.getElementById('array-analyze')?.addEventListener('click', () => {
+      const input = document.getElementById('array-input').value;
+      
+      try {
+        const arr = JSON.parse(input);
+        if (!Array.isArray(arr)) {
+          throw new Error('Input is not an array');
+        }
+
+        const analysis = GraceX.Analytics.inspect(arr);
+        displayAnalysis(analysis, 'array-analysis');
+      } catch (e) {
+        document.getElementById('array-analysis').textContent = 
+          `Error: ${e.message}\n\nPlease enter a valid JSON array like: [1,2,3,4,5]`;
+      }
+    });
+
+    document.getElementById('object-analyze')?.addEventListener('click', () => {
+      const input = document.getElementById('object-input').value;
+      
+      try {
+        const obj = JSON.parse(input);
+        if (typeof obj !== 'object' || Array.isArray(obj)) {
+          throw new Error('Input is not an object');
+        }
+
+        const analysis = GraceX.Analytics.inspect(obj);
+        displayAnalysis(analysis, 'object-analysis');
+      } catch (e) {
+        document.getElementById('object-analysis').textContent = 
+          `Error: ${e.message}\n\nPlease enter a valid JSON object like: {"key": "value"}`;
+      }
+    });
+
+    document.getElementById('string-analyze')?.addEventListener('click', () => {
+      const input = document.getElementById('string-input').value;
+      
+      if (!input) {
+        alert('Please enter some text to analyze');
+        return;
+      }
+
+      const analysis = GraceX.Analytics.inspect(input);
+      displayAnalysis(analysis, 'string-analysis');
+    });
+
+    document.getElementById('analytics-clear-cache')?.addEventListener('click', () => {
+      const count = GraceX.Analytics.clearCache();
+      alert(`Cache cleared: ${count} entries removed`);
+    });
+
+    // ═══════════════════════════════════════════════════════════════════
+    // INTEGRATION DEMOS
+    // ═══════════════════════════════════════════════════════════════════
+    
+    document.getElementById('demo-run')?.addEventListener('click', () => {
+      const output = document.getElementById('demo-output');
+      output.textContent = 'Running demo...\n\n';
+
+      // Step 1: Create test data
+      const testData = [10, 20, 15, 25, 30, 18, 22];
+      output.textContent += `Step 1: Created test data\n${JSON.stringify(testData)}\n\n`;
+
+      // Step 2: Analyze with Analytics Brain
+      const analysis = GraceX.Analytics.inspect(testData);
+      output.textContent += `Step 2: Analytics Brain analysis\n`;
+      output.textContent += `Type: ${analysis.type}\n`;
+      output.textContent += `Mean: ${analysis.metrics?.mean}\n`;
+      output.textContent += `Patterns: ${analysis.patterns.length} detected\n\n`;
+
+      // Step 3: Store in RAM buffer
+      GraceX.RAM.setBuffer('demo-results', analysis);
+      output.textContent += `Step 3: Stored analysis in RAM buffer 'demo-results'\n\n`;
+
+      // Step 4: Retrieve and display
+      const retrieved = GraceX.RAM.getBuffer('demo-results');
+      output.textContent += `Step 4: Retrieved from RAM\n`;
+      output.textContent += `Successfully retrieved: ${!!retrieved}\n\n`;
+
+      output.textContent += `✓ Demo complete! Both brains working together.`;
+      
+      refreshRAMStats();
+    });
+
+    document.getElementById('demo-pipeline')?.addEventListener('click', () => {
+      const output = document.getElementById('pipeline-output');
+      output.textContent = 'Running data pipeline...\n\n';
+
+      // Start reasoning chain
+      GraceX.RAM.startChain('pipeline-demo', { goal: 'process data' });
+      output.textContent += `✓ Started reasoning chain 'pipeline-demo'\n\n`;
+
+      // Step 1: Analyze input
+      const inputData = { users: [1, 2, 3, 4, 5], active: [1, 3, 5] };
+      const step1Analysis = GraceX.Analytics.inspect(inputData);
+      GraceX.RAM.addChainStep('pipeline-demo', {
+        step: 1,
+        action: 'analyze_input',
+        result: step1Analysis.summary
+      });
+      output.textContent += `Step 1: Analyzed input data\n`;
+      output.textContent += `  Keys found: ${step1Analysis.summary.keys}\n\n`;
+
+      // Step 2: Store intermediate results
+      GraceX.RAM.setBuffer('pipeline-users', inputData.users);
+      GraceX.RAM.setBuffer('pipeline-active', inputData.active);
+      GraceX.RAM.addChainStep('pipeline-demo', {
+        step: 2,
+        action: 'store_intermediate',
+        buffers: 2
+      });
+      output.textContent += `Step 2: Stored intermediate results in buffers\n\n`;
+
+      // Step 3: Process
+      const users = GraceX.RAM.getBuffer('pipeline-users');
+      const active = GraceX.RAM.getBuffer('pipeline-active');
+      const inactiveCount = users.length - active.length;
+      GraceX.RAM.addChainStep('pipeline-demo', {
+        step: 3,
+        action: 'calculate',
+        result: { total: users.length, active: active.length, inactive: inactiveCount }
+      });
+      output.textContent += `Step 3: Calculated results\n`;
+      output.textContent += `  Total users: ${users.length}\n`;
+      output.textContent += `  Active: ${active.length}\n`;
+      output.textContent += `  Inactive: ${inactiveCount}\n\n`;
+
+      // Complete chain
+      const finalResult = { total: users.length, active: active.length, inactive: inactiveCount };
+      GraceX.RAM.completeChain('pipeline-demo', finalResult);
+      output.textContent += `✓ Pipeline complete!\n`;
+      output.textContent += `Final result: ${JSON.stringify(finalResult, null, 2)}`;
+
+      refreshRAMStats();
+    });
+
+    // Initialize
+    refreshRAMStats();
+    updateBufferList();
+
+    // Expose for inline use
+    window.updateBufferList = updateBufferList;
+    window.refreshRAMStats = refreshRAMStats;
+
+    console.log("[BRAIN DEMO] Ready ✓");
+  })();
+</script>
