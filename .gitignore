@@ -1,0 +1,29 @@
+# Environment and secrets
+.env
+*.env
+!env.template
+BIG_ZAC.env.TXT
+ZACS_ENV.txt
+*_env.txt
+
+# Dependencies
+node_modules/
+server/node_modules/
+
+# Backups and local copies
+backups/
+*.backup
+*_backup*
+*_old_backup*
+
+# OS and editor
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+.vscode/
+.idea/
+
+# Optional: uncomment to keep repo smaller
+# assets/audio/
+# assets/video/
