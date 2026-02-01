@@ -1920,9 +1920,6 @@ app.get('/api/news', rateLimitMiddleware, async (req, res) => {
 // GALLERY API ENDPOINTS (Media Gallery)
 // ============================================
 
-const fs = require('fs').promises;
-const path = require('path');
-
 // Base media directory (OneDrive Pictures)
 // Normalize path separators for cross-platform compatibility
 const MEDIA_BASE_DIR = (process.env.MEDIA_BASE_DIR || 'C:\\Users\\anyth\\OneDrive\\Pictures')
