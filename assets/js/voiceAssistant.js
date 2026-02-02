@@ -8,6 +8,18 @@
     return;
   }
 
+  // Microphone requires secure context (HTTPS or localhost)
+  if (!window.isSecureContext) {
+    console.warn('[GRACEX VOICE ASSISTANT] Microphone requires HTTPS or localhost');
+    window.GRACEX_VoiceAssistant = { isSupported: false };
+    return;
+  }
+  if (!navigator.mediaDevices || typeof navigator.mediaDevices.getUserMedia !== 'function') {
+    console.warn('[GRACEX VOICE ASSISTANT] getUserMedia not available');
+    window.GRACEX_VoiceAssistant = { isSupported: false };
+    return;
+  }
+
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   
   if (!SpeechRecognition) {
@@ -23,8 +35,8 @@
   const CONFIG = {
     // Wake words - includes both "Grace" and "Gracie" variants
     wakeWords: [
-      'ok grace', 'okay grace', 'hey grace', 'oi grace', 
-      'ok gracie', 'okay gracie', 'hey gracie', 'hi gracie', 
+      'ok grace', 'okay grace', 'hey grace', 'oi grace', 'yo grace',
+      'ok gracie', 'okay gracie', 'hey gracie', 'hi gracie', 'gracie grace',
     ],
     language: 'en-GB',
     // How long to listen after wake word (milliseconds)
@@ -523,53 +535,74 @@
     setSilenceTimeout: (ms) => { CONFIG.silenceTimeout = ms; }
   };
 
-  // Auto-start after a short delay (let other systems initialize)
-  setTimeout(() => {
-    // Only auto-start if the app has loaded (boot is hidden)
-    const boot = document.getElementById('boot');
-    const shouldStart = !boot || boot.style.display === 'none';
-    
-    if (shouldStart) {
-      // Request microphone permission immediately
+  // "Enable voice" button - mic permission requires a user gesture (click) in browsers
+  let enableVoiceBtn = null;
+  function createEnableVoiceButton() {
+    if (document.getElementById('gracex-enable-voice-btn')) return document.getElementById('gracex-enable-voice-btn');
+    const btn = document.createElement('button');
+    btn.id = 'gracex-enable-voice-btn';
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Enable microphone for voice');
+    btn.innerHTML = '🎤 Tap to enable voice';
+    btn.style.cssText = `
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      padding: 12px 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      border: none;
+      border-radius: 30px;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      z-index: 9996;
+      box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+      transition: transform 0.2s, box-shadow 0.2s;
+    `;
+    btn.onmouseenter = () => { btn.style.transform = 'scale(1.05)'; btn.style.boxShadow = '0 6px 24px rgba(102, 126, 234, 0.5)'; };
+    btn.onmouseleave = () => { btn.style.transform = ''; btn.style.boxShadow = '0 4px 20px rgba(102, 126, 234, 0.4)'; };
+    btn.onclick = function requestMicAndStart() {
+      btn.disabled = true;
+      btn.textContent = 'Checking microphone...';
       navigator.mediaDevices.getUserMedia({ audio: true })
         .then(() => {
           console.log('[GRACEX VOICE] Microphone access granted');
+          if (enableVoiceBtn && enableVoiceBtn.parentNode) enableVoiceBtn.remove();
+          enableVoiceBtn = null;
+          createStatusIndicator();
           start();
-          // Show activation message
-          if (statusIndicator) {
-            updateStatus('wake', '🎤 Say "Hey Gracie" to talk!');
-            setTimeout(() => updateStatus('hidden'), 5000);
-          }
+          updateStatus('wake', '🎤 Say "Hey Grace" or "Hey Gracie"');
+          setTimeout(() => updateStatus('hidden'), 5000);
         })
         .catch((err) => {
           console.warn('[GRACEX VOICE] Microphone access denied:', err);
-          // Show helpful message
-          if (statusIndicator) {
-            updateStatus('processing', '❌ Click mic button to enable voice');
-            setTimeout(() => updateStatus('hidden'), 5000);
-          }
+          btn.disabled = false;
+          btn.textContent = '❌ Mic blocked – allow in browser settings';
         });
-    } else {
-      // Wait for boot to complete
-      const observer = new MutationObserver((mutations) => {
+    };
+    document.body.appendChild(btn);
+    enableVoiceBtn = btn;
+    return btn;
+  }
+
+  // Show "Tap to enable voice" after boot; do not auto-request mic (browsers require user gesture)
+  function maybeShowEnableVoice() {
+    const boot = document.getElementById('boot');
+    if (boot && boot.style.display !== 'none') {
+      const observer = new MutationObserver(() => {
         if (boot.style.display === 'none') {
           observer.disconnect();
-          // Request permission after boot
-          navigator.mediaDevices.getUserMedia({ audio: true })
-            .then(() => {
-              start();
-              updateStatus('wake', '🎤 Ready! Say "Hey Gracie"');
-              setTimeout(() => updateStatus('hidden'), 5000);
-            })
-            .catch(() => {
-              updateStatus('processing', '❌ Click mic to enable');
-              setTimeout(() => updateStatus('hidden'), 5000);
-            });
+          createEnableVoiceButton();
         }
       });
       observer.observe(boot, { attributes: true, attributeFilter: ['style'] });
+    } else {
+      createEnableVoiceButton();
     }
-  }, 2000);
+  }
+  setTimeout(maybeShowEnableVoice, 2500);
 
-  console.info('[GRACEX VOICE ASSISTANT] Loaded - Wake words: "Hey Grace", "Ok Grace", "Hey Gracie", "Ok Gracie"');
+  console.info('[GRACEX VOICE ASSISTANT] Loaded - Wake words: Hey Grace, Yo Grace, Gracie Grace, Ok Grace, Hey Gracie, Ok Gracie');
 })();

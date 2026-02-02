@@ -2533,7 +2533,8 @@ async function runSpeedTest() {
   // Latency test
   const latencyStart = performance.now();
   try {
-    await fetch(window.GRACEX_BRAIN_API || 'http://localhost:3000/api/brain', { method: 'HEAD', mode: 'no-cors' });
+    const apiBase = window.GRACEX_API_BASE || 'http://localhost:3000';
+    await fetch(window.GRACEX_BRAIN_API || apiBase + '/api/brain', { method: 'HEAD', mode: 'no-cors' });
   } catch (e) {}
   const latency = Math.round(performance.now() - latencyStart);
   if (latencyEl) latencyEl.textContent = latency + ' ms';
@@ -2627,8 +2628,8 @@ async function updateAPIStatus() {
 
   // Prefer a lightweight health ping over a full brain call
   try {
-    const base = window.GRACEX_BRAIN_API || 'http://localhost:3000/api/brain';
-    const healthUrl = base.replace('/api/brain', '/health');
+    const apiBase = window.GRACEX_API_BASE || 'http://localhost:3000';
+    const healthUrl = (window.GRACEX_BRAIN_API || apiBase + '/api/brain').replace('/api/brain', '/health');
     const resp = await fetch(healthUrl, { method: 'GET' });
     if (resp.ok) {
       const data = await resp.json().catch(() => ({}));

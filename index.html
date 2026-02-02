@@ -222,10 +222,11 @@
     <script src="assets/js/galvanized-recovery.js?v=GALVANIZED"></script>
     <!-- Level 5 API Configuration - ENABLED -->
     <script>
-      // API base: same origin when served from Render/local server, else localhost for file:// dev
+      // API base: same origin when served from Render/local server; file:// or unknown → production URL
       (function() {
         var o = window.location.origin;
-        var base = (o && (o.indexOf('http://localhost') === 0 || o.indexOf('https://') === 0)) ? o : 'http://localhost:3000';
+        var isHttp = o && (o.indexOf('http://localhost') === 0 || o.indexOf('https://') === 0);
+        var base = isHttp ? o : 'https://grace-x-homesafe.onrender.com';
         window.GRACEX_API_BASE = base;
         window.GRACEX_BRAIN_API = base + '/api/brain';
         window.GRACEX_SPORT_API = base + '/api/sport';

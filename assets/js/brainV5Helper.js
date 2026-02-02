@@ -484,16 +484,32 @@
       shouldListen = true;
       pauseOtherVoiceSystems();
 
-      try {
-        cleanupRecognition();
-        createRecognition();
-        recognition.start();
-      } catch (e) {
-        console.error('[GRACEX Brain Mic] Failed to start:', e);
-        shouldListen = false;
-        setMicUI(false);
-        cleanupRecognition();
-        resumeOtherVoiceSystems();
+      // Microphone requires user gesture; request permission first (browser requirement)
+      function doStart() {
+        try {
+          cleanupRecognition();
+          createRecognition();
+          recognition.start();
+        } catch (e) {
+          console.error('[GRACEX Brain Mic] Failed to start:', e);
+          shouldListen = false;
+          setMicUI(false);
+          cleanupRecognition();
+          resumeOtherVoiceSystems();
+        }
+      }
+
+      if (window.isSecureContext && navigator.mediaDevices && typeof navigator.mediaDevices.getUserMedia === 'function') {
+        navigator.mediaDevices.getUserMedia({ audio: true })
+          .then(() => doStart())
+          .catch((err) => {
+            console.warn('[GRACEX Brain Mic] Microphone access denied:', err);
+            shouldListen = false;
+            setMicUI(false);
+            resumeOtherVoiceSystems();
+          });
+      } else {
+        doStart();
       }
     }
     
