@@ -4,10 +4,12 @@
 // ------------------------------
 
 const path = require('path');
-// Explicitly load .env from the server directory to avoid path issues
-const result = require('dotenv').config({ path: path.join(__dirname, '.env') });
-if (result.error) {
-  console.warn('Warning: .env file not found or could not be loaded:', result.error.message);
+const fsSync = require('fs');
+// Load .env only if file exists (on Render, env vars are injected; no .env file)
+const envPath = path.join(__dirname, '.env');
+if (fsSync.existsSync(envPath)) {
+  const result = require('dotenv').config({ path: envPath });
+  if (result.error) console.warn('Warning: .env could not be loaded:', result.error.message);
 }
 
 const express = require('express');
@@ -1920,11 +1922,17 @@ app.get('/api/news', rateLimitMiddleware, async (req, res) => {
 // GALLERY API ENDPOINTS (Media Gallery)
 // ============================================
 
-// Base media directory (OneDrive Pictures)
-// Normalize path separators for cross-platform compatibility
-const MEDIA_BASE_DIR = (process.env.MEDIA_BASE_DIR || 'C:\\Users\\anyth\\OneDrive\\Pictures')
+// Base media directory (env, or local default; on Render use MEDIA_BASE_DIR or data/media)
+const defaultMediaDir = process.platform === 'win32'
+  ? 'C:\\Users\\anyth\\OneDrive\\Pictures'
+  : path.join(__dirname, 'data', 'media');
+const MEDIA_BASE_DIR = (process.env.MEDIA_BASE_DIR || defaultMediaDir)
   .replace(/\\/g, path.sep)
   .replace(/\//g, path.sep);
+// Ensure default media dir exists on Render (no .env) so gallery doesn't crash
+if (!process.env.MEDIA_BASE_DIR && process.platform !== 'win32') {
+  try { fsSync.mkdirSync(MEDIA_BASE_DIR, { recursive: true }); } catch (e) { /* ignore */ }
+}
 
 // List folders and files in media directory
 app.get('/api/gallery/list', rateLimitMiddleware, async (req, res) => {
@@ -2100,6 +2108,11 @@ app.use((err, req, res, next) => {
 // ============================================
 
 const server = app.listen(PORT, () => {
+  const provider = process.env.LLM_PROVIDER || 'openai';
+  const apiKeySet = provider === 'anthropic'
+    ? !!(process.env.ANTHROPIC_API_KEY || process.env.API_KEY)
+    : !!(process.env.OPENAI_API_KEY || process.env.API_KEY);
+  const apiKeyStatus = apiKeySet ? '✓ Configured'.padEnd(39) : '✗ NOT SET - Set in Render env!'.padEnd(39);
   console.log(`
 ╔═══════════════════════════════════════════════════════════╗
 ║                                                           ║
@@ -2114,8 +2127,8 @@ const server = app.listen(PORT, () => {
 ║                                                           ║
 ╠═══════════════════════════════════════════════════════════╣
 ║                                                           ║
-║   🔑  Provider:  ${(process.env.LLM_PROVIDER || 'openai').padEnd(39)}║
-║   🔒  API Key:   ${process.env.API_KEY ? '✓ Configured'.padEnd(39) : '✗ NOT SET - Add to .env!'.padEnd(39)}║
+║   🔑  Provider:  ${provider.padEnd(39)}║
+║   🔒  API Key:   ${apiKeyStatus}║
 ║                                                           ║
 ╚═══════════════════════════════════════════════════════════╝
 `);
