@@ -222,10 +222,14 @@
     <script src="assets/js/galvanized-recovery.js?v=GALVANIZED"></script>
     <!-- Level 5 API Configuration - ENABLED -->
     <script>
-      // Level 5 Brain API - PRODUCTION READY
-      // FIXED: Point to backend server on port 3000
-      window.GRACEX_BRAIN_API = 'http://localhost:3000/api/brain';
-      window.GRACEX_SPORT_API = 'http://localhost:3000/api/sport';
+      // API base: same origin when served from Render/local server, else localhost for file:// dev
+      (function() {
+        var o = window.location.origin;
+        var base = (o && (o.indexOf('http://localhost') === 0 || o.indexOf('https://') === 0)) ? o : 'http://localhost:3000';
+        window.GRACEX_API_BASE = base;
+        window.GRACEX_BRAIN_API = base + '/api/brain';
+        window.GRACEX_SPORT_API = base + '/api/sport';
+      })();
       // Version tracking for cache-busting
       window.GRACEX_VERSION = 'ULTIMATE_v6.6.0';
       // Enable dev tools on localhost

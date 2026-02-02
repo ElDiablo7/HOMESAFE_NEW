@@ -14,7 +14,7 @@
   'use strict';
 
   const STORAGE_KEY = 'gracex_callsheets';
-  const API_BASE = 'http://localhost:3000/api/callsheets';
+  const API_BASE = (window.GRACEX_API_BASE || 'http://localhost:3000') + '/api/callsheets';
 
   // ============================================================================
   // CALL SHEETS ENGINE

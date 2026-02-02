@@ -36,7 +36,8 @@
   
   async function fetchLiveMetrics() {
     try {
-      const response = await fetch('http://localhost:3000/api/system/status');
+      const base = window.GRACEX_API_BASE || 'http://localhost:3000';
+      const response = await fetch(base + '/api/system/status');
       
       if (!response.ok) {
         throw new Error('Backend offline');

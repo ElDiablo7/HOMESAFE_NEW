@@ -14,7 +14,7 @@
   'use strict';
 
   const STORAGE_KEY = 'gracex_risk_safety';
-  const API_BASE = 'http://localhost:3000/api/safety';
+  const API_BASE = (window.GRACEX_API_BASE || 'http://localhost:3000') + '/api/safety';
 
   // ============================================================================
   // RISK & SAFETY ENGINE

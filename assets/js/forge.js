@@ -551,7 +551,8 @@ body {
         // Construct full desktop path
         const fullPath = `C:\\Users\\anyth\\Desktop\\FORGE_PROJECTS\\${this.currentProject.slug}\\${relativePath}`;
         
-        const response = await fetch('http://localhost:3000/api/forge/save-file', {
+        const base = window.GRACEX_API_BASE || 'http://localhost:3000';
+        const response = await fetch(base + '/api/forge/save-file', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
