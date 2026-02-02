@@ -34,11 +34,16 @@
   // Presence: confident, centred, composed
   // Think: calm authority, NOT friendly assistant
   
+  // LOCKED GRACE DEFAULTS - do not drift (user requirement)
+  const GRACE_LOCKED_RATE = 1.10;
+  const GRACE_LOCKED_PITCH = 1.10;
+  const GRACE_LOCKED_VOICE_NAME = 'Google UK English Female';
+  
   let voiceSettings = {
-    rate: 1.0,        // Medium-fast (spec: deliberate, rhythmic)
-    pitch: 1.0,       // Mid-range female
-    volume: 0.92,     // Forward, controlled projection
-    lang: 'en-GB',    // UK English (LOCKED)
+    rate: GRACE_LOCKED_RATE,
+    pitch: GRACE_LOCKED_PITCH,
+    volume: 0.92,
+    lang: 'en-GB',
     voice: null,
     preset: 'grace_default'
   };
@@ -59,11 +64,11 @@
     // DEFAULT VOICE (SPEC BASELINE)
     // ═══════════════════════════════════════════
     grace_default: {
-      rate: 1.0,        // Medium-fast
-      pitch: 1.0,       // Mid-range
-      volume: 0.92,     // Forward, controlled
+      rate: GRACE_LOCKED_RATE,   // 1.10 locked
+      pitch: GRACE_LOCKED_PITCH, // 1.10 locked
+      volume: 0.92,
       name: '✨ GRACE (Default)',
-      description: 'Calm authority. Mid pitch. Medium-fast. Confident UK female.'
+      description: 'Calm authority. Google UK English Female. Rate 1.10, Pitch 1.10 (locked).'
     },
     
     // ═══════════════════════════════════════════
@@ -599,96 +604,75 @@
   }
 
   /**
-   * Update voice settings
+   * Update voice settings (rate/pitch/voice locked to GRACE defaults and will not drift)
    */
   function updateSettings(settings) {
-    if (settings.rate !== undefined) {
-      voiceSettings.rate = Math.max(0.1, Math.min(10, settings.rate));
-    }
-    if (settings.pitch !== undefined) {
-      voiceSettings.pitch = Math.max(0, Math.min(2, settings.pitch));
-    }
+    // LOCKED: rate and pitch always stay at GRACE defaults
+    voiceSettings.rate = GRACE_LOCKED_RATE;
+    voiceSettings.pitch = GRACE_LOCKED_PITCH;
     if (settings.volume !== undefined) {
       voiceSettings.volume = Math.max(0, Math.min(1, settings.volume));
     }
     if (settings.lang !== undefined) {
       voiceSettings.lang = settings.lang;
     }
-    if (settings.voice !== undefined) {
-      voiceSettings.voice = settings.voice;
-    }
+    // LOCKED: voice stays Google UK English Female when available
+    const voices = getVoices();
+    const lockedVoice = voices.find(v => v.name === GRACE_LOCKED_VOICE_NAME);
+    if (lockedVoice) voiceSettings.voice = lockedVoice;
     if (settings.preset !== undefined) {
       voiceSettings.preset = settings.preset;
     }
-    
-    // Save to localStorage - include voice name for restoration
     saveSettings();
   }
   
   /**
-   * Save settings to localStorage
+   * Save settings to localStorage (rate/pitch/voice always saved as locked defaults)
    */
   function saveSettings() {
     try {
+      voiceSettings.rate = GRACE_LOCKED_RATE;
+      voiceSettings.pitch = GRACE_LOCKED_PITCH;
+      const voices = getVoices();
+      const lockedVoice = voices.find(v => v.name === GRACE_LOCKED_VOICE_NAME);
+      if (lockedVoice) voiceSettings.voice = lockedVoice;
       localStorage.setItem('gracex_voice_settings', JSON.stringify({
         rate: voiceSettings.rate,
         pitch: voiceSettings.pitch,
         volume: voiceSettings.volume,
-        preset: voiceSettings.preset,
+        preset: 'grace_default',
         lang: voiceSettings.lang,
-        voiceName: voiceSettings.voice ? voiceSettings.voice.name : null
+        voiceName: GRACE_LOCKED_VOICE_NAME
       }));
-      console.log('[GRACEX TTS] Settings saved:', voiceSettings.preset);
     } catch (e) {
       console.warn('[GRACEX TTS] Failed to save settings:', e);
     }
   }
   
   /**
-   * Load settings from localStorage
-   * Returns true if valid settings were found and restored
+   * Load settings from localStorage (rate/pitch/voice are LOCKED - never restored from saved, no drift)
    */
   function loadSettings() {
     try {
+      voiceSettings.rate = GRACE_LOCKED_RATE;
+      voiceSettings.pitch = GRACE_LOCKED_PITCH;
+      voiceSettings.preset = 'grace_default';
+      const voices = getVoices();
+      const lockedVoice = voices.find(v => v.name === GRACE_LOCKED_VOICE_NAME);
+      if (lockedVoice) {
+        voiceSettings.voice = lockedVoice;
+        console.log('[GRACEX TTS] ✓ Voice locked:', GRACE_LOCKED_VOICE_NAME);
+      } else {
+        voiceSettings.voice = findPreferredVoice();
+      }
       const saved = localStorage.getItem('gracex_voice_settings');
       if (saved) {
         const parsed = JSON.parse(saved);
-        
-        // Apply saved settings
-        if (parsed.rate !== undefined) voiceSettings.rate = parsed.rate;
-        if (parsed.pitch !== undefined) voiceSettings.pitch = parsed.pitch;
         if (parsed.volume !== undefined) voiceSettings.volume = parsed.volume;
-        if (parsed.preset !== undefined) voiceSettings.preset = parsed.preset;
         if (parsed.lang !== undefined) voiceSettings.lang = parsed.lang;
-        
-        // Restore voice by name if available
-        let voiceRestored = false;
-        if (parsed.voiceName) {
-          const voices = getVoices();
-          const foundVoice = voices.find(v => v.name === parsed.voiceName);
-          if (foundVoice) {
-            voiceSettings.voice = foundVoice;
-            voiceRestored = true;
-            console.log('[GRACEX TTS] ✓ Voice restored:', foundVoice.name);
-          } else {
-            // Voice not found - try partial match
-            const partialMatch = voices.find(v => 
-              v.name.toLowerCase().includes(parsed.voiceName.toLowerCase().split(' ')[0])
-            );
-            if (partialMatch) {
-              voiceSettings.voice = partialMatch;
-              voiceRestored = true;
-              console.log('[GRACEX TTS] ✓ Voice restored (partial match):', partialMatch.name);
-            } else {
-              console.warn('[GRACEX TTS] Saved voice not found:', parsed.voiceName);
-            }
-          }
-        }
-        
-        console.log('[GRACEX TTS] Settings loaded - Preset:', voiceSettings.preset, '| Rate:', voiceSettings.rate);
-        return voiceRestored || (parsed.rate !== undefined);
       }
-      return false;
+      console.log('[GRACEX TTS] Settings loaded - Preset: grace_default | Rate:', voiceSettings.rate, '| Pitch:', voiceSettings.pitch);
+      return true;
     } catch (e) {
       console.warn('[GRACEX TTS] Failed to load settings:', e);
       return false;
@@ -813,7 +797,7 @@
       width: 420px;
       max-height: 80vh;
       overflow-y: auto;
-      z-index: 10000;
+      z-index: 99994;
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
       display: none;
       color: #fff;
@@ -1121,22 +1105,13 @@
     
     await waitForVoices();
     
-    // FIRST: Try to load saved user settings
-    const hasSavedSettings = loadSettings();
-    
-    // SECOND: If no saved voice, find the best one
+    loadSettings(); // Applies locked defaults (Google UK English Female, rate 1.10, pitch 1.10)
     if (!voiceSettings.voice) {
       voiceSettings.voice = findPreferredVoice();
-      console.log('[GRACEX TTS] No saved voice, selected:', voiceSettings.voice?.name);
-    } else {
-      console.log('[GRACEX TTS] Restored saved voice:', voiceSettings.voice?.name);
-      // User had saved settings, lock them
-      if (hasSavedSettings) {
-        settingsLocked = true;
-      }
     }
-    
-    console.log('[GRACEX TTS] ✓ Voice initialized:', voiceSettings.voice?.name || 'default');
+    settingsLocked = true;
+    try { localStorage.setItem('gracex_voice_locked', 'true'); } catch (e) {}
+    console.log('[GRACEX TTS] ✓ Voice initialized:', voiceSettings.voice?.name || 'default', '| Rate:', voiceSettings.rate, '| Pitch:', voiceSettings.pitch, '(locked)');
   }
   
   // Run enhanced initialization

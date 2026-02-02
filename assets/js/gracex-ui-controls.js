@@ -15,9 +15,8 @@
     }
     
     function init() {
-        // DISABLED BY USER REQUEST - Jan 29, 2026
-        // setupSidebarToggle();
-        // setupThemeSystem();
+        setupSidebarToggle();
+        setupThemeSystem();
         loadSavedPreferences();
     }
     
@@ -84,7 +83,7 @@
             font-size: 24px;
             cursor: pointer;
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            z-index: 9998;
+            z-index: 99993;
             transition: transform 0.2s;
         `;
         document.body.appendChild(themeBtn);

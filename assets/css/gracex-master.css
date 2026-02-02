@@ -145,14 +145,14 @@ body {
     padding: var(--space-lg);
     overflow-y: auto;
     transition: transform var(--transition-base) ease;
-    z-index: 1000;
+    z-index: 99990;
 }
 
 .aside.collapsed {
     transform: translateX(-100%);
 }
 
-/* Sidebar Toggle Button */
+/* Sidebar Toggle Button - always visible, on top layer */
 .sidebar-toggle {
     position: fixed;
     left: 20px;
@@ -167,11 +167,7 @@ body {
     font-size: 24px;
     cursor: pointer;
     transition: all var(--transition-base) ease;
-    z-index: 1001;
-    display: none;
-}
-
-.aside.collapsed ~ .sidebar-toggle {
+    z-index: 99991;
     display: flex;
     align-items: center;
     justify-content: center;

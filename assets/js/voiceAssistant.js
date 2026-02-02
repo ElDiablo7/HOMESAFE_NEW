@@ -84,7 +84,7 @@
       color: #fff;
       font-family: system-ui, -apple-system, sans-serif;
       font-size: 14px;
-      z-index: 9997;
+      z-index: 99992;
       display: none;
       align-items: center;
       gap: 10px;
@@ -557,7 +557,7 @@
       font-size: 14px;
       font-weight: 600;
       cursor: pointer;
-      z-index: 9996;
+      z-index: 99992;
       box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
       transition: transform 0.2s, box-shadow 0.2s;
     `;

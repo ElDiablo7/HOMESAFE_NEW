@@ -75,7 +75,7 @@
     display: none;
     flex-direction: column;
     gap: 8px;
-    z-index: 9997;
+    z-index: 99993;
     box-shadow: var(--gx-shadow-lg);
 }
 
@@ -136,14 +136,10 @@
     font-size: 24px;
     cursor: pointer;
     transition: all 0.3s ease;
-    z-index: 1001;
-    display: none;
+    z-index: 99991;
+    display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.aside.collapsed ~ .sidebar-toggle {
-    display: flex;
 }
 
 .sidebar-toggle:hover {
