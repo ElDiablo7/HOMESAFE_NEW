@@ -5,12 +5,18 @@
 
 const path = require('path');
 const fsSync = require('fs');
-// Load .env only if file exists (on Render, env vars are injected; no .env file)
-const envPath = path.join(__dirname, '.env');
-if (fsSync.existsSync(envPath)) {
-  const result = require('dotenv').config({ path: envPath });
-  if (result.error) console.warn('Warning: .env could not be loaded:', result.error.message);
-}
+// Load .env: try server/.env then project root .env (so root .env is seen when you run from repo root)
+const envPaths = [
+  path.join(__dirname, '.env'),
+  path.join(__dirname, '..', '.env')
+];
+envPaths.forEach(envPath => {
+  if (fsSync.existsSync(envPath)) {
+    const result = require('dotenv').config({ path: envPath });
+    if (result.error) console.warn('Warning: .env could not be loaded:', result.error.message);
+    else console.log('[ENV] Loaded from', path.basename(path.dirname(envPath)) + '/' + path.basename(envPath));
+  }
+});
 
 const express = require('express');
 const cors = require('cors');
