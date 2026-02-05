@@ -1,0 +1,9 @@
+# Render Web Service – GRACE-X HomeSafe
+# npm install && npm start; health check at /health
+services:
+  - type: web
+    name: grace-x-homesafe
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start

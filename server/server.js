@@ -280,6 +280,8 @@ app.use(express.static(parentDir, {
 app.use('/modules', express.static(path.join(parentDir, 'modules')));
 // Serve assets directory
 app.use('/assets', express.static(path.join(parentDir, 'assets')));
+// CallAssist – Prep / On-Call / Wrap (localStorage-backed)
+app.use('/callassist', express.static(path.join(parentDir, 'public', 'callassist')));
 // Serve config directory
 app.use('/config', express.static(path.join(parentDir, 'config')));
 

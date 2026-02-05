@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CallAssist – Prep | HomeSafe</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 24px; background: #0f172a; color: #f1f5f9; min-height: 100vh; }
+    h1 { font-size: 1.5rem; margin-bottom: 24px; }
+    .nav { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+    .nav a { color: #06b6d4; text-decoration: none; padding: 8px 16px; border: 1px solid rgba(6,182,212,0.5); border-radius: 8px; }
+    .nav a:hover { background: rgba(6,182,212,0.2); }
+    .nav a.active { background: #06b6d4; color: #0f172a; }
+    textarea { width: 100%; min-height: 200px; padding: 12px; background: #1e293b; border: 1px solid #334155; border-radius: 8px; color: #f1f5f9; font-size: 14px; resize: vertical; }
+    button { padding: 10px 20px; background: #06b6d4; color: #0f172a; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
+    button:hover { background: #22d3ee; }
+    .saved { font-size: 0.85rem; color: #10b981; margin-top: 8px; }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="prep.html" class="active">Prep</a>
+    <a href="on-call.html">On-Call</a>
+    <a href="wrap.html">Wrap</a>
+    <a href="/" style="margin-left:auto;">← HomeSafe</a>
+  </nav>
+  <h1>📋 Call Prep</h1>
+  <p>Brief and notes for your upcoming call. Saved in your browser.</p>
+  <textarea id="callBrief" placeholder="Enter call brief, key points, agenda..."></textarea>
+  <button id="saveBtn">Save</button>
+  <span id="saved" class="saved"></span>
+
+  <script>
+    const brief = document.getElementById('callBrief');
+    const saveBtn = document.getElementById('saveBtn');
+    const savedEl = document.getElementById('saved');
+
+    const saved = localStorage.getItem('callBrief');
+    if (saved) brief.value = saved;
+
+    function showSaved() {
+      savedEl.textContent = 'Saved';
+      setTimeout(() => savedEl.textContent = '', 2000);
+    }
+
+    saveBtn.addEventListener('click', () => {
+      localStorage.setItem('callBrief', brief.value);
+      showSaved();
+    });
+
+    brief.addEventListener('input', () => {
+      localStorage.setItem('callBrief', brief.value);
+      showSaved();
+    });
+  </script>
+</body>
+</html>
