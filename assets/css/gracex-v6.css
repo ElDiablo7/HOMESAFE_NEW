@@ -1253,6 +1253,9 @@ select:focus {
   cursor: pointer;
   transition: all var(--gx-transition-fast);
   box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 }
 
 .brain-mic-btn:hover {

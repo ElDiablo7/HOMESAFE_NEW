@@ -225,6 +225,14 @@ body {
     gap: var(--space-sm);
 }
 
+/* Nav groups – subtle left border in group color */
+.nav-group-help   { border-left: 3px solid rgba(6, 182, 212, 0.5); padding-left: 10px; }
+.nav-group-core   { border-left: 3px solid rgba(99, 102, 241, 0.5); padding-left: 10px; }
+.nav-group-family { border-left: 3px solid rgba(244, 114, 182, 0.5); padding-left: 10px; }
+.nav-group-work   { border-left: 3px solid rgba(245, 158, 11, 0.5); padding-left: 10px; }
+.nav-group-creative { border-left: 3px solid rgba(16, 185, 129, 0.5); padding-left: 10px; }
+.nav-group-security { border-left: 3px solid rgba(220, 38, 38, 0.5); padding-left: 10px; }
+
 .module-btn {
     padding: var(--space-md) var(--space-lg);
     background: var(--glass);

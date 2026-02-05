@@ -4,32 +4,83 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>CallAssist – Prep | HomeSafe</title>
-  <style>
-    * { box-sizing: border-box; }
-    body { font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 24px; background: #0f172a; color: #f1f5f9; min-height: 100vh; }
-    h1 { font-size: 1.5rem; margin-bottom: 24px; }
-    .nav { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
-    .nav a { color: #06b6d4; text-decoration: none; padding: 8px 16px; border: 1px solid rgba(6,182,212,0.5); border-radius: 8px; }
-    .nav a:hover { background: rgba(6,182,212,0.2); }
-    .nav a.active { background: #06b6d4; color: #0f172a; }
-    textarea { width: 100%; min-height: 200px; padding: 12px; background: #1e293b; border: 1px solid #334155; border-radius: 8px; color: #f1f5f9; font-size: 14px; resize: vertical; }
-    button { padding: 10px 20px; background: #06b6d4; color: #0f172a; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
-    button:hover { background: #22d3ee; }
-    .saved { font-size: 0.85rem; color: #10b981; margin-top: 8px; }
-  </style>
+  <link rel="stylesheet" href="callassist.css">
 </head>
 <body>
-  <nav class="nav">
-    <a href="prep.html" class="active">Prep</a>
-    <a href="on-call.html">On-Call</a>
-    <a href="wrap.html">Wrap</a>
-    <a href="/" style="margin-left:auto;">← HomeSafe</a>
-  </nav>
-  <h1>📋 Call Prep</h1>
-  <p>Brief and notes for your upcoming call. Saved in your browser.</p>
-  <textarea id="callBrief" placeholder="Enter call brief, key points, agenda..."></textarea>
-  <button id="saveBtn">Save</button>
-  <span id="saved" class="saved"></span>
+  <div class="ca-layout">
+    <main class="ca-main">
+      <nav class="ca-nav">
+        <a href="prep.html" class="active">Prep</a>
+        <a href="on-call.html">On-Call</a>
+        <a href="wrap.html">Wrap</a>
+        <a href="/" class="ca-home">← HomeSafe</a>
+      </nav>
+
+      <header class="ca-header">
+        <h1>📋 Call Prep</h1>
+        <p>Brief and notes for your upcoming call. Saved in your browser.</p>
+      </header>
+
+      <div class="ca-instructions" id="ca-instructions">
+        <h2 id="ca-instructions-header">📖 How to use CallAssist <span class="ca-instructions-toggle">▼ Hide</span></h2>
+        <div class="ca-instructions-body" id="ca-instructions-body">
+          <strong>Clear instructions:</strong>
+          <ul>
+            <li><strong>Prep:</strong> Add your call brief, key points, and agenda. Use the assistant to refine them or get suggestions.</li>
+            <li><strong>On-Call:</strong> View your brief and take quick notes during the call. Ask the assistant to summarise or suggest questions on the fly.</li>
+            <li><strong>Wrap:</strong> Record outcomes and action items. The assistant can turn messy notes into a clear summary.</li>
+            <li><strong>Voice tone:</strong> Use the dropdown to change how GRACE responds – stern, warm, neutral, professional, etc.</li>
+            <li><strong>Quick suggestions:</strong> Pick from the dropdown for instant prompts, or type your own question.</li>
+            <li>Everything saves automatically in your browser – no account needed.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="ca-card">
+        <textarea id="callBrief" placeholder="Enter call brief, key points, agenda..."></textarea>
+        <div style="margin-top: 12px;">
+          <button id="saveBtn" class="ca-btn">Save</button>
+          <span id="saved" class="ca-saved"></span>
+        </div>
+      </div>
+    </main>
+
+    <aside class="ca-assistant">
+      <div class="ca-assistant-header" id="ca-assistant-header">
+        <h3>🧠 GRACE-X Assistant</h3>
+        <span class="ca-assistant-toggle">▼ Collapse</span>
+      </div>
+      <div class="ca-assistant-body" id="ca-assistant-body">
+        <div class="ca-tone-row">
+          <label for="ca-tone-select">Voice tone</label>
+          <select id="ca-tone-select">
+            <option value="neutral">Neutral</option>
+            <option value="stern">Stern</option>
+            <option value="sad">Sad</option>
+            <option value="warm">Warm</option>
+            <option value="professional">Professional</option>
+            <option value="calm">Calm</option>
+            <option value="direct">Direct</option>
+            <option value="empathetic">Empathetic</option>
+            <option value="formal">Formal</option>
+            <option value="casual">Casual</option>
+            <option value="encouraging">Encouraging</option>
+          </select>
+        </div>
+        <div class="ca-suggestions-row">
+          <label for="ca-suggestions-select">Quick suggestion</label>
+          <select id="ca-suggestions-select" class="ca-suggestions-select"></select>
+        </div>
+        <div id="ca-brain-output" class="ca-brain-output"></div>
+        <div class="ca-brain-input-row">
+          <button type="button" class="ca-brain-mic-btn" id="ca-brain-mic" title="Voice input (tap to start)">🎙️</button>
+          <input id="ca-brain-input" type="text" placeholder="Ask about call prep, agendas, key points…" />
+          <button id="ca-brain-send">Ask</button>
+        </div>
+        <button id="ca-brain-clear" class="ca-brain-clear">Clear conversation</button>
+      </div>
+    </aside>
+  </div>
 
   <script>
     const brief = document.getElementById('callBrief');
@@ -54,5 +105,6 @@
       showSaved();
     });
   </script>
+  <script src="callassist.js"></script>
 </body>
 </html>

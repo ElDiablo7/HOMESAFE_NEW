@@ -499,9 +499,14 @@
         }
       }
 
-      if (window.isSecureContext && navigator.mediaDevices && typeof navigator.mediaDevices.getUserMedia === 'function') {
+      // On Android, skip getUserMedia – it can conflict with SpeechRecognition (only one mic at a time)
+      const isAndroid = /Android/i.test(navigator.userAgent);
+      if (!isAndroid && window.isSecureContext && navigator.mediaDevices && typeof navigator.mediaDevices.getUserMedia === 'function') {
         navigator.mediaDevices.getUserMedia({ audio: true })
-          .then(() => doStart())
+          .then((stream) => {
+            stream.getTracks().forEach(t => t.stop());
+            doStart();
+          })
           .catch((err) => {
             console.warn('[GRACEX Brain Mic] Microphone access denied:', err);
             shouldListen = false;
@@ -543,8 +548,7 @@
     // Store original placeholder
     input.dataset.originalPlaceholder = input.placeholder;
     
-    // Use pointerdown to keep this a "real" user gesture on mobile browsers
-    micBtn.addEventListener('pointerdown', function(e) {
+    function onMicTap(e) {
       e.preventDefault();
       e.stopPropagation();
       if (shouldListen) {
@@ -552,7 +556,11 @@
       } else {
         startListening();
       }
-    });
+    }
+    micBtn.addEventListener('pointerdown', onMicTap);
+    micBtn.addEventListener('touchstart', function(e) {
+      if (e.target === micBtn || micBtn.contains(e.target)) onMicTap(e);
+    }, { passive: false });
     
     console.info(`[GRACEX Brain Mic] Wired for module: ${moduleId}`);
     return true;
