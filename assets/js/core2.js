@@ -567,7 +567,9 @@ function quickAction(action) {
         time: 'What time is it right now?',
         news: 'What are the latest news headlines?',
         system: 'Show me system information and performance',
-        crypto: 'What are current Bitcoin and Ethereum prices?'
+        crypto: 'What are current Bitcoin and Ethereum prices?',
+        maps: 'Show me nearby places or directions',
+        help: 'Give me a quick tour of Core 2.0 and how to use it'
     };
     
     if (actions[action]) {
@@ -576,5 +578,22 @@ function quickAction(action) {
             input.value = actions[action];
             sendMessage();
         }
+    } else if (action === 'refresh-weather') {
+        if (typeof window.loadWeather === 'function') window.loadWeather();
+    } else if (action === 'refresh-news') {
+        if (typeof window.loadNews === 'function') window.loadNews();
     }
+}
+
+function focusChat() {
+    const input = document.getElementById('chat-input');
+    if (input) {
+        input.focus();
+        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+}
+
+function openModule(moduleId) {
+    if (!moduleId) return;
+    window.location.hash = '#/' + moduleId;
 }
