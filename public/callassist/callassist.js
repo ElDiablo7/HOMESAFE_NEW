@@ -300,6 +300,119 @@
     if (output.children.length === 0) {
       appendMessage('system', "I'm GRACE-X CallAssist. I can help with call prep, quick notes, and wrap summaries.");
     }
+
+    // TTS: speak AI replies when voice is on
+    var voiceOn = false;
+    var originalAppend = appendMessage;
+    appendMessage = function(role, text) {
+      originalAppend(role, text);
+      if (role === 'ai' && voiceOn && window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+        var u = new SpeechSynthesisUtterance(String(text).slice(0, 500));
+        u.lang = 'en-GB';
+        u.rate = 0.95;
+        window.speechSynthesis.speak(u);
+      }
+    };
+
+    // Voice toggle (add to assistant header area if missing)
+    var voiceToggle = document.getElementById('ca-voice-toggle');
+    if (voiceToggle) {
+      voiceToggle.addEventListener('click', function() {
+        voiceOn = !voiceOn;
+        this.textContent = voiceOn ? '🔊 Voice on' : '🔇 Voice off';
+        this.classList.toggle('active', voiceOn);
+      });
+    }
+  }
+
+  function initLetterScanner() {
+    var camBtn = document.getElementById('ca-cam-btn');
+    var camInput = document.getElementById('ca-cam-input');
+    var fileInput = document.getElementById('ca-file-input');
+    var preview = document.getElementById('ca-letter-preview');
+    var letterImg = document.getElementById('ca-letter-img');
+    var readBtn = document.getElementById('ca-read-letter-btn');
+    var clearBtn = document.getElementById('ca-clear-letter-btn');
+    if (!camBtn || !fileInput || !preview || !letterImg || !readBtn) return;
+
+    var lastDataUrl = null;
+
+    function handleFile(file) {
+      if (!file || !file.type.startsWith('image/')) return;
+      var r = new FileReader();
+      r.onload = function() {
+        lastDataUrl = r.result;
+        letterImg.src = lastDataUrl;
+        preview.style.display = 'block';
+      };
+      r.readAsDataURL(file);
+    }
+
+    if (camInput) camInput.addEventListener('change', function() { if (this.files[0]) handleFile(this.files[0]); });
+    fileInput.addEventListener('change', function() { if (this.files[0]) handleFile(this.files[0]); });
+    if (camBtn && camInput) camBtn.addEventListener('click', function() { camInput.click(); });
+
+    clearBtn.addEventListener('click', function() {
+      lastDataUrl = null;
+      letterImg.src = '';
+      preview.style.display = 'none';
+      if (camInput) camInput.value = '';
+      fileInput.value = '';
+    });
+
+    readBtn.addEventListener('click', function() {
+      if (!lastDataUrl) return;
+      var output = document.getElementById('ca-brain-output');
+      var sendBtn = document.getElementById('ca-brain-send');
+      if (!output) return;
+
+      var userMsg = document.createElement('div');
+      userMsg.className = 'ca-brain-message ca-brain-message-user';
+      userMsg.textContent = 'Read this letter and draft a reply for my client.';
+      output.appendChild(userMsg);
+      output.scrollTop = output.scrollHeight;
+
+      readBtn.disabled = true;
+      readBtn.textContent = 'Reading…';
+
+      var loading = document.createElement('div');
+      loading.id = 'ca-vision-loading';
+      loading.className = 'ca-brain-message ca-brain-message-system';
+      loading.textContent = 'Reading letter…';
+      output.appendChild(loading);
+      output.scrollTop = output.scrollHeight;
+
+      fetch(API_BASE + '/api/brain/vision', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          imageBase64: lastDataUrl,
+          prompt: 'Read this letter or document and help me draft a professional reply for my client. Be concise and clear.',
+          module: 'callassist'
+        })
+      }).then(function(r) { return r.json(); }).then(function(data) {
+        if (loading.parentNode) loading.remove();
+        var reply = (data.reply || '').trim();
+        if (reply) {
+          var aiMsg = document.createElement('div');
+          aiMsg.className = 'ca-brain-message ca-brain-message-ai';
+          aiMsg.textContent = reply;
+          output.appendChild(aiMsg);
+          output.scrollTop = output.scrollHeight;
+        }
+      }).catch(function() {
+        if (loading.parentNode) loading.remove();
+        var err = document.createElement('div');
+        err.className = 'ca-brain-message ca-brain-message-system';
+        err.textContent = 'Could not read the letter. Check your connection and try again.';
+        output.appendChild(err);
+        output.scrollTop = output.scrollHeight;
+      }).finally(function() {
+        readBtn.disabled = false;
+        readBtn.textContent = 'Read & draft reply';
+      });
+    });
   }
 
   function initInstructions() {
@@ -318,6 +431,7 @@
   function onReady() {
     initAssistant();
     initInstructions();
+    initLetterScanner();
   }
 
   if (document.readyState === 'loading') {

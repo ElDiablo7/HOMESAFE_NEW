@@ -251,7 +251,7 @@ const CONFIG = {
   rateLimitCleanupInterval: 300000, // Cleanup every 5 minutes
   
   // Request limits
-  maxBodySize: process.env.MAX_BODY_SIZE || '1mb',
+  maxBodySize: process.env.MAX_BODY_SIZE || '5mb',
   requestTimeout: parseInt(process.env.REQUEST_TIMEOUT) || 30000, // 30 seconds
   
   // CORS
@@ -912,6 +912,87 @@ app.post('/api/brain', rateLimitMiddleware, async (req, res) => {
       code: error.code || 'API_ERROR',
       message: error.message,
       requestId: req.requestId
+    });
+  }
+});
+
+// Brain Vision endpoint – read letters/documents, draft client replies (CallAssist)
+app.post('/api/brain/vision', rateLimitMiddleware, async (req, res) => {
+  const { imageBase64, prompt, module: mod } = req.body;
+  const requestId = req.requestId || `req-${Date.now()}`;
+
+  if (!imageBase64 || typeof imageBase64 !== 'string') {
+    return res.status(400).json({
+      error: 'imageBase64 is required',
+      code: 'INVALID_REQUEST',
+      requestId
+    });
+  }
+
+  const userPrompt = (prompt || 'Read this letter or document and help me draft a professional reply for my client.').trim().slice(0, 2000);
+  const moduleContext = MODULE_CONTEXTS[mod] || MODULE_CONTEXTS.callassist;
+  const fullSystemPrompt = `${GRACEX_SYSTEM_PROMPT}\n\n## Current Module Context\n${moduleContext}\n\n## Task\nYou are helping the user read a photo of a letter or document and draft a reply. Be concise and professional.`;
+
+  const provider = process.env.LLM_PROVIDER || 'openai';
+  const mimeMatch = imageBase64.match(/^data:([^;]+);base64,/);
+  const dataUrl = mimeMatch ? imageBase64 : `data:image/jpeg;base64,${imageBase64}`;
+
+  const userContent = [
+    { type: 'text', text: userPrompt },
+    { type: 'image_url', image_url: { url: dataUrl } }
+  ];
+
+  const messages = [
+    { role: 'system', content: fullSystemPrompt },
+    { role: 'user', content: userContent }
+  ];
+
+  try {
+    let reply;
+    if (provider === 'openai') {
+      const apiKey = process.env.OPENAI_API_KEY || process.env.API_KEY;
+      const model = process.env.OPENAI_VISION_MODEL || process.env.OPENAI_MODEL || 'gpt-4o-mini';
+      if (!apiKey) throw Object.assign(new Error('OpenAI API key not configured'), { statusCode: 500 });
+      const resp = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model, messages, temperature: 0.6, max_tokens: 800 })
+      });
+      if (!resp.ok) {
+        const err = await resp.json().catch(() => ({}));
+        throw new Error(err.error?.message || `OpenAI ${resp.status}`);
+      }
+      const data = await resp.json();
+      reply = data.choices?.[0]?.message?.content || '';
+    } else if (provider === 'anthropic') {
+      const apiKey = process.env.ANTHROPIC_API_KEY || process.env.API_KEY;
+      const model = process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514';
+      if (!apiKey) throw Object.assign(new Error('Anthropic API key not configured'), { statusCode: 500 });
+      const resp = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'x-api-key': apiKey, 'anthropic-version': '2023-06-01', 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model,
+          max_tokens: 800,
+          system: fullSystemPrompt,
+          messages: [{ role: 'user', content: userContent }]
+        })
+      });
+      if (!resp.ok) {
+        const err = await resp.json().catch(() => ({}));
+        throw new Error(err.error?.message || `Anthropic ${resp.status}`);
+      }
+      const data = await resp.json();
+      reply = data.content?.find(c => c.type === 'text')?.text || '';
+    } else {
+      return res.status(400).json({ error: 'Vision requires OpenAI or Anthropic provider', requestId });
+    }
+    res.json({ reply: (reply || '').trim(), requestId });
+  } catch (err) {
+    log('error', `Brain vision error: ${err.message}`, { requestId });
+    res.status(err.statusCode || 500).json({
+      error: err.message || 'Vision request failed',
+      requestId
     });
   }
 });

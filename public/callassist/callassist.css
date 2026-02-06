@@ -326,6 +326,21 @@ body {
   border-color: var(--ca-muted);
 }
 
+/* Letter scanner / camera */
+.ca-camera-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+.ca-letter-preview { margin-top: 12px; }
+.ca-letter-preview img {
+  max-width: 100%;
+  max-height: 220px;
+  border-radius: 8px;
+  border: 1px solid var(--ca-border);
+  display: block;
+}
+.ca-letter-actions { display: flex; gap: 10px; margin-top: 10px; }
+.ca-btn-ghost { background: transparent; border-color: var(--ca-muted); }
+.ca-btn-ghost:hover { background: rgba(148,163,184,0.15); }
+#ca-cam-video { width: 100%; max-height: 200px; border-radius: 8px; }
+
 /* Phone-style shell for familiarity */
 .ca-phone-shell {
   display: flex;

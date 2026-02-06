@@ -28,13 +28,33 @@
         <div class="ca-instructions-body" id="ca-instructions-body">
           <strong>Clear instructions:</strong>
           <ul>
-            <li><strong>Prep:</strong> Add your call brief, key points, and agenda. Use the assistant to refine them or get suggestions.</li>
+            <li><strong>Prep:</strong> Add your call brief, key points, and agenda. Scan a letter with the camera – GRACE will read it and draft a reply. Use the assistant to refine them or get suggestions.</li>
             <li><strong>On-Call:</strong> View your brief and take quick notes during the call. Ask the assistant to summarise or suggest questions on the fly.</li>
             <li><strong>Wrap:</strong> Record outcomes and action items. The assistant can turn messy notes into a clear summary.</li>
             <li><strong>Voice tone:</strong> Use the dropdown to change how GRACE responds – stern, warm, neutral, professional, etc.</li>
             <li><strong>Quick suggestions:</strong> Pick from the dropdown for instant prompts, or type your own question.</li>
             <li>Everything saves automatically in your browser – no account needed.</li>
           </ul>
+        </div>
+      </div>
+
+      <div class="ca-card ca-letter-scanner">
+        <h2>📷 Scan a letter</h2>
+        <p class="hint">Take a photo or upload an image of an important letter. GRACE will read it and help draft a reply for your client.</p>
+        <div class="ca-camera-row">
+          <button type="button" class="ca-btn" id="ca-cam-btn">📷 Take photo</button>
+          <input type="file" id="ca-cam-input" accept="image/*" capture="environment" style="display:none;">
+          <label class="ca-btn" style="margin:0; cursor:pointer;">
+            Choose file
+            <input type="file" id="ca-file-input" accept="image/*" style="display:none;">
+          </label>
+        </div>
+        <div id="ca-letter-preview" class="ca-letter-preview" style="display:none;">
+          <img id="ca-letter-img" alt="Letter" />
+          <div class="ca-letter-actions">
+            <button type="button" class="ca-btn" id="ca-read-letter-btn">Read &amp; draft reply</button>
+            <button type="button" class="ca-btn ca-btn-ghost" id="ca-clear-letter-btn">Clear</button>
+          </div>
         </div>
       </div>
 
@@ -53,6 +73,9 @@
         <span class="ca-assistant-toggle">▼ Collapse</span>
       </div>
       <div class="ca-assistant-body" id="ca-assistant-body">
+        <div style="display:flex; gap:8px; align-items:center; margin-bottom:12px;">
+          <button type="button" id="ca-voice-toggle" class="ca-btn ca-btn-ghost" style="font-size:0.9rem; padding:8px 12px;">🔇 Voice off</button>
+        </div>
         <div class="ca-tone-row">
           <label for="ca-tone-select">Voice tone</label>
           <select id="ca-tone-select">
