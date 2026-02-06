@@ -326,6 +326,65 @@ body {
   border-color: var(--ca-muted);
 }
 
+/* Phone-style shell for familiarity */
+.ca-phone-shell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.ca-phone-screen {
+  width: min(420px, 100%);
+  background: var(--ca-bg);
+  border-radius: 28px;
+  border: 2px solid rgba(148, 163, 184, 0.35);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+  overflow: hidden;
+  position: relative;
+}
+
+.ca-phone-screen::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.35);
+  z-index: 2;
+}
+
+/* Phone mode: stack layout always */
+.ca-phone-screen .ca-layout {
+  min-height: 100%;
+  flex-direction: column;
+}
+
+.ca-phone-screen .ca-main {
+  max-width: 100%;
+  padding: 24px;
+}
+
+.ca-phone-screen .ca-assistant {
+  width: 100%;
+  border-left: none;
+  border-top: 1px solid var(--ca-border);
+}
+
+/* Reduce padding slightly on small screens */
+@media (max-width: 480px) {
+  .ca-phone-shell {
+    padding: 8px;
+  }
+  .ca-phone-screen {
+    border-radius: 20px;
+  }
+}
+
 /* Voice/tone selector */
 .ca-tone-row {
   display: flex;

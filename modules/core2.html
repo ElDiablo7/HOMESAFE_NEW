@@ -119,6 +119,12 @@
             font-size: 1.5rem;
             font-weight: 600;
         }
+
+        .chat-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
         
         .chat-controls {
             display: flex;
@@ -299,6 +305,111 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 20px rgba(136,0,255,0.3);
         }
+
+        .action-btn.large {
+            padding: 14px 16px;
+            font-size: 1rem;
+            border-radius: 14px;
+            background: linear-gradient(135deg, rgba(0,240,255,0.18), rgba(136,0,255,0.18));
+            border-color: rgba(0,240,255,0.35);
+            color: #eaf7ff;
+        }
+
+        .action-btn.large:hover {
+            background: linear-gradient(135deg, rgba(0,240,255,0.26), rgba(136,0,255,0.28));
+            box-shadow: 0 6px 26px rgba(0,240,255,0.25);
+        }
+
+        /* Public-facing hero */
+        .public-hero {
+            margin-bottom: 20px;
+            padding: 24px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(0,240,255,0.12), rgba(136,0,255,0.12));
+            border: 1px solid rgba(255,255,255,0.12);
+            box-shadow: 0 16px 40px rgba(0,0,0,0.35);
+        }
+
+        .public-hero h2 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        .public-hero p {
+            opacity: 0.8;
+            margin-bottom: 16px;
+        }
+
+        .public-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .public-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+
+        .public-card {
+            padding: 16px;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            min-height: 120px;
+        }
+
+        .public-card h4 {
+            font-size: 1rem;
+            margin-bottom: 6px;
+        }
+
+        .public-card p {
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+
+        .public-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+
+        .public-step {
+            padding: 14px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.05);
+        }
+
+        .public-step strong {
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .module-shortcuts {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .module-chip {
+            padding: 10px 14px;
+            border-radius: 999px;
+            border: 1px solid rgba(0,240,255,0.35);
+            background: rgba(0,240,255,0.08);
+            color: #dffcff;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .module-chip:hover {
+            background: rgba(0,240,255,0.18);
+            box-shadow: 0 0 20px rgba(0,240,255,0.2);
+        }
         
         /* Weather Widget */
         .weather-info {
@@ -451,13 +562,76 @@
                 </div>
             </div>
         </div>
+
+        <!-- Public-facing hero -->
+        <div class="public-hero">
+            <h2>Welcome to GRACE-X CORE 2.0</h2>
+            <p>Public-facing command center with guided tools, quick actions, and a friendly AI assistant. Built for clarity and ease of use.</p>
+            <div class="public-actions">
+                <button class="action-btn large" onclick="focusChat()">💬 Start a Conversation</button>
+                <button class="action-btn large" onclick="quickAction('help')">🧭 Guided Help</button>
+                <button class="action-btn large" onclick="quickAction('system')">⚡ System Overview</button>
+            </div>
+        </div>
+
+        <!-- Quick start steps -->
+        <div class="public-steps">
+            <div class="public-step">
+                <strong>1) Ask GRACE anything</strong>
+                Use the chat on the left for help, advice, or system tasks.
+            </div>
+            <div class="public-step">
+                <strong>2) Use quick actions</strong>
+                One tap for weather, news, time, and system checks.
+            </div>
+            <div class="public-step">
+                <strong>3) Open a module</strong>
+                Jump into Builder, Family, Sport, or Security tools.
+            </div>
+        </div>
+
+        <!-- Feature highlights -->
+        <div class="public-grid">
+            <div class="public-card">
+                <h4>🧠 AI Assistant</h4>
+                <p>Ask questions, get summaries, and run tasks with clear guidance.</p>
+            </div>
+            <div class="public-card">
+                <h4>⚡ Live Status</h4>
+                <p>Monitor uptime, network status, and response performance.</p>
+            </div>
+            <div class="public-card">
+                <h4>🌤️ News & Weather</h4>
+                <p>Live updates in a simple, readable format.</p>
+            </div>
+            <div class="public-card">
+                <h4>🔒 Safe & Private</h4>
+                <p>Designed for public-facing use with clear boundaries.</p>
+            </div>
+        </div>
+
+        <!-- Module shortcuts -->
+        <div class="public-card" style="margin-bottom: 20px;">
+            <h4>Open a Module</h4>
+            <div class="module-shortcuts">
+                <button class="module-chip" onclick="openModule('core')">Core</button>
+                <button class="module-chip" onclick="openModule('builder')">Builder</button>
+                <button class="module-chip" onclick="openModule('family')">Family</button>
+                <button class="module-chip" onclick="openModule('sport')">Sport</button>
+                <button class="module-chip" onclick="openModule('guardian')">Guardian</button>
+                <button class="module-chip" onclick="openModule('osint')">OSINT</button>
+            </div>
+        </div>
         
         <!-- Main Grid -->
         <div class="core-grid">
             <!-- AI Chat Panel -->
             <div class="ai-chat-panel">
                 <div class="chat-header">
-                    <h2 class="chat-title">🧠 GRACE AI Assistant</h2>
+                    <div>
+                        <h2 class="chat-title">🧠 GRACE AI Assistant</h2>
+                        <div class="chat-subtitle">Ask anything or use the quick actions to get started.</div>
+                    </div>
                     <div class="chat-controls">
                         <button class="chat-btn" onclick="clearChat()">Clear</button>
                         <button class="chat-btn" onclick="exportChat()">Export</button>
@@ -473,7 +647,7 @@
                 </div>
                 
                 <div class="chat-input-area">
-                    <input type="text" class="chat-input" id="chat-input" placeholder="Ask me anything... (Press Enter to send)">
+                    <input type="text" class="chat-input" id="chat-input" placeholder="Ask anything... (press Enter to send)">
                     <button class="voice-btn" id="voice-btn" onclick="toggleVoiceInput()">🎙️</button>
                     <button class="send-btn" onclick="sendMessage()">🚀</button>
                 </div>
@@ -557,6 +731,7 @@
                         <button class="action-btn" onclick="quickAction('system')">💻 System</button>
                         <button class="action-btn" onclick="quickAction('crypto')">₿ Crypto</button>
                         <button class="action-btn" onclick="quickAction('maps')">🌍 Maps</button>
+                        <button class="action-btn" onclick="quickAction('help')">🧭 Help</button>
                         <button class="action-btn" onclick="quickAction('refresh-weather')">🔄 Refresh Weather</button>
                         <button class="action-btn" onclick="quickAction('refresh-news')">🔄 Refresh News</button>
                     </div>
@@ -848,6 +1023,19 @@
             a.click();
             URL.revokeObjectURL(url);
         }
+
+        function focusChat() {
+            const input = document.getElementById('chat-input');
+            if (input) {
+                input.focus();
+                input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        function openModule(moduleId) {
+            if (!moduleId) return;
+            window.location.hash = '#/' + moduleId;
+        }
         
         function quickAction(action) {
             const actions = {
@@ -856,7 +1044,8 @@
                 news: 'What are the latest news headlines?',
                 system: 'Show me system information and performance stats',
                 crypto: 'What are the current Bitcoin and Ethereum prices?',
-                maps: 'Show me nearby places or directions'
+                maps: 'Show me nearby places or directions',
+                help: 'Give me a quick tour of Core 2.0 and how to use it'
             };
             
             if (actions[action]) {
