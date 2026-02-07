@@ -36,7 +36,7 @@
   
   // LOCKED GRACE DEFAULTS - do not drift (user requirement)
   const GRACE_LOCKED_RATE = 1.10;
-  const GRACE_LOCKED_PITCH = 1.10;
+  const GRACE_LOCKED_PITCH = 1.15;
   const GRACE_LOCKED_VOICE_NAME = 'Google UK English Female';
   
   let voiceSettings = {
@@ -65,10 +65,10 @@
     // ═══════════════════════════════════════════
     grace_default: {
       rate: GRACE_LOCKED_RATE,   // 1.10 locked
-      pitch: GRACE_LOCKED_PITCH, // 1.10 locked
+      pitch: GRACE_LOCKED_PITCH, // 1.15 locked
       volume: 0.92,
       name: '✨ GRACE (Default)',
-      description: 'Calm authority. Google UK English Female. Rate 1.10, Pitch 1.10 (locked).'
+      description: 'Calm authority. Google UK English Female. Rate 1.10, Pitch 1.15 (locked).'
     },
     
     // ═══════════════════════════════════════════
