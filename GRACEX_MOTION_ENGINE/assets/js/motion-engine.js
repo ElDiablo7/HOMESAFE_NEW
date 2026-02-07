@@ -6,48 +6,49 @@
 (function(global) {
   'use strict';
 
-  var BUCKETS = { drift: 'drift', pulse: 'pulse', sweep: 'sweep', depth: 'depth' };
-  var CLIP_COUNTS = { drift: 0, pulse: 0, sweep: 0, depth: 0 };
+  var manifest = { drift: 0, pulse: 0, sweep: 0, depth: 0 };
   var container = null;
   var video = null;
-  var currentState = 'idle';
 
-  function getBucketPath(bucket) {
-    return 'assets/motion/' + bucket + '/';
+  function pick(bucket) {
+    if (!manifest[bucket] || manifest[bucket] === 0) {
+      console.warn('No clips in ' + bucket);
+      return null;
+    }
+    var i = Math.floor(Math.random() * manifest[bucket]) + 1;
+    return 'assets/motion/' + bucket + '/motion_' + String(i).padStart(2, '0') + '.mp4';
   }
 
-  function randomIndex(max) {
-    if (max <= 0) return -1;
-    return Math.floor(Math.random() * max);
-  }
-
-  function pickClip(bucket) {
-    var n = CLIP_COUNTS[bucket];
-    if (n <= 0) return null;
-    var i = randomIndex(n);
-    var num = (i + 1).toString().padStart(2, '0');
-    return getBucketPath(bucket) + 'motion_' + num + '.mp4';
-  }
-
-  function setLayerState(state) {
-    currentState = state;
-    if (container) container.setAttribute('data-state', state);
-  }
-
-  function playClip(src, state) {
-    if (!video) return;
+  function play(bucket) {
+    var src = pick(bucket);
+    if (!src) return false;
+    if (!video) return false;
     video.pause();
     video.src = src;
     video.load();
     video.playbackRate = 1;
-    setLayerState(state);
+    if (container) container.setAttribute('data-state', bucket);
     video.play().catch(function() {});
+    return true;
   }
 
-  function playRandomFromBucket(bucket) {
-    var src = pickClip(bucket);
-    if (!src) return;
-    playClip(src, bucket);
+  function loadManifest(done) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'assets/motion/manifest.json', true);
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        try {
+          var m = JSON.parse(xhr.responseText);
+          manifest.drift = m.drift | 0;
+          manifest.pulse = m.pulse | 0;
+          manifest.sweep = m.sweep | 0;
+          manifest.depth = m.depth | 0;
+        } catch (e) {}
+      }
+      done();
+    };
+    xhr.onerror = function() { done(); };
+    xhr.send();
   }
 
   function init() {
@@ -68,75 +69,16 @@
       }
     });
 
-    video.addEventListener('canplay', function() {
-      if (video.duration && isFinite(video.duration)) {
-        video.currentTime = Math.random() * video.duration;
-      }
+    loadManifest(function() {
+      container.setAttribute('data-state', 'idle');
+      if (!play('drift')) play('pulse');
     });
-
-    var drift = document.createElement('script');
-    drift.src = getBucketPath('drift') + 'count.js';
-    drift.onerror = function() { CLIP_COUNTS.drift = 0; };
-    document.head.appendChild(drift);
-
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', getBucketPath('drift'), true);
-    xhr.onreadystatechange = function() {
-      if (xhr.readyState !== 4) return;
-      countClipsInBucket('drift');
-    };
-    xhr.send();
-
-    countClipsInBucket('pulse');
-    countClipsInBucket('sweep');
-    countClipsInBucket('depth');
-
-    setLayerState('idle');
-    playRandomFromBucket('drift');
-    if (CLIP_COUNTS.drift <= 0) playRandomFromBucket('pulse');
   }
 
-  function countClipsInBucket(bucket) {
-    var base = getBucketPath(bucket);
-    var n = 0;
-    var req = new XMLHttpRequest();
-    req.open('GET', base, true);
-    req.onreadystatechange = function() {
-      if (req.readyState !== 4) return;
-      var html = req.responseText || '';
-      var match = html.match(/motion_(\d+)\.mp4/g);
-      if (match) n = match.length;
-      else {
-        for (var i = 1; i <= 99; i++) {
-          var check = new XMLHttpRequest();
-          check.open('HEAD', base + 'motion_' + (i < 10 ? '0' + i : i) + '.mp4', true);
-          check.onload = function() { n++; };
-          check.send();
-        }
-      }
-      CLIP_COUNTS[bucket] = n;
-    };
-    req.send();
-  }
-
-  function setIdle() {
-    playRandomFromBucket('drift');
-    if (CLIP_COUNTS.drift <= 0) playRandomFromBucket('pulse');
-  }
-
-  function acknowledge() {
-    playRandomFromBucket('pulse');
-  }
-
-  function transition() {
-    playRandomFromBucket('sweep');
-    if (CLIP_COUNTS.sweep <= 0) playRandomFromBucket('pulse');
-  }
-
-  function focus() {
-    playRandomFromBucket('depth');
-    if (CLIP_COUNTS.depth <= 0) playRandomFromBucket('pulse');
-  }
+  function setIdle()      { if (!play('drift')) play('pulse'); }
+  function acknowledge()  { play('pulse'); }
+  function transition()   { if (!play('sweep')) play('pulse'); }
+  function focus()        { if (!play('depth')) play('pulse'); }
 
   global.GRACEX_MOTION_ENGINE = {
     setIdle: setIdle,
