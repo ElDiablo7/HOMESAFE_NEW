@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GRACE-X Motion Engine — Canonical Test</title>
+  <link rel="stylesheet" href="assets/css/motion.css">
+</head>
+<body>
+  <div id="motion-layer" class="motion-layer" aria-hidden="true"></div>
+  <main class="harness">
+    <h1>Motion Engine</h1>
+    <p>System-level motion primitives. One layer, CSS intensity.</p>
+    <div class="buttons">
+      <button type="button" data-state="idle">Idle</button>
+      <button type="button" data-state="acknowledge">Acknowledge</button>
+      <button type="button" data-state="transition">Transition</button>
+      <button type="button" data-state="focus">Focus</button>
+    </div>
+  </main>
+  <script src="assets/js/motion-engine.js"></script>
+  <script>
+    (function() {
+      var engine = window.GRACEX_MOTION_ENGINE;
+      if (!engine) return;
+      document.querySelectorAll('.buttons [data-state]').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var state = this.getAttribute('data-state');
+          if (state === 'idle') engine.setIdle();
+          else if (state === 'acknowledge') engine.acknowledge();
+          else if (state === 'transition') engine.transition();
+          else if (state === 'focus') engine.focus();
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

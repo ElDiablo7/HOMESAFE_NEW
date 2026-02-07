@@ -1,0 +1,75 @@
+/**
+ * GRACE-X Motion Engine — Canonical
+ * One motion layer. Full viewport. Intensity via CSS vars only.
+ * No animations in CSS.
+ */
+
+:root {
+  --motion-opacity-idle: 0.08;
+  --motion-opacity-pulse: 0.18;
+  --motion-opacity-sweep: 0.14;
+  --motion-opacity-depth: 0.12;
+  --motion-opacity: var(--motion-opacity-idle);
+  --motion-blur: 0px;
+}
+
+.motion-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.motion-layer video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: var(--motion-opacity);
+  filter: blur(var(--motion-blur));
+}
+
+.motion-layer[data-state="idle"] {
+  --motion-opacity: var(--motion-opacity-idle);
+}
+
+.motion-layer[data-state="pulse"] {
+  --motion-opacity: var(--motion-opacity-pulse);
+}
+
+.motion-layer[data-state="sweep"] {
+  --motion-opacity: var(--motion-opacity-sweep);
+}
+
+.motion-layer[data-state="depth"] {
+  --motion-opacity: var(--motion-opacity-depth);
+}
+
+.harness {
+  position: relative;
+  z-index: 1;
+  padding: 2rem;
+  color: #e2e8f0;
+  font-family: system-ui, sans-serif;
+}
+
+.harness .buttons {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.harness button {
+  padding: 0.5rem 1rem;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 6px;
+  color: inherit;
+  cursor: pointer;
+}
+
+.harness button:hover {
+  background: rgba(255,255,255,0.15);
+}
