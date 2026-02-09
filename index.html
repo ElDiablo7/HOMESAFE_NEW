@@ -23,9 +23,17 @@
     <link rel="stylesheet" href="assets/css/gracex-themes.css?v=TITAN">
     <!-- BOOT SCREEN - Enterprise Startup -->
     <link rel="stylesheet" href="assets/css/boot-screen.css?v=TITAN">
+    <!-- MOTION LAYER - Background motion infrastructure -->
+    <link rel="stylesheet" href="assets/css/gracex-motion-layer.css?v=TITAN">
 </head>
 
 <body>
+  <!-- MOTION LAYER — background motion infrastructure, z-index:0, pointer-events:none -->
+  <div id="gracexMotionLayer" aria-hidden="true">
+    <video id="gracexMotionVid" muted playsinline preload="auto"></video>
+    <div class="gracexMotionFx"></div>
+  </div>
+
   <!-- ENTERPRISE BOOT SCREEN (Loads first via boot-screen.js) -->
   <script src="assets/js/boot-screen.js?v=TITAN"></script>
   
@@ -68,7 +76,6 @@
             <div class="section-title">Core</div>
             <nav class="module-nav nav-group-core">
               <button class="module-btn" data-module="core" style="background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%); box-shadow: 0 2px 12px rgba(6,182,212,0.3);">🏠 GRACE-X Core™</button>
-              <button class="module-btn" data-module="core2" style="background: linear-gradient(135deg, #00f0ff 0%, #6366f1 100%); box-shadow: 0 0 20px rgba(0,240,255,0.3);">🚀 GRACE-X CORE 2.0™</button>
             </nav>
 
             <!-- Family & Life – pink/rose family -->
@@ -323,5 +330,7 @@
     <script src="assets/js/laser-ultra.js?v=TITAN"></script>
     <!-- App Entry Point -->
     <script type="module" src="assets/js/app.js?v=TITAN"></script>
+    <!-- MOTION LAYER CONTROLLER — must load after DOM -->
+    <script src="assets/js/gracex-motion-layer.js?v=TITAN"></script>
 </body>
 </html>
