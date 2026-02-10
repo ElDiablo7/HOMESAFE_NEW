@@ -29,6 +29,20 @@
   overflow: hidden;
 }
 
+/* Boot background MP4 */
+.boot-bg-video{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  opacity:0.18;
+  filter: blur(0px) saturate(115%);
+  transform: scale(1.02);
+  pointer-events:none;
+  z-index:0;
+}
+
 #gracex-boot-screen.fade-out {
   opacity: 0;
   pointer-events: none;
@@ -51,6 +65,7 @@
   background-size: 50px 50px;
   animation: gridScroll 20s linear infinite;
   opacity: 0.3;
+  z-index: 1;
 }
 
 @keyframes gridScroll {
