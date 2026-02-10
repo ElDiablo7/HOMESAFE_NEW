@@ -69,9 +69,9 @@
           <div>STATUS: INITIALIZING</div>
         </div>
         
-        <!-- Main Logo -->
+        <!-- Main Logo (Animated GRACE Avatar) -->
         <div class="boot-logo-container">
-          <img src="assets/images/gracex-boot-logo.png" alt="GRACE-X AI PRO FILM PRODUCTION SUITE">
+          <video class="boot-avatar-video" src="assets/motion/motion_01.mp4" autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>
         </div>
         
         <!-- Module Loading List -->
