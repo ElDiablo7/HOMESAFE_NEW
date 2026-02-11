@@ -482,3 +482,37 @@ body {
 }
 .ca-instructions-body li { margin-bottom: 6px; }
 .ca-instructions-body.collapsed { display: none; }
+
+/* Accessibility – Screen reader & focus (WCAG) */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+.ca-btn:focus-visible,
+.ca-nav a:focus-visible,
+.ca-brain-mic-btn:focus-visible,
+.ca-brain-input-row input:focus-visible,
+.ca-brain-input-row button:focus-visible,
+.ca-tone-row select:focus-visible,
+.ca-suggestions-select:focus-visible,
+#ca-a11y-toggle:focus-visible,
+#ca-voice-toggle:focus-visible {
+  outline: 2px solid var(--ca-accent);
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .ca-btn:hover,
+  .ca-nav a:hover { transform: none; }
+}

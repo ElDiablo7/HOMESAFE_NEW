@@ -11,11 +11,11 @@
     <div class="ca-phone-screen">
       <div class="ca-layout">
     <main class="ca-main">
-      <nav class="ca-nav">
-        <a href="prep.html">Prep</a>
-        <a href="on-call.html">On-Call</a>
-        <a href="wrap.html" class="active">Wrap</a>
-        <a href="/" class="ca-home">← HomeSafe</a>
+      <nav class="ca-nav" role="navigation" aria-label="CallAssist pages">
+        <a href="prep.html" aria-label="Prep page">Prep</a>
+        <a href="on-call.html" aria-label="On-Call page">On-Call</a>
+        <a href="wrap.html" class="active" aria-current="page">Wrap</a>
+        <a href="/" class="ca-home" aria-label="Back to HomeSafe">← HomeSafe</a>
       </nav>
 
       <header class="ca-header">
@@ -39,9 +39,9 @@
       </div>
 
       <div class="ca-card">
-        <textarea id="wrapNotes" placeholder="Outcome, action items, follow-ups..."></textarea>
+        <textarea id="wrapNotes" placeholder="Outcome, action items, follow-ups..." aria-label="Wrap notes, outcome, action items"></textarea>
         <div style="margin-top: 12px;">
-          <button id="saveBtn" class="ca-btn">Save</button>
+          <button id="saveBtn" class="ca-btn" aria-label="Save wrap notes">Save</button>
           <span id="saved" class="ca-saved"></span>
         </div>
       </div>
@@ -53,8 +53,9 @@
         <span class="ca-assistant-toggle">▼ Collapse</span>
       </div>
       <div class="ca-assistant-body" id="ca-assistant-body">
-        <div style="display:flex; gap:8px; align-items:center; margin-bottom:12px;">
-          <button type="button" id="ca-voice-toggle" class="ca-btn ca-btn-ghost" style="font-size:0.9rem; padding:8px 12px;">🔇 Voice off</button>
+        <div style="display:flex; gap:8px; align-items:center; margin-bottom:12px; flex-wrap:wrap;">
+          <button type="button" id="ca-voice-toggle" class="ca-btn ca-btn-ghost" style="font-size:0.9rem; padding:8px 12px;" aria-pressed="false" aria-label="Toggle voice for GRACE replies">🔇 Voice off</button>
+          <button type="button" id="ca-a11y-toggle" class="ca-btn ca-btn-ghost" style="font-size:0.9rem; padding:8px 12px;" role="switch" aria-pressed="false" aria-label="Turn on accessibility mode">♿ Accessibility off</button>
         </div>
         <div class="ca-tone-row">
           <label for="ca-tone-select">Voice tone</label>
@@ -76,13 +77,13 @@
           <label for="ca-suggestions-select">Quick suggestion</label>
           <select id="ca-suggestions-select" class="ca-suggestions-select"></select>
         </div>
-        <div id="ca-brain-output" class="ca-brain-output"></div>
+        <div id="ca-brain-output" class="ca-brain-output" role="log" aria-live="polite" aria-label="GRACE assistant replies"></div>
         <div class="ca-brain-input-row">
           <button type="button" class="ca-brain-mic-btn" id="ca-brain-mic" title="Voice input (tap to start)">🎙️</button>
-          <input id="ca-brain-input" type="text" placeholder="Summarise wrap, suggest action items…" />
-          <button id="ca-brain-send">Ask</button>
+          <input id="ca-brain-input" type="text" placeholder="Summarise wrap, suggest action items…" aria-label="Ask GRACE to summarise wrap" />
+          <button id="ca-brain-send" aria-label="Send question">Ask</button>
         </div>
-        <button id="ca-brain-clear" class="ca-brain-clear">Clear conversation</button>
+        <button id="ca-brain-clear" class="ca-brain-clear" aria-label="Clear conversation">Clear conversation</button>
       </div>
     </aside>
       </div>
@@ -112,6 +113,7 @@
       showSaved();
     });
   </script>
+  <script src="callassist-speech-helper.js"></script>
   <script src="callassist.js"></script>
 </body>
 </html>

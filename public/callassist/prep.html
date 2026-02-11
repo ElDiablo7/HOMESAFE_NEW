@@ -11,11 +11,11 @@
     <div class="ca-phone-screen">
       <div class="ca-layout">
     <main class="ca-main">
-      <nav class="ca-nav">
-        <a href="prep.html" class="active">Prep</a>
-        <a href="on-call.html">On-Call</a>
-        <a href="wrap.html">Wrap</a>
-        <a href="/" class="ca-home">← HomeSafe</a>
+      <nav class="ca-nav" role="navigation" aria-label="CallAssist pages">
+        <a href="prep.html" class="active" aria-current="page">Prep</a>
+        <a href="on-call.html" aria-label="On-Call page">On-Call</a>
+        <a href="wrap.html" aria-label="Wrap page">Wrap</a>
+        <a href="/" class="ca-home" aria-label="Back to HomeSafe">← HomeSafe</a>
       </nav>
 
       <header class="ca-header">
@@ -42,9 +42,9 @@
         <h2>📷 Scan a letter</h2>
         <p class="hint">Take a photo or upload an image of an important letter. GRACE will read it and help draft a reply for your client.</p>
         <div class="ca-camera-row">
-          <button type="button" class="ca-btn" id="ca-cam-btn">📷 Take photo</button>
+          <button type="button" class="ca-btn" id="ca-cam-btn" aria-label="Take photo of letter">📷 Take photo</button>
           <input type="file" id="ca-cam-input" accept="image/*" capture="environment" style="display:none;">
-          <label class="ca-btn" style="margin:0; cursor:pointer;">
+          <label class="ca-btn" style="margin:0; cursor:pointer;" aria-label="Choose image file for letter">
             Choose file
             <input type="file" id="ca-file-input" accept="image/*" style="display:none;">
           </label>
@@ -52,16 +52,16 @@
         <div id="ca-letter-preview" class="ca-letter-preview" style="display:none;">
           <img id="ca-letter-img" alt="Letter" />
           <div class="ca-letter-actions">
-            <button type="button" class="ca-btn" id="ca-read-letter-btn">Read &amp; draft reply</button>
-            <button type="button" class="ca-btn ca-btn-ghost" id="ca-clear-letter-btn">Clear</button>
+            <button type="button" class="ca-btn" id="ca-read-letter-btn" aria-label="Read letter and draft reply">Read &amp; draft reply</button>
+            <button type="button" class="ca-btn ca-btn-ghost" id="ca-clear-letter-btn" aria-label="Clear letter preview">Clear</button>
           </div>
         </div>
       </div>
 
       <div class="ca-card">
-        <textarea id="callBrief" placeholder="Enter call brief, key points, agenda..."></textarea>
+        <textarea id="callBrief" placeholder="Enter call brief, key points, agenda..." aria-label="Call brief, key points, agenda"></textarea>
         <div style="margin-top: 12px;">
-          <button id="saveBtn" class="ca-btn">Save</button>
+          <button id="saveBtn" class="ca-btn" aria-label="Save call brief">Save</button>
           <span id="saved" class="ca-saved"></span>
         </div>
       </div>
@@ -73,8 +73,9 @@
         <span class="ca-assistant-toggle">▼ Collapse</span>
       </div>
       <div class="ca-assistant-body" id="ca-assistant-body">
-        <div style="display:flex; gap:8px; align-items:center; margin-bottom:12px;">
-          <button type="button" id="ca-voice-toggle" class="ca-btn ca-btn-ghost" style="font-size:0.9rem; padding:8px 12px;">🔇 Voice off</button>
+        <div style="display:flex; gap:8px; align-items:center; margin-bottom:12px; flex-wrap:wrap;">
+          <button type="button" id="ca-voice-toggle" class="ca-btn ca-btn-ghost" style="font-size:0.9rem; padding:8px 12px;" aria-pressed="false" aria-label="Toggle voice for GRACE replies">🔇 Voice off</button>
+          <button type="button" id="ca-a11y-toggle" class="ca-btn ca-btn-ghost" style="font-size:0.9rem; padding:8px 12px;" role="switch" aria-pressed="false" aria-label="Turn on accessibility mode">♿ Accessibility off</button>
         </div>
         <div class="ca-tone-row">
           <label for="ca-tone-select">Voice tone</label>
@@ -96,13 +97,13 @@
           <label for="ca-suggestions-select">Quick suggestion</label>
           <select id="ca-suggestions-select" class="ca-suggestions-select"></select>
         </div>
-        <div id="ca-brain-output" class="ca-brain-output"></div>
+        <div id="ca-brain-output" class="ca-brain-output" role="log" aria-live="polite" aria-label="GRACE assistant replies"></div>
         <div class="ca-brain-input-row">
           <button type="button" class="ca-brain-mic-btn" id="ca-brain-mic" title="Voice input (tap to start)">🎙️</button>
-          <input id="ca-brain-input" type="text" placeholder="Ask about call prep, agendas, key points…" />
-          <button id="ca-brain-send">Ask</button>
+          <input id="ca-brain-input" type="text" placeholder="Ask about call prep, agendas, key points…" aria-label="Ask GRACE about call prep" />
+          <button id="ca-brain-send" aria-label="Send question">Ask</button>
         </div>
-        <button id="ca-brain-clear" class="ca-brain-clear">Clear conversation</button>
+        <button id="ca-brain-clear" class="ca-brain-clear" aria-label="Clear conversation">Clear conversation</button>
       </div>
     </aside>
       </div>
@@ -132,6 +133,7 @@
       showSaved();
     });
   </script>
+  <script src="callassist-speech-helper.js"></script>
   <script src="callassist.js"></script>
 </body>
 </html>

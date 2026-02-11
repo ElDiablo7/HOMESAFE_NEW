@@ -301,17 +301,22 @@
       appendMessage('system', "I'm GRACE-X CallAssist. I can help with call prep, quick notes, and wrap summaries.");
     }
 
-    // TTS: speak AI replies when voice is on
+    // TTS: speak AI replies when voice or accessibility mode is on
     var voiceOn = false;
     var originalAppend = appendMessage;
     appendMessage = function(role, text) {
       originalAppend(role, text);
-      if (role === 'ai' && voiceOn && window.speechSynthesis) {
-        window.speechSynthesis.cancel();
-        var u = new SpeechSynthesisUtterance(String(text).slice(0, 500));
-        u.lang = 'en-GB';
-        u.rate = 0.95;
-        window.speechSynthesis.speak(u);
+      if (role === 'ai' && window.speechSynthesis) {
+        var a11y = window.CallAssistA11y;
+        if (a11y && a11y.isEnabled && a11y.isEnabled() && typeof a11y.onA11yMessage === 'function') {
+          a11y.onA11yMessage(text);
+        } else if (voiceOn) {
+          window.speechSynthesis.cancel();
+          var u = new SpeechSynthesisUtterance(String(text).slice(0, 500));
+          u.lang = 'en-GB';
+          u.rate = 0.95;
+          window.speechSynthesis.speak(u);
+        }
       }
     };
 
@@ -400,6 +405,10 @@
           aiMsg.textContent = reply;
           output.appendChild(aiMsg);
           output.scrollTop = output.scrollHeight;
+          var a11y = window.CallAssistA11y;
+          if (a11y && a11y.isEnabled && a11y.isEnabled() && typeof a11y.onA11yMessage === 'function') {
+            a11y.onA11yMessage(reply);
+          }
         }
       }).catch(function() {
         if (loading.parentNode) loading.remove();
