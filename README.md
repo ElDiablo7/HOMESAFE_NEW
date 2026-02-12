@@ -13,7 +13,7 @@
 
 1. **Add API key** to `server/.env`:
    ```env
-   ANTHROPIC_API_KEY=sk-ant-YOUR-KEY-HERE
+   OPENAI_API_KEY=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
    ```
 
 2. **Start the system:**
