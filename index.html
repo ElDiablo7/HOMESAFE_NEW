@@ -28,6 +28,24 @@
 </head>
 
 <body>
+  <!-- File protocol check: app must run over http(s), not file:// -->
+  <script>
+    (function() {
+      var proto = window.location.protocol;
+      if (proto === 'file:') {
+        document.write(
+          '<div style="position:fixed;inset:0;background:#0f172a;color:#e2e8f0;font-family:system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;z-index:999999;">' +
+          '<h1 style="font-size:1.5rem;margin-bottom:16px;">GRACE-X must run from a web server</h1>' +
+          '<p style="margin-bottom:24px;max-width:420px;">You opened this page from a file (file://). The app needs to be served over HTTP. Use one of these:</p>' +
+          '<p style="margin-bottom:8px;"><a href="http://localhost:3000" style="color:#06b6d4;font-weight:600;">http://localhost:3000</a> (run <code style="background:#1e293b;padding:2px 8px;border-radius:4px;">npm start</code> in the project folder first)</p>' +
+          '<p style="margin-bottom:24px;"><a href="https://grace-x-homesafe.onrender.com" style="color:#06b6d4;font-weight:600;">https://grace-x-homesafe.onrender.com</a> (deployed app)</p>' +
+          '<p style="font-size:0.9rem;color:#94a3b8;">Close this tab and open one of the links above.</p>' +
+          '</div>'
+        );
+        throw new Error('GRACE-X: open from http://localhost:3000 or the deployed URL');
+      }
+    })();
+  </script>
   <!-- MOTION LAYER — background motion infrastructure, z-index:0, pointer-events:none -->
   <div id="gracexMotionLayer" aria-hidden="true">
     <video id="gracexMotionVid" muted playsinline preload="auto"></video>

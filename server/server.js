@@ -511,28 +511,37 @@ app.get('/net/status', async (req, res) => {
 app.get('/api/brain/test', async (req, res) => {
   try {
     const provider = process.env.LLM_PROVIDER || 'openai';
-    const model = provider === 'anthropic' 
+    const model = provider === 'anthropic'
       ? (process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514')
-      : (process.env.OPENAI_MODEL || 'gpt-4o-mini');
-    
-    const apiKeyConfigured = provider === 'anthropic' 
-      ? !!(process.env.ANTHROPIC_API_KEY || process.env.API_KEY)
-      : !!(process.env.OPENAI_API_KEY || process.env.API_KEY);
+      : provider === 'ollama'
+        ? (process.env.OLLAMA_MODEL || 'llama3.2')
+        : provider === 'openrouter'
+          ? (process.env.OPENROUTER_MODEL || 'anthropic/claude-3.5-sonnet')
+          : (process.env.OPENAI_MODEL || 'gpt-4o-mini');
 
-    // Quick test call
+    const apiKeyConfigured = provider === 'anthropic'
+      ? !!(process.env.ANTHROPIC_API_KEY || process.env.API_KEY)
+      : provider === 'openrouter'
+        ? !!process.env.OPENROUTER_API_KEY
+        : provider === 'ollama'
+          ? !!(process.env.OLLAMA_HOST || process.env.OLLAMA_BASE_URL)
+          : !!(process.env.OPENAI_API_KEY || process.env.API_KEY);
+
+    const testMessages = [{ role: 'system', content: 'You are a test. Reply with exactly: Brain connected' }, { role: 'user', content: 'Say "Brain connected" if you can read this.' }];
     let testResult = 'Not tested';
     if (apiKeyConfigured) {
       try {
-        const testMessages = [{ role: 'user', content: 'Say "Brain connected" if you can read this.' }];
         let response;
-        
         if (provider === 'anthropic') {
           response = await callAnthropic(testMessages, 0.7, 50);
+        } else if (provider === 'openrouter') {
+          response = await callOpenRouter(testMessages, 0.7, 50);
+        } else if (provider === 'ollama') {
+          response = await callOllama(testMessages, 0.7, 50);
         } else {
           response = await callOpenAI(testMessages, 0.7, 50);
         }
-        
-        testResult = 'Connected ✅';
+        testResult = response ? 'Connected' : 'No reply';
       } catch (err) {
         testResult = `Error: ${err.message}`;
       }
@@ -590,7 +599,7 @@ app.get('/api/providers', (req, res) => {
       models: ['auto', 'anthropic/claude-3.5-sonnet', 'openai/gpt-4o', 'google/gemini-pro']
     },
     ollama: {
-      configured: !!process.env.OLLAMA_BASE_URL,
+      configured: !!(process.env.OLLAMA_BASE_URL || process.env.OLLAMA_HOST),
       models: ['llama3.2', 'llama3.1', 'mistral', 'codellama', 'phi3']
     }
   };
@@ -1157,9 +1166,9 @@ async function callOpenRouter(messages, temperature, max_tokens) {
   return data.choices[0].message.content;
 }
 
-// Ollama API call (local LLM)
+// Ollama API call (local LLM) – offline-first; supports OLLAMA_HOST or OLLAMA_BASE_URL
 async function callOllama(messages, temperature, max_tokens) {
-  const baseUrl = process.env.OLLAMA_BASE_URL || 'http://localhost:11434';
+  const baseUrl = process.env.OLLAMA_BASE_URL || process.env.OLLAMA_HOST || 'http://localhost:11434';
   const model = process.env.OLLAMA_MODEL || 'llama3.2';
 
   // Convert messages to Ollama format
