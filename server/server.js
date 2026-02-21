@@ -507,63 +507,43 @@ app.get('/net/status', async (req, res) => {
   } catch (_) {}
   res.json(result);
 });
-// Brain connection test endpoint
-app.get('/api/brain/test', async (req, res) => {
+// Brain connection test endpoint – direct Ollama test (GET + POST)
+const brainTestHandler = async (req, res) => {
   try {
-    const provider = process.env.LLM_PROVIDER || 'openai';
-    const model = provider === 'anthropic'
-      ? (process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514')
-      : provider === 'ollama'
-        ? (process.env.OLLAMA_MODEL || 'llama3.2')
-        : provider === 'openrouter'
-          ? (process.env.OPENROUTER_MODEL || 'anthropic/claude-3.5-sonnet')
-          : (process.env.OPENAI_MODEL || 'gpt-4o-mini');
-
-    const apiKeyConfigured = provider === 'anthropic'
-      ? !!(process.env.ANTHROPIC_API_KEY || process.env.API_KEY)
-      : provider === 'openrouter'
-        ? !!process.env.OPENROUTER_API_KEY
-        : provider === 'ollama'
-          ? !!(process.env.OLLAMA_HOST || process.env.OLLAMA_BASE_URL)
-          : !!(process.env.OPENAI_API_KEY || process.env.API_KEY);
-
-    const testMessages = [{ role: 'system', content: 'You are a test. Reply with exactly: Brain connected' }, { role: 'user', content: 'Say "Brain connected" if you can read this.' }];
-    let testResult = 'Not tested';
-    if (apiKeyConfigured) {
-      try {
-        let response;
-        if (provider === 'anthropic') {
-          response = await callAnthropic(testMessages, 0.7, 50);
-        } else if (provider === 'openrouter') {
-          response = await callOpenRouter(testMessages, 0.7, 50);
-        } else if (provider === 'ollama') {
-          response = await callOllama(testMessages, 0.7, 50);
-        } else {
-          response = await callOpenAI(testMessages, 0.7, 50);
-        }
-        testResult = response ? 'Connected' : 'No reply';
-      } catch (err) {
-        testResult = `Error: ${err.message}`;
+    const response = await fetch(
+      `${process.env.OLLAMA_HOST || "http://127.0.0.1:11434"}/api/generate`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: process.env.OLLAMA_MODEL || "llama3.2",
+          prompt: "Say 'GRACE-X brain online.'",
+          stream: false
+        })
       }
-    }
+    );
+
+    const data = await response.json();
 
     res.json({
       success: true,
-      brain: {
-        provider,
-        model,
-        apiKeyConfigured,
-        connectionTest: testResult,
-        timestamp: new Date().toISOString()
-      }
+      connectionTest: "Connected",
+      model: process.env.OLLAMA_MODEL,
+      response: data.response
     });
-  } catch (error) {
+
+  } catch (err) {
+
     res.status(500).json({
       success: false,
-      error: error.message
+      connectionTest: "Failed",
+      error: err.message
     });
+
   }
-});
+};
+app.get("/api/brain/test", brainTestHandler);
+app.post("/api/brain/test", brainTestHandler);
 
 // API info endpoint
 app.get('/api/info', (req, res) => {
@@ -599,8 +579,10 @@ app.get('/api/providers', (req, res) => {
       models: ['auto', 'anthropic/claude-3.5-sonnet', 'openai/gpt-4o', 'google/gemini-pro']
     },
     ollama: {
-      configured: !!(process.env.OLLAMA_BASE_URL || process.env.OLLAMA_HOST),
-      models: ['llama3.2', 'llama3.1', 'mistral', 'codellama', 'phi3']
+      configured: true,
+      host: process.env.OLLAMA_HOST || "http://127.0.0.1:11434",
+      model: process.env.OLLAMA_MODEL || "llama3.2",
+      models: ["llama3.2", "llama3.1", "mistral", "codellama", "phi3"]
     }
   };
   
@@ -1178,7 +1160,10 @@ async function callOpenRouter(messages, temperature, max_tokens) {
 
 // Ollama API call (local LLM) – offline-first; supports OLLAMA_HOST or OLLAMA_BASE_URL
 async function callOllama(messages, temperature, max_tokens, modelOverride) {
-  const baseUrl = process.env.OLLAMA_BASE_URL || process.env.OLLAMA_HOST || 'http://localhost:11434';
+  const baseUrl =
+    process.env.OLLAMA_BASE_URL ||
+    process.env.OLLAMA_HOST ||
+    "http://127.0.0.1:11434";
   const model = modelOverride != null ? modelOverride : (process.env.OLLAMA_MODEL || 'llama3.2');
 
   // Use a generous timeout for local inference (120 seconds)
