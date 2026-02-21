@@ -817,6 +817,15 @@ app.post('/api/sports/cache/clear', (req, res) => {
   }
 });
 
+// Ollama dynamic model selection
+function selectOllamaModel(message){
+const msg=(message||'').toLowerCase();
+if(/analyse|analyze|legal|contract|critical|deep/.test(msg))return 'dolphin-mixtral:latest';
+if(/explain|architecture|design|build|system/.test(msg))return 'gpt-oss:20b';
+if(/how|why|what|help/.test(msg))return 'llama3.2:latest';
+return 'phi3.5:latest';
+}
+
 // Main brain API endpoint
 app.post('/api/brain', rateLimitMiddleware, async (req, res) => {
   const { module, messages, temperature = 0.7, max_tokens = 500, provider: requestProvider } = req.body;
@@ -868,7 +877,11 @@ app.post('/api/brain', rateLimitMiddleware, async (req, res) => {
 
   // Get API provider
   const provider = requestProvider || process.env.LLM_PROVIDER || 'openai';
-  
+
+  const messageText = req.body.message || req.body.prompt || req.body.input || (Array.isArray(messages)&&messages.length ? (messages.find(m=>m.role==='user')?.content || messages[messages.length-1]?.content || '') : '');
+  const ollamaModel = provider === 'ollama' ? selectOllamaModel(messageText) : null;
+  if (provider === 'ollama' && ollamaModel) console.log('[GRACE-X BRAIN] Ollama model selected:', ollamaModel);
+
   log('info', `Brain request from module: ${module || 'unknown'}`, { 
     requestId: req.requestId,
     provider,
@@ -890,7 +903,7 @@ app.post('/api/brain', rateLimitMiddleware, async (req, res) => {
         reply = await callOpenRouter(sanitizedMessages, validTemp, validMaxTokens);
         break;
       case 'ollama':
-        reply = await callOllama(sanitizedMessages, validTemp, validMaxTokens);
+        reply = await callOllama(sanitizedMessages, validTemp, validMaxTokens, ollamaModel);
         break;
       default:
         return res.status(400).json({
@@ -1167,9 +1180,9 @@ async function callOpenRouter(messages, temperature, max_tokens) {
 }
 
 // Ollama API call (local LLM) – offline-first; supports OLLAMA_HOST or OLLAMA_BASE_URL
-async function callOllama(messages, temperature, max_tokens) {
+async function callOllama(messages, temperature, max_tokens, modelOverride) {
   const baseUrl = process.env.OLLAMA_BASE_URL || process.env.OLLAMA_HOST || 'http://localhost:11434';
-  const model = process.env.OLLAMA_MODEL || 'llama3.2';
+  const model = modelOverride != null ? modelOverride : (process.env.OLLAMA_MODEL || 'llama3.2');
 
   // Convert messages to Ollama format
   const response = await fetch(`${baseUrl}/api/chat`, {
