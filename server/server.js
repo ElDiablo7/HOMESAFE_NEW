@@ -475,7 +475,9 @@ app.get('/health', (req, res) => {
     provider: process.env.LLM_PROVIDER || 'openai',
     model: process.env.LLM_PROVIDER === 'anthropic'
       ? (process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514')
-      : (process.env.OPENAI_MODEL || 'gpt-4o-mini'),
+      : (process.env.LLM_PROVIDER === 'ollama'
+        ? (process.env.OLLAMA_MODEL || 'llama3.2')
+        : (process.env.OPENAI_MODEL || 'gpt-4o-mini')),
     uptime: Math.floor(process.uptime())
   });
 });
