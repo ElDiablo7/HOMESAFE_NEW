@@ -28,6 +28,13 @@ const API_VERSION = '2.0.0';
 const dns = require('dns');
 const https = require('https');
 
+// Routes and Middleware Requires
+const authRoutes = require('./routes/auth');
+const { optionalJwt } = require('./middleware/auth');
+const builderRoutes = require('./routes/builder');
+const siteopsRoutes = require('./routes/siteops');
+const sportsAPI = require('./sports-api');
+
 // ============================================
 // GRACE-X AI™ VOICE & CHARACTER MASTER SPEC
 // Engineered and copyrighted by Zac Crockett
@@ -638,7 +645,7 @@ app.get('/api/system/status', (req, res) => {
 // ============================================
 // SPORTS API ENDPOINTS
 // ============================================
-const sportsAPI = require('./sports-api');
+// Sports API is now required at the top
 
 // Get live football scores
 app.get('/api/sports/football/live', rateLimitMiddleware, async (req, res) => {
@@ -1950,13 +1957,7 @@ console.log('║  ✅  Compliance Status:    GET  /api/safety/compliance    ║'
 console.log('╚═══════════════════════════════════════════════════════════╝');
 console.log('');
 
-// ============================================
-// AUTH & BUILDER & SITEOPS API
-// ============================================
-const authRoutes = require('./routes/auth');
-const { optionalJwt } = require('./middleware/auth');
-const builderRoutes = require('./routes/builder');
-const siteopsRoutes = require('./routes/siteops');
+// Auth & Builder & SiteOps requires moved to top
 app.use('/api/auth', authRoutes);
 app.use('/api/builder', optionalJwt, builderRoutes);
 app.use('/api/siteops', optionalJwt, siteopsRoutes);
