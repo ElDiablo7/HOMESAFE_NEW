@@ -32,6 +32,7 @@
     sharedData: new Map(),
     
     // Health Monitor
+    healthCheckConsecutiveOffline: 0,
     health: {
       backend: 'unknown',
       modules: {},
@@ -365,6 +366,12 @@
         this.health.issues.push('Backend server unreachable');
       }
 
+      if (this.health.backend === 'offline') {
+        this.healthCheckConsecutiveOffline++;
+      } else {
+        this.healthCheckConsecutiveOffline = 0;
+      }
+
       // Check module activity (modules inactive for >5 minutes)
       const fiveMinutesAgo = Date.now() - (5 * 60 * 1000);
       this.modules.forEach((module, moduleId) => {
@@ -384,6 +391,16 @@
 
       if (this.config.enableDebugMode) {
         console.log('[MASTER] Health check completed', this.health);
+      }
+
+      if (this.healthCheckConsecutiveOffline >= 3 && this.config.healthCheckInterval === 30000) {
+        this.config.healthCheckInterval = 120000;
+        this.stopHealthMonitoring();
+        this.startHealthMonitoring();
+      } else if (this.health.backend === 'healthy' && this.config.healthCheckInterval === 120000) {
+        this.config.healthCheckInterval = 30000;
+        this.stopHealthMonitoring();
+        this.startHealthMonitoring();
       }
     },
 
