@@ -48,27 +48,19 @@ echo.
 echo Starting GRACE-X AI v6.4.1...
 echo.
 
-REM Start backend in current window
-echo Starting backend server...
-cd /d "%~dp0server"
-start "GRACE-X Backend" cmd /c "node server.js"
-cd /d "%~dp0"
+REM Start backend (from repo root)
+start "GRACE-X Backend" /min cmd /c "cd /d %~dp0 && node server/server.js"
 timeout /t 3 /nobreak >nul
 
-echo Backend:  http://localhost:3000 (starting)
-echo Frontend: http://localhost:8080 (starting...)
+echo Backend:  http://localhost:3000 (running)
 echo.
-echo === GRACE-X AI IS STARTING ===
-echo Wait 5 seconds, then open your browser to:
-echo http://localhost:8080
+echo Opening browser...
+start "" "http://localhost:3000"
+
 echo.
-echo Press any key to stop servers...
+echo === GRACE-X AI RUNNING ===
+echo App: http://localhost:3000 (brain + CallAssist)
+echo Close the minimized "GRACE-X Backend" window to stop
 echo ================================
 echo.
-
-REM Start frontend server (this window)
-npx -y http-server -p 8080 -c-1 --silent
-
-echo.
-echo Servers stopped.
 pause

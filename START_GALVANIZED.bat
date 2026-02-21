@@ -114,7 +114,7 @@ echo.
 echo [STEP 5/6] Starting backend server...
 echo.
 
-start "GRACE-X Backend" /min cmd /c "cd /d %~dp0server && node server.js"
+start "GRACE-X Backend" /min cmd /c "cd /d %~dp0 && node server/server.js"
 timeout /t 3 /nobreak >nul
 
 REM Test backend connection
@@ -140,7 +140,7 @@ echo.
 timeout /t 2 /nobreak >nul
 
 echo [OK] Opening browser...
-start "" "http://localhost:8080"
+start "" "http://localhost:3000"
 timeout /t 1 /nobreak >nul
 
 echo.
@@ -149,23 +149,13 @@ echo   GRACE-X GALVANIZED EDITION - RUNNING
 echo ===============================================
 echo.
 echo   Backend:  http://localhost:3000 (Running)
-echo   Frontend: http://localhost:8080 (Starting...)
-echo   Test:     http://localhost:8080/CONNECTION_TEST.html
+echo   Test:     http://localhost:3000/CONNECTION_TEST.html
 echo.
 echo   Status: BULLETPROOF MODE ACTIVE
 echo.
 echo ===============================================
 echo.
-echo [INFO] Frontend server starting (this window)
-echo [INFO] Close this window to stop GRACE-X
-echo.
 
-REM Start frontend server
-npx -y http-server -p 8080 -c-1 --silent
+echo [INFO] Close the minimized "GRACE-X Backend" window to stop
 
-REM Cleanup on exit
-echo.
-echo [SHUTDOWN] Stopping backend server...
-taskkill /F /FI "WINDOWTITLE eq GRACE-X Backend" >nul 2>nul
-echo [SHUTDOWN] Complete
 pause
