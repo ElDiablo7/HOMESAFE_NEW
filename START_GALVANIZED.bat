@@ -155,9 +155,6 @@ echo   Status: BULLETPROOF MODE ACTIVE
 echo.
 echo ===============================================
 echo.
-echo [INFO] Frontend server starting (this window)
-echo [INFO] Close this window to stop GRACE-X
-echo.
 
 echo [INFO] Close the minimized "GRACE-X Backend" window to stop
 
