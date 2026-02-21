@@ -1,0 +1,2 @@
+[ENV] Loaded from server/.env
+[ENV] Loaded from GRACE-X-HOMESAFE/.env
