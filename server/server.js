@@ -475,9 +475,7 @@ app.get('/health', (req, res) => {
     provider: process.env.LLM_PROVIDER || 'openai',
     model: process.env.LLM_PROVIDER === 'anthropic'
       ? (process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514')
-      : (process.env.LLM_PROVIDER === 'ollama'
-        ? (process.env.OLLAMA_MODEL || 'llama3.2')
-        : (process.env.OPENAI_MODEL || 'gpt-4o-mini')),
+      : (process.env.OPENAI_MODEL || 'gpt-4o-mini'),
     uptime: Math.floor(process.uptime())
   });
 });
@@ -551,8 +549,8 @@ const brainTestHandler = async (req, res) => {
 
   }
 };
-app.get("/api/brain/test", rateLimitMiddleware, brainTestHandler);
-app.post("/api/brain/test", rateLimitMiddleware, brainTestHandler);
+app.get("/api/brain/test", brainTestHandler);
+app.post("/api/brain/test", brainTestHandler);
 
 // API info endpoint
 app.get('/api/info', (req, res) => {
@@ -647,7 +645,7 @@ app.get('/api/system/status', (req, res) => {
 // ============================================
 // SPORTS API ENDPOINTS
 // ============================================
-// Sports API is now required at the top
+const sportsAPI = require('./sports-api');
 
 // Get live football scores
 app.get('/api/sports/football/live', rateLimitMiddleware, async (req, res) => {
@@ -1257,14 +1255,9 @@ function validateForgePath(filePath) {
 }
 
 // SAVE FILE TO DESKTOP
-app.post('/api/forge/save-file', optionalJwt, async (req, res) => {
+app.post('/api/forge/save-file', async (req, res) => {
   try {
     const { filePath, content } = req.body;
-
-    // Security check: must be authenticated
-    if (!req.userId || req.userId === 'default') {
-      return res.status(401).json({ success: false, error: 'Authentication required' });
-    }
 
     if (!filePath || content === undefined) {
       return res.status(400).json({
@@ -1305,14 +1298,9 @@ app.post('/api/forge/save-file', optionalJwt, async (req, res) => {
 });
 
 // READ FILE FROM DESKTOP
-app.post('/api/forge/read-file', optionalJwt, async (req, res) => {
+app.post('/api/forge/read-file', async (req, res) => {
   try {
     const { filePath } = req.body;
-
-    // Security check: must be authenticated
-    if (!req.userId || req.userId === 'default') {
-      return res.status(401).json({ success: false, error: 'Authentication required' });
-    }
 
     if (!filePath) {
       return res.status(400).json({
@@ -1347,14 +1335,9 @@ app.post('/api/forge/read-file', optionalJwt, async (req, res) => {
 });
 
 // LIST DIRECTORY
-app.post('/api/forge/list-directory', optionalJwt, async (req, res) => {
+app.post('/api/forge/list-directory', async (req, res) => {
   try {
     const { dirPath } = req.body;
-
-    // Security check: must be authenticated
-    if (!req.userId || req.userId === 'default') {
-      return res.status(401).json({ success: false, error: 'Authentication required' });
-    }
 
     if (!dirPath) {
       return res.status(400).json({
@@ -1398,14 +1381,9 @@ app.post('/api/forge/list-directory', optionalJwt, async (req, res) => {
 });
 
 // DELETE FILE
-app.post('/api/forge/delete-file', optionalJwt, async (req, res) => {
+app.post('/api/forge/delete-file', async (req, res) => {
   try {
     const { filePath } = req.body;
-
-    // Security check: must be authenticated
-    if (!req.userId || req.userId === 'default') {
-      return res.status(401).json({ success: false, error: 'Authentication required' });
-    }
 
     if (!filePath) {
       return res.status(400).json({
@@ -1458,7 +1436,7 @@ console.log('');
 const callSheets = [];
 
 // CREATE CALL SHEET
-app.post('/api/callsheets/create', optionalJwt, (req, res) => {
+app.post('/api/callsheets/create', (req, res) => {
   try {
     const callSheet = {
       id: `cs-${Date.now()}`,
@@ -1484,7 +1462,7 @@ app.post('/api/callsheets/create', optionalJwt, (req, res) => {
 });
 
 // GET DAILY CALL SHEETS
-app.get('/api/callsheets/daily/:date', optionalJwt, (req, res) => {
+app.get('/api/callsheets/daily/:date', (req, res) => {
   try {
     const { date } = req.params;
     const sheets = callSheets.filter(s => s.date === date);
@@ -1504,7 +1482,7 @@ app.get('/api/callsheets/daily/:date', optionalJwt, (req, res) => {
 });
 
 // GET CALL SHEET BY ID
-app.get('/api/callsheets/:id', optionalJwt, (req, res) => {
+app.get('/api/callsheets/:id', (req, res) => {
   try {
     const sheet = callSheets.find(s => s.id === req.params.id);
 
@@ -1529,7 +1507,7 @@ app.get('/api/callsheets/:id', optionalJwt, (req, res) => {
 });
 
 // UPDATE CALL SHEET
-app.put('/api/callsheets/:id', optionalJwt, (req, res) => {
+app.put('/api/callsheets/:id', (req, res) => {
   try {
     const index = callSheets.findIndex(s => s.id === req.params.id);
 
@@ -1561,7 +1539,7 @@ app.put('/api/callsheets/:id', optionalJwt, (req, res) => {
 });
 
 // CLOCK IN/OUT
-app.post('/api/callsheets/crew/clockin', optionalJwt, (req, res) => {
+app.post('/api/callsheets/crew/clockin', (req, res) => {
   try {
     const { sheetId, crewId, action } = req.body;
 
@@ -1607,7 +1585,7 @@ app.post('/api/callsheets/crew/clockin', optionalJwt, (req, res) => {
 });
 
 // SYNC CALL SHEETS
-app.post('/api/callsheets/sync', optionalJwt, (req, res) => {
+app.post('/api/callsheets/sync', (req, res) => {
   try {
     const sheet = req.body;
     const existing = callSheets.findIndex(s => s.id === sheet.id);
@@ -1655,7 +1633,7 @@ const risks = [];
 const inductions = [];
 
 // REPORT INCIDENT
-app.post('/api/safety/incident', optionalJwt, (req, res) => {
+app.post('/api/safety/incident', (req, res) => {
   try {
     const incident = {
       id: `inc-${Date.now()}`,
@@ -1682,7 +1660,7 @@ app.post('/api/safety/incident', optionalJwt, (req, res) => {
 });
 
 // GET INCIDENTS
-app.get('/api/safety/incidents/:siteId?', optionalJwt, (req, res) => {
+app.get('/api/safety/incidents/:siteId?', (req, res) => {
   try {
     const { siteId } = req.params;
     const { severity, status } = req.query;
@@ -1716,7 +1694,7 @@ app.get('/api/safety/incidents/:siteId?', optionalJwt, (req, res) => {
 });
 
 // UPDATE INCIDENT
-app.put('/api/safety/incident/:id', optionalJwt, (req, res) => {
+app.put('/api/safety/incident/:id', (req, res) => {
   try {
     const index = incidents.findIndex(i => i.id === req.params.id);
 
@@ -1748,7 +1726,7 @@ app.put('/api/safety/incident/:id', optionalJwt, (req, res) => {
 });
 
 // CREATE SAFETY CHECKLIST
-app.post('/api/safety/checklist', optionalJwt, (req, res) => {
+app.post('/api/safety/checklist', (req, res) => {
   try {
     const checklist = {
       id: `chk-${Date.now()}`,
@@ -1773,7 +1751,7 @@ app.post('/api/safety/checklist', optionalJwt, (req, res) => {
 });
 
 // COMPLETE SAFETY CHECKLIST
-app.post('/api/safety/checklist/complete', optionalJwt, (req, res) => {
+app.post('/api/safety/checklist/complete', (req, res) => {
   try {
     const { checklistId, signature, results } = req.body;
 
@@ -1805,7 +1783,7 @@ app.post('/api/safety/checklist/complete', optionalJwt, (req, res) => {
 });
 
 // REGISTER RISK
-app.post('/api/safety/risk', optionalJwt, (req, res) => {
+app.post('/api/safety/risk', (req, res) => {
   try {
     const risk = {
       id: `risk-${Date.now()}`,
@@ -1832,7 +1810,7 @@ app.post('/api/safety/risk', optionalJwt, (req, res) => {
 });
 
 // GET RISK MATRIX
-app.get('/api/safety/risks/matrix', optionalJwt, (req, res) => {
+app.get('/api/safety/risks/matrix', (req, res) => {
   try {
     const matrix = {
       critical: risks.filter(r => r.status === 'active' && r.riskScore > 20),
@@ -1855,7 +1833,7 @@ app.get('/api/safety/risks/matrix', optionalJwt, (req, res) => {
 });
 
 // RECORD INDUCTION
-app.post('/api/safety/induction', optionalJwt, (req, res) => {
+app.post('/api/safety/induction', (req, res) => {
   try {
     const induction = {
       id: `ind-${Date.now()}`,
@@ -1881,7 +1859,7 @@ app.post('/api/safety/induction', optionalJwt, (req, res) => {
 });
 
 // GET COMPLIANCE STATUS
-app.get('/api/safety/compliance/:siteId?', optionalJwt, (req, res) => {
+app.get('/api/safety/compliance/:siteId?', (req, res) => {
   try {
     const { siteId } = req.params;
 
@@ -1959,7 +1937,13 @@ console.log('║  ✅  Compliance Status:    GET  /api/safety/compliance    ║'
 console.log('╚═══════════════════════════════════════════════════════════╝');
 console.log('');
 
-// Auth & Builder & SiteOps requires moved to top
+// ============================================
+// AUTH & BUILDER & SITEOPS API
+// ============================================
+const authRoutes = require('./routes/auth');
+const { optionalJwt } = require('./middleware/auth');
+const builderRoutes = require('./routes/builder');
+const siteopsRoutes = require('./routes/siteops');
 app.use('/api/auth', authRoutes);
 app.use('/api/builder', optionalJwt, builderRoutes);
 app.use('/api/siteops', optionalJwt, siteopsRoutes);
@@ -1969,7 +1953,7 @@ app.use('/api/siteops', optionalJwt, siteopsRoutes);
 // ============================================
 
 // Weather API endpoint
-app.get('/api/weather', rateLimitMiddleware, optionalJwt, async (req, res) => {
+app.get('/api/weather', rateLimitMiddleware, async (req, res) => {
   try {
     const { lat, lon } = req.query;
 
@@ -2019,7 +2003,7 @@ app.get('/api/weather', rateLimitMiddleware, optionalJwt, async (req, res) => {
 });
 
 // News API endpoint
-app.get('/api/news', rateLimitMiddleware, optionalJwt, async (req, res) => {
+app.get('/api/news', rateLimitMiddleware, async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 5;
 
@@ -2085,10 +2069,7 @@ if (!process.env.MEDIA_BASE_DIR && process.platform !== 'win32') {
 }
 
 // List folders and files in media directory
-app.get('/api/gallery/list', rateLimitMiddleware, optionalJwt, async (req, res) => {
-  if (!req.userId || req.userId === 'default') {
-    return res.status(401).json({ error: 'Authentication required' });
-  }
+app.get('/api/gallery/list', rateLimitMiddleware, async (req, res) => {
   try {
     const { folder = '' } = req.query;
     const targetPath = folder ? path.join(MEDIA_BASE_DIR, folder) : MEDIA_BASE_DIR;
@@ -2151,10 +2132,7 @@ app.get('/api/gallery/list', rateLimitMiddleware, optionalJwt, async (req, res) 
 });
 
 // Serve media files (images/videos)
-app.get('/api/gallery/media/*', rateLimitMiddleware, optionalJwt, async (req, res) => {
-  if (!req.userId || req.userId === 'default') {
-    return res.status(401).json({ error: 'Authentication required' });
-  }
+app.get('/api/gallery/media/*', rateLimitMiddleware, async (req, res) => {
   try {
     const mediaPath = req.params[0]; // Everything after /api/gallery/media/
     const fullPath = path.join(MEDIA_BASE_DIR, mediaPath);
@@ -2202,10 +2180,7 @@ app.get('/api/gallery/media/*', rateLimitMiddleware, optionalJwt, async (req, re
 });
 
 // Get folder tree structure
-app.get('/api/gallery/tree', rateLimitMiddleware, optionalJwt, async (req, res) => {
-  if (!req.userId || req.userId === 'default') {
-    return res.status(401).json({ error: 'Authentication required' });
-  }
+app.get('/api/gallery/tree', rateLimitMiddleware, async (req, res) => {
   try {
     async function buildTree(dirPath, relativePath = '') {
       const tree = { name: path.basename(dirPath), path: relativePath, folders: [], fileCount: 0 };

@@ -20,9 +20,6 @@ router.use((req, res, next) => {
 
 // POST /api/siteops/projects - Save (create or update) full project state
 router.post('/projects', (req, res) => {
-  if (!req.userId || req.userId === 'default') {
-    return res.status(401).json({ success: false, error: 'Authentication required' });
-  }
   try {
     const body = req.body || {};
     const id = body.project?.name ? (body.id || generateId()) : generateId();
@@ -83,9 +80,6 @@ router.get('/projects/:id', (req, res) => {
 
 // PUT /api/siteops/projects/:id - Update project
 router.put('/projects/:id', (req, res) => {
-  if (!req.userId || req.userId === 'default') {
-    return res.status(401).json({ success: false, error: 'Authentication required' });
-  }
   try {
     const existing = storage.read(MODULE, req.userId, 'project', req.params.id);
     if (!existing) return res.status(404).json({ success: false, error: 'Project not found' });
@@ -99,9 +93,6 @@ router.put('/projects/:id', (req, res) => {
 
 // DELETE /api/siteops/projects/:id
 router.delete('/projects/:id', (req, res) => {
-  if (!req.userId || req.userId === 'default') {
-    return res.status(401).json({ success: false, error: 'Authentication required' });
-  }
   try {
     storage.remove(MODULE, req.userId, 'project', req.params.id);
     res.json({ success: true });
@@ -224,9 +215,6 @@ function buildComplianceReport(state) {
 
 // POST /api/siteops/import-builder - Import from Builder (body: Builder scope/project data)
 router.post('/import-builder', (req, res) => {
-  if (!req.userId || req.userId === 'default') {
-    return res.status(401).json({ success: false, error: 'Authentication required' });
-  }
   try {
     const body = req.body || {};
     const scopePack = body.scopePack || body.scope || body;
