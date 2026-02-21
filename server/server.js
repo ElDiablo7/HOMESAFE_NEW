@@ -549,8 +549,8 @@ const brainTestHandler = async (req, res) => {
 
   }
 };
-app.get("/api/brain/test", brainTestHandler);
-app.post("/api/brain/test", brainTestHandler);
+app.get("/api/brain/test", rateLimitMiddleware, brainTestHandler);
+app.post("/api/brain/test", rateLimitMiddleware, brainTestHandler);
 
 // API info endpoint
 app.get('/api/info', (req, res) => {
@@ -828,7 +828,19 @@ app.post('/api/brain', rateLimitMiddleware, async (req, res) => {
 
   // Build the complete system prompt with GRACE-X identity + module context
   const moduleContext = MODULE_CONTEXTS[module] || MODULE_CONTEXTS.core;
-  const fullSystemPrompt = `${GRACEX_SYSTEM_PROMPT}\n\n## Current Module Context\n${moduleContext}`;
+
+  // Wire up live data for specific modules (Live Sports, etc.)
+  let liveDataInjection = '';
+  if (module === 'sport') {
+    try {
+      const liveScores = await sportsAPI.getFootballLiveScores();
+      liveDataInjection = `\n\n## LIVE SPORTS DATA (CURRENT STATUS)\n${JSON.stringify(liveScores, null, 2)}`;
+    } catch (e) {
+      liveDataInjection = `\n\n## LIVE SPORTS DATA\nCurrently unavailable. Continue with general knowledge.`;
+    }
+  }
+
+  const fullSystemPrompt = `${GRACEX_SYSTEM_PROMPT}\n\n## Current Module Context\n${moduleContext}${liveDataInjection}`;
 
   // Sanitize messages and inject system prompt
   const sanitizedMessages = [];
@@ -1255,7 +1267,7 @@ function validateForgePath(filePath) {
 }
 
 // SAVE FILE TO DESKTOP
-app.post('/api/forge/save-file', async (req, res) => {
+app.post('/api/forge/save-file', optionalJwt, async (req, res) => {
   try {
     const { filePath, content } = req.body;
 
@@ -1298,7 +1310,7 @@ app.post('/api/forge/save-file', async (req, res) => {
 });
 
 // READ FILE FROM DESKTOP
-app.post('/api/forge/read-file', async (req, res) => {
+app.post('/api/forge/read-file', optionalJwt, async (req, res) => {
   try {
     const { filePath } = req.body;
 
@@ -1335,7 +1347,7 @@ app.post('/api/forge/read-file', async (req, res) => {
 });
 
 // LIST DIRECTORY
-app.post('/api/forge/list-directory', async (req, res) => {
+app.post('/api/forge/list-directory', optionalJwt, async (req, res) => {
   try {
     const { dirPath } = req.body;
 
@@ -1381,7 +1393,7 @@ app.post('/api/forge/list-directory', async (req, res) => {
 });
 
 // DELETE FILE
-app.post('/api/forge/delete-file', async (req, res) => {
+app.post('/api/forge/delete-file', optionalJwt, async (req, res) => {
   try {
     const { filePath } = req.body;
 
