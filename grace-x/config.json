@@ -1,0 +1,26 @@
+{
+  "ollama": {
+    "base_url": "http://localhost:11434",
+    "generate_endpoint": "/api/generate"
+  },
+  "models": {
+    "personality": "phi3",
+    "reasoning": "llama3:8b",
+    "planning": "mistral",
+    "analysis": "qwen:7b",
+    "coding": "deepseek-coder"
+  },
+  "memory": {
+    "short_term_max": 10,
+    "long_term_path": "memory/conversations.json",
+    "inject_context": true
+  },
+  "router": {
+    "greeting": "personality",
+    "casual": "personality",
+    "normal": "reasoning",
+    "planning": "planning",
+    "analysis": "analysis",
+    "coding": "coding"
+  }
+}

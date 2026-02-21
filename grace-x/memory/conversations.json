@@ -1,0 +1,14 @@
+[
+  {
+    "user": "Hi there!",
+    "assistant": "[Error: Could not reach Ollama: 404 Client Error: Not Found for url: http://localhost:11434/api/generate]"
+  },
+  {
+    "user": "Hello!",
+    "assistant": "[Error: Could not reach Ollama: 404 Client Error: Not Found for url: http://localhost:11434/api/generate]"
+  },
+  {
+    "user": "Hello!",
+    "assistant": "[Error: Could not reach Ollama: 404 Client Error: Not Found for url: http://localhost:11434/api/generate]"
+  }
+]

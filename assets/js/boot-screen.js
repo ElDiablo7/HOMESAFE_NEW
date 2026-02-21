@@ -73,8 +73,8 @@
         </div>
         
         <!-- Main Logo (Animated GRACE Avatar) -->
-        <div class="boot-logo-container">
-          <video class="boot-avatar-video" src="assets/motion/motion_01.mp4" autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>
+        <div class="">
+          <video class="boot-avatar-video" src="" autoplay audio loop playsinline preload="metadata" aria-hidden="true"></video>
         </div>
         
         <!-- Module Loading List -->
