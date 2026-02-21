@@ -249,14 +249,14 @@ const CONFIG = {
   rateLimitWindow: parseInt(process.env.RATE_LIMIT_WINDOW) || 60000, // 1 minute
   rateLimitMax: parseInt(process.env.RATE_LIMIT_MAX) || 30, // 30 requests per minute
   rateLimitCleanupInterval: 300000, // Cleanup every 5 minutes
-  
+
   // Request limits
   maxBodySize: process.env.MAX_BODY_SIZE || '5mb',
   requestTimeout: parseInt(process.env.REQUEST_TIMEOUT) || 30000, // 30 seconds
-  
+
   // CORS
   corsOrigins: process.env.CORS_ORIGINS ? process.env.CORS_ORIGINS.split(',') : ['*'],
-  
+
   // Logging
   enableLogging: process.env.ENABLE_LOGGING !== 'false',
   logLevel: process.env.LOG_LEVEL || 'info'
@@ -314,17 +314,17 @@ app.use((req, res, next) => {
 // Request logging middleware
 app.use((req, res, next) => {
   if (!CONFIG.enableLogging) return next();
-  
+
   const start = Date.now();
   const { method, path, requestId } = req;
-  
+
   res.on('finish', () => {
     const duration = Date.now() - start;
     const status = res.statusCode;
     const level = status >= 500 ? 'error' : status >= 400 ? 'warn' : 'info';
     log(level, `${method} ${path} ${status} ${duration}ms`, { requestId });
   });
-  
+
   next();
 });
 
@@ -349,21 +349,21 @@ const rateLimit = new Map();
 function checkRateLimit(ip) {
   const now = Date.now();
   const userLimit = rateLimit.get(ip) || { count: 0, resetTime: now + CONFIG.rateLimitWindow };
-  
+
   if (now > userLimit.resetTime) {
     userLimit.count = 0;
     userLimit.resetTime = now + CONFIG.rateLimitWindow;
   }
-  
+
   if (userLimit.count >= CONFIG.rateLimitMax) {
     return { allowed: false, remaining: 0, resetTime: userLimit.resetTime };
   }
-  
+
   userLimit.count++;
   rateLimit.set(ip, userLimit);
-  
-  return { 
-    allowed: true, 
+
+  return {
+    allowed: true,
     remaining: CONFIG.rateLimitMax - userLimit.count,
     resetTime: userLimit.resetTime
   };
@@ -383,10 +383,10 @@ setInterval(() => {
 function rateLimitMiddleware(req, res, next) {
   const clientIp = req.ip || req.connection.remoteAddress || 'unknown';
   const result = checkRateLimit(clientIp);
-  
+
   res.setHeader('X-RateLimit-Remaining', result.remaining);
   res.setHeader('X-RateLimit-Reset', Math.ceil(result.resetTime / 1000));
-  
+
   if (!result.allowed) {
     return res.status(429).json({
       error: 'Rate limit exceeded. Please wait and try again.',
@@ -395,7 +395,7 @@ function rateLimitMiddleware(req, res, next) {
       requestId: req.requestId
     });
   }
-  
+
   next();
 }
 
@@ -409,14 +409,14 @@ function generateRequestId() {
 
 function log(level, message, meta = {}) {
   if (!CONFIG.enableLogging) return;
-  
+
   const timestamp = new Date().toISOString();
   const metaStr = Object.keys(meta).length ? ` ${JSON.stringify(meta)}` : '';
-  
+
   const levels = { error: 0, warn: 1, info: 2, debug: 3 };
   const currentLevel = levels[CONFIG.logLevel] || 2;
   const msgLevel = levels[level] || 2;
-  
+
   if (msgLevel <= currentLevel) {
     const prefix = { error: '❌', warn: '⚠️', info: '📡', debug: '🔍' }[level] || '📡';
     console.log(`${prefix} [${timestamp}] [${level.toUpperCase()}] ${message}${metaStr}`);
@@ -433,15 +433,15 @@ function validateMessages(messages) {
   if (!Array.isArray(messages)) {
     return { valid: false, error: 'Messages must be an array' };
   }
-  
+
   if (messages.length === 0) {
     return { valid: false, error: 'Messages array cannot be empty' };
   }
-  
+
   if (messages.length > 50) {
     return { valid: false, error: 'Too many messages (max 50)' };
   }
-  
+
   for (const msg of messages) {
     if (!msg.role || !['system', 'user', 'assistant'].includes(msg.role)) {
       return { valid: false, error: 'Invalid message role' };
@@ -450,7 +450,7 @@ function validateMessages(messages) {
       return { valid: false, error: 'Message content must be a string' };
     }
   }
-  
+
   return { valid: true };
 }
 
@@ -466,7 +466,7 @@ app.get('/health', (req, res) => {
     version: API_VERSION,
     timestamp: new Date().toISOString(),
     provider: process.env.LLM_PROVIDER || 'openai',
-    model: process.env.LLM_PROVIDER === 'anthropic' 
+    model: process.env.LLM_PROVIDER === 'anthropic'
       ? (process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514')
       : (process.env.OPENAI_MODEL || 'gpt-4o-mini'),
     uptime: Math.floor(process.uptime())
@@ -485,13 +485,13 @@ app.get('/net/status', async (req, res) => {
       dns.resolve('openai.com', (err) => (err ? reject(err) : resolve()));
     });
     result.dns.openai = true;
-  } catch (_) {}
+  } catch (_) { }
   try {
     await new Promise((resolve, reject) => {
       dns.resolve('google.com', (err) => (err ? reject(err) : resolve()));
     });
     result.dns.google = true;
-  } catch (_) {}
+  } catch (_) { }
   try {
     await new Promise((resolve, reject) => {
       const reqHttps = https.get('https://www.google.com', (r) => {
@@ -504,7 +504,7 @@ app.get('/net/status', async (req, res) => {
       });
       reqHttps.on('error', reject);
     });
-  } catch (_) {}
+  } catch (_) { }
   res.json(result);
 });
 // Brain connection test endpoint – direct Ollama test (GET + POST)
@@ -542,8 +542,8 @@ const brainTestHandler = async (req, res) => {
 
   }
 };
-app.get("/api/brain/test", brainTestHandler);
-app.post("/api/brain/test", brainTestHandler);
+app.get("/api/brain/test", rateLimitMiddleware, brainTestHandler);
+app.post("/api/brain/test", rateLimitMiddleware, brainTestHandler);
 
 // API info endpoint
 app.get('/api/info', (req, res) => {
@@ -585,7 +585,7 @@ app.get('/api/providers', (req, res) => {
       models: ["llama3.2", "llama3.1", "mistral", "codellama", "phi3"]
     }
   };
-  
+
   res.json({
     current: process.env.LLM_PROVIDER || 'openai',
     providers
@@ -625,10 +625,10 @@ app.get('/api/system/status', (req, res) => {
         percentage: Math.round((process.memoryUsage().heapUsed / process.memoryUsage().heapTotal) * 100)
       }
     };
-    
+
     console.log('[API] System status requested');
     res.json(status);
-    
+
   } catch (error) {
     console.error('[API] Status error:', error);
     res.status(500).json({ error: error.message });
@@ -801,7 +801,7 @@ app.post('/api/sports/cache/clear', (req, res) => {
 
 // Ollama dynamic model selection
 // Always use the configured model (llama3.2) to avoid referencing uninstalled models
-function selectOllamaModel(message){
+function selectOllamaModel(message) {
   return process.env.OLLAMA_MODEL || 'llama3.2';
 }
 
@@ -825,7 +825,7 @@ app.post('/api/brain', rateLimitMiddleware, async (req, res) => {
 
   // Sanitize messages and inject system prompt
   const sanitizedMessages = [];
-  
+
   // First, add/replace the system message with our GRACE-X identity
   const existingSystem = messages.find(m => m.role === 'system');
   if (existingSystem) {
@@ -841,7 +841,7 @@ app.post('/api/brain', rateLimitMiddleware, async (req, res) => {
       content: fullSystemPrompt
     });
   }
-  
+
   // Add the rest of the messages (excluding any system messages)
   messages.filter(m => m.role !== 'system').forEach(m => {
     sanitizedMessages.push({
@@ -857,11 +857,11 @@ app.post('/api/brain', rateLimitMiddleware, async (req, res) => {
   // Get API provider
   const provider = requestProvider || process.env.LLM_PROVIDER || 'openai';
 
-  const messageText = req.body.message || req.body.prompt || req.body.input || (Array.isArray(messages)&&messages.length ? (messages.find(m=>m.role==='user')?.content || messages[messages.length-1]?.content || '') : '');
+  const messageText = req.body.message || req.body.prompt || req.body.input || (Array.isArray(messages) && messages.length ? (messages.find(m => m.role === 'user')?.content || messages[messages.length - 1]?.content || '') : '');
   const ollamaModel = provider === 'ollama' ? selectOllamaModel(messageText) : null;
   if (provider === 'ollama' && ollamaModel) console.log('[GRACE-X BRAIN] Ollama model selected:', ollamaModel);
 
-  log('info', `Brain request from module: ${module || 'unknown'}`, { 
+  log('info', `Brain request from module: ${module || 'unknown'}`, {
     requestId: req.requestId,
     provider,
     messageCount: sanitizedMessages.length
@@ -906,7 +906,7 @@ app.post('/api/brain', rateLimitMiddleware, async (req, res) => {
 
   } catch (error) {
     log('error', `Brain API error: ${error.message}`, { requestId: req.requestId });
-    
+
     const statusCode = error.statusCode || 500;
     res.status(statusCode).json({
       error: 'Failed to get AI response',
@@ -1006,7 +1006,7 @@ app.post('/api/brain/vision', rateLimitMiddleware, async (req, res) => {
 async function callOpenAI(messages, temperature, max_tokens) {
   const apiKey = process.env.OPENAI_API_KEY || process.env.API_KEY;
   const model = process.env.OPENAI_MODEL || 'gpt-4o-mini';
-  
+
   if (!apiKey) {
     const error = new Error('OpenAI API key not configured');
     error.code = 'API_KEY_MISSING';
@@ -1037,7 +1037,7 @@ async function callOpenAI(messages, temperature, max_tokens) {
   }
 
   const data = await response.json();
-  
+
   if (!data.choices?.[0]?.message?.content) {
     const error = new Error('Invalid response from OpenAI API');
     error.code = 'INVALID_RESPONSE';
@@ -1052,7 +1052,7 @@ async function callOpenAI(messages, temperature, max_tokens) {
 async function callAnthropic(messages, temperature, max_tokens) {
   const apiKey = process.env.ANTHROPIC_API_KEY || process.env.API_KEY;
   const model = process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514';
-  
+
   if (!apiKey) {
     const error = new Error('Anthropic API key not configured');
     error.code = 'API_KEY_MISSING';
@@ -1099,7 +1099,7 @@ async function callAnthropic(messages, temperature, max_tokens) {
   }
 
   const data = await response.json();
-  
+
   if (!data.content?.[0]?.text) {
     const error = new Error('Invalid response from Anthropic API');
     error.code = 'INVALID_RESPONSE';
@@ -1114,7 +1114,7 @@ async function callAnthropic(messages, temperature, max_tokens) {
 async function callOpenRouter(messages, temperature, max_tokens) {
   const apiKey = process.env.OPENROUTER_API_KEY;
   const model = process.env.OPENROUTER_MODEL || 'anthropic/claude-3.5-sonnet';
-  
+
   if (!apiKey) {
     const error = new Error('OpenRouter API key not configured');
     error.code = 'API_KEY_MISSING';
@@ -1147,7 +1147,7 @@ async function callOpenRouter(messages, temperature, max_tokens) {
   }
 
   const data = await response.json();
-  
+
   if (!data.choices?.[0]?.message?.content) {
     const error = new Error('Invalid response from OpenRouter API');
     error.code = 'INVALID_RESPONSE';
@@ -1203,7 +1203,7 @@ async function callOllama(messages, temperature, max_tokens, modelOverride) {
     }
 
     const data = await response.json();
-    
+
     if (!data.message?.content) {
       const error = new Error('Invalid response from Ollama');
       error.code = 'INVALID_RESPONSE';
@@ -1248,163 +1248,183 @@ function validateForgePath(filePath) {
 }
 
 // SAVE FILE TO DESKTOP
-app.post('/api/forge/save-file', async (req, res) => {
+app.post('/api/forge/save-file', optionalJwt, async (req, res) => {
   try {
     const { filePath, content } = req.body;
-    
+
+    // Security check: must be authenticated
+    if (!req.userId || req.userId === 'default') {
+      return res.status(401).json({ success: false, error: 'Authentication required' });
+    }
+
     if (!filePath || content === undefined) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        error: 'Missing filePath or content' 
+        error: 'Missing filePath or content'
       });
     }
-    
+
     // Security check
     if (!validateForgePath(filePath)) {
-      return res.status(403).json({ 
+      return res.status(403).json({
         success: false,
-        error: 'Path outside allowed directory' 
+        error: 'Path outside allowed directory'
       });
     }
-    
+
     // Ensure directory exists
     const dir = path.dirname(filePath);
     await fs.mkdir(dir, { recursive: true });
-    
+
     // Write file
     await fs.writeFile(filePath, content, 'utf8');
-    
+
     console.log('[FORGE] ✅ File saved:', filePath);
-    res.json({ 
-      success: true, 
+    res.json({
+      success: true,
       path: filePath,
       message: 'File saved to desktop'
     });
-    
+
   } catch (error) {
     console.error('[FORGE] ❌ Save file error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
-      error: error.message 
+      error: error.message
     });
   }
 });
 
 // READ FILE FROM DESKTOP
-app.post('/api/forge/read-file', async (req, res) => {
+app.post('/api/forge/read-file', optionalJwt, async (req, res) => {
   try {
     const { filePath } = req.body;
-    
+
+    // Security check: must be authenticated
+    if (!req.userId || req.userId === 'default') {
+      return res.status(401).json({ success: false, error: 'Authentication required' });
+    }
+
     if (!filePath) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        error: 'Missing filePath' 
+        error: 'Missing filePath'
       });
     }
-    
+
     // Security check
     if (!validateForgePath(filePath)) {
-      return res.status(403).json({ 
+      return res.status(403).json({
         success: false,
-        error: 'Path outside allowed directory' 
+        error: 'Path outside allowed directory'
       });
     }
-    
+
     const content = await fs.readFile(filePath, 'utf8');
     console.log('[FORGE] ✅ File read:', filePath);
-    res.json({ 
-      success: true, 
+    res.json({
+      success: true,
       content,
       path: filePath
     });
-    
+
   } catch (error) {
     console.error('[FORGE] ❌ Read file error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
-      error: error.message 
+      error: error.message
     });
   }
 });
 
 // LIST DIRECTORY
-app.post('/api/forge/list-directory', async (req, res) => {
+app.post('/api/forge/list-directory', optionalJwt, async (req, res) => {
   try {
     const { dirPath } = req.body;
-    
+
+    // Security check: must be authenticated
+    if (!req.userId || req.userId === 'default') {
+      return res.status(401).json({ success: false, error: 'Authentication required' });
+    }
+
     if (!dirPath) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        error: 'Missing dirPath' 
+        error: 'Missing dirPath'
       });
     }
-    
+
     // Security check
     if (!validateForgePath(dirPath)) {
-      return res.status(403).json({ 
+      return res.status(403).json({
         success: false,
-        error: 'Path outside allowed directory' 
+        error: 'Path outside allowed directory'
       });
     }
-    
+
     // Create directory if it doesn't exist
     await fs.mkdir(dirPath, { recursive: true });
-    
+
     const entries = await fs.readdir(dirPath, { withFileTypes: true });
     const files = entries.map(entry => ({
       name: entry.name,
       isDirectory: entry.isDirectory(),
       path: path.join(dirPath, entry.name)
     }));
-    
+
     console.log('[FORGE] ✅ Directory listed:', dirPath);
-    res.json({ 
-      success: true, 
+    res.json({
+      success: true,
       files,
       path: dirPath
     });
-    
+
   } catch (error) {
     console.error('[FORGE] ❌ List directory error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
-      error: error.message 
+      error: error.message
     });
   }
 });
 
 // DELETE FILE
-app.post('/api/forge/delete-file', async (req, res) => {
+app.post('/api/forge/delete-file', optionalJwt, async (req, res) => {
   try {
     const { filePath } = req.body;
-    
+
+    // Security check: must be authenticated
+    if (!req.userId || req.userId === 'default') {
+      return res.status(401).json({ success: false, error: 'Authentication required' });
+    }
+
     if (!filePath) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        error: 'Missing filePath' 
+        error: 'Missing filePath'
       });
     }
-    
+
     // Security check
     if (!validateForgePath(filePath)) {
-      return res.status(403).json({ 
+      return res.status(403).json({
         success: false,
-        error: 'Path outside allowed directory' 
+        error: 'Path outside allowed directory'
       });
     }
-    
+
     await fs.unlink(filePath);
     console.log('[FORGE] ✅ File deleted:', filePath);
-    res.json({ 
+    res.json({
       success: true,
       path: filePath
     });
-    
+
   } catch (error) {
     console.error('[FORGE] ❌ Delete file error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
-      error: error.message 
+      error: error.message
     });
   }
 });
@@ -1429,7 +1449,7 @@ console.log('');
 const callSheets = [];
 
 // CREATE CALL SHEET
-app.post('/api/callsheets/create', (req, res) => {
+app.post('/api/callsheets/create', optionalJwt, (req, res) => {
   try {
     const callSheet = {
       id: `cs-${Date.now()}`,
@@ -1437,9 +1457,9 @@ app.post('/api/callsheets/create', (req, res) => {
       createdAt: Date.now(),
       updatedAt: Date.now()
     };
-    
+
     callSheets.push(callSheet);
-    
+
     console.log('[CALLSHEETS] ✅ Created:', callSheet.id);
     res.json({
       success: true,
@@ -1455,11 +1475,11 @@ app.post('/api/callsheets/create', (req, res) => {
 });
 
 // GET DAILY CALL SHEETS
-app.get('/api/callsheets/daily/:date', (req, res) => {
+app.get('/api/callsheets/daily/:date', optionalJwt, (req, res) => {
   try {
     const { date } = req.params;
     const sheets = callSheets.filter(s => s.date === date);
-    
+
     res.json({
       success: true,
       date,
@@ -1475,17 +1495,17 @@ app.get('/api/callsheets/daily/:date', (req, res) => {
 });
 
 // GET CALL SHEET BY ID
-app.get('/api/callsheets/:id', (req, res) => {
+app.get('/api/callsheets/:id', optionalJwt, (req, res) => {
   try {
     const sheet = callSheets.find(s => s.id === req.params.id);
-    
+
     if (!sheet) {
       return res.status(404).json({
         success: false,
         error: 'Call sheet not found'
       });
     }
-    
+
     res.json({
       success: true,
       sheet
@@ -1500,23 +1520,23 @@ app.get('/api/callsheets/:id', (req, res) => {
 });
 
 // UPDATE CALL SHEET
-app.put('/api/callsheets/:id', (req, res) => {
+app.put('/api/callsheets/:id', optionalJwt, (req, res) => {
   try {
     const index = callSheets.findIndex(s => s.id === req.params.id);
-    
+
     if (index === -1) {
       return res.status(404).json({
         success: false,
         error: 'Call sheet not found'
       });
     }
-    
+
     callSheets[index] = {
       ...callSheets[index],
       ...req.body,
       updatedAt: Date.now()
     };
-    
+
     console.log('[CALLSHEETS] ✅ Updated:', req.params.id);
     res.json({
       success: true,
@@ -1532,10 +1552,10 @@ app.put('/api/callsheets/:id', (req, res) => {
 });
 
 // CLOCK IN/OUT
-app.post('/api/callsheets/crew/clockin', (req, res) => {
+app.post('/api/callsheets/crew/clockin', optionalJwt, (req, res) => {
   try {
     const { sheetId, crewId, action } = req.body;
-    
+
     const sheet = callSheets.find(s => s.id === sheetId);
     if (!sheet) {
       return res.status(404).json({
@@ -1543,7 +1563,7 @@ app.post('/api/callsheets/crew/clockin', (req, res) => {
         error: 'Call sheet not found'
       });
     }
-    
+
     const crew = sheet.crew?.find(c => c.id === crewId);
     if (!crew) {
       return res.status(404).json({
@@ -1551,7 +1571,7 @@ app.post('/api/callsheets/crew/clockin', (req, res) => {
         error: 'Crew member not found'
       });
     }
-    
+
     if (action === 'in') {
       crew.clockIn = Date.now();
       crew.status = 'working';
@@ -1560,9 +1580,9 @@ app.post('/api/callsheets/crew/clockin', (req, res) => {
       crew.status = 'offsite';
       crew.hoursWorked = (crew.clockOut - crew.clockIn) / (1000 * 60 * 60);
     }
-    
+
     sheet.updatedAt = Date.now();
-    
+
     console.log(`[CALLSHEETS] ✅ Clock ${action}:`, crew.name);
     res.json({
       success: true,
@@ -1578,17 +1598,17 @@ app.post('/api/callsheets/crew/clockin', (req, res) => {
 });
 
 // SYNC CALL SHEETS
-app.post('/api/callsheets/sync', (req, res) => {
+app.post('/api/callsheets/sync', optionalJwt, (req, res) => {
   try {
     const sheet = req.body;
     const existing = callSheets.findIndex(s => s.id === sheet.id);
-    
+
     if (existing !== -1) {
       callSheets[existing] = { ...sheet, synced: true };
     } else {
       callSheets.push({ ...sheet, synced: true });
     }
-    
+
     res.json({
       success: true,
       message: 'Synced successfully'
@@ -1626,7 +1646,7 @@ const risks = [];
 const inductions = [];
 
 // REPORT INCIDENT
-app.post('/api/safety/incident', (req, res) => {
+app.post('/api/safety/incident', optionalJwt, (req, res) => {
   try {
     const incident = {
       id: `inc-${Date.now()}`,
@@ -1635,9 +1655,9 @@ app.post('/api/safety/incident', (req, res) => {
       createdAt: Date.now(),
       updatedAt: Date.now()
     };
-    
+
     incidents.push(incident);
-    
+
     console.log(`[SAFETY] 🚨 Incident reported: ${incident.type} - ${incident.severity}`);
     res.json({
       success: true,
@@ -1653,25 +1673,25 @@ app.post('/api/safety/incident', (req, res) => {
 });
 
 // GET INCIDENTS
-app.get('/api/safety/incidents/:siteId?', (req, res) => {
+app.get('/api/safety/incidents/:siteId?', optionalJwt, (req, res) => {
   try {
     const { siteId } = req.params;
     const { severity, status } = req.query;
-    
+
     let filtered = incidents;
-    
+
     if (siteId) {
       filtered = filtered.filter(i => i.siteId === siteId);
     }
-    
+
     if (severity) {
       filtered = filtered.filter(i => i.severity === severity);
     }
-    
+
     if (status) {
       filtered = filtered.filter(i => i.status === status);
     }
-    
+
     res.json({
       success: true,
       incidents: filtered,
@@ -1687,23 +1707,23 @@ app.get('/api/safety/incidents/:siteId?', (req, res) => {
 });
 
 // UPDATE INCIDENT
-app.put('/api/safety/incident/:id', (req, res) => {
+app.put('/api/safety/incident/:id', optionalJwt, (req, res) => {
   try {
     const index = incidents.findIndex(i => i.id === req.params.id);
-    
+
     if (index === -1) {
       return res.status(404).json({
         success: false,
         error: 'Incident not found'
       });
     }
-    
+
     incidents[index] = {
       ...incidents[index],
       ...req.body,
       updatedAt: Date.now()
     };
-    
+
     console.log('[SAFETY] ✅ Incident updated:', req.params.id);
     res.json({
       success: true,
@@ -1719,16 +1739,16 @@ app.put('/api/safety/incident/:id', (req, res) => {
 });
 
 // CREATE SAFETY CHECKLIST
-app.post('/api/safety/checklist', (req, res) => {
+app.post('/api/safety/checklist', optionalJwt, (req, res) => {
   try {
     const checklist = {
       id: `chk-${Date.now()}`,
       ...req.body,
       createdAt: Date.now()
     };
-    
+
     safetyChecklists.push(checklist);
-    
+
     console.log('[SAFETY] ✅ Checklist created:', checklist.id);
     res.json({
       success: true,
@@ -1744,10 +1764,10 @@ app.post('/api/safety/checklist', (req, res) => {
 });
 
 // COMPLETE SAFETY CHECKLIST
-app.post('/api/safety/checklist/complete', (req, res) => {
+app.post('/api/safety/checklist/complete', optionalJwt, (req, res) => {
   try {
     const { checklistId, signature, results } = req.body;
-    
+
     const checklist = safetyChecklists.find(c => c.id === checklistId);
     if (!checklist) {
       return res.status(404).json({
@@ -1755,12 +1775,12 @@ app.post('/api/safety/checklist/complete', (req, res) => {
         error: 'Checklist not found'
       });
     }
-    
+
     checklist.status = 'completed';
     checklist.completedAt = Date.now();
     checklist.signature = signature;
     checklist.results = results;
-    
+
     console.log('[SAFETY] ✅ Checklist completed:', checklistId);
     res.json({
       success: true,
@@ -1776,7 +1796,7 @@ app.post('/api/safety/checklist/complete', (req, res) => {
 });
 
 // REGISTER RISK
-app.post('/api/safety/risk', (req, res) => {
+app.post('/api/safety/risk', optionalJwt, (req, res) => {
   try {
     const risk = {
       id: `risk-${Date.now()}`,
@@ -1785,9 +1805,9 @@ app.post('/api/safety/risk', (req, res) => {
       status: 'active',
       createdAt: Date.now()
     };
-    
+
     risks.push(risk);
-    
+
     console.log('[SAFETY] ✅ Risk registered:', risk.id, `(score: ${risk.riskScore})`);
     res.json({
       success: true,
@@ -1803,7 +1823,7 @@ app.post('/api/safety/risk', (req, res) => {
 });
 
 // GET RISK MATRIX
-app.get('/api/safety/risks/matrix', (req, res) => {
+app.get('/api/safety/risks/matrix', optionalJwt, (req, res) => {
   try {
     const matrix = {
       critical: risks.filter(r => r.status === 'active' && r.riskScore > 20),
@@ -1811,7 +1831,7 @@ app.get('/api/safety/risks/matrix', (req, res) => {
       medium: risks.filter(r => r.status === 'active' && r.riskScore >= 11 && r.riskScore < 16),
       low: risks.filter(r => r.status === 'active' && r.riskScore <= 10)
     };
-    
+
     res.json({
       success: true,
       matrix
@@ -1826,7 +1846,7 @@ app.get('/api/safety/risks/matrix', (req, res) => {
 });
 
 // RECORD INDUCTION
-app.post('/api/safety/induction', (req, res) => {
+app.post('/api/safety/induction', optionalJwt, (req, res) => {
   try {
     const induction = {
       id: `ind-${Date.now()}`,
@@ -1834,9 +1854,9 @@ app.post('/api/safety/induction', (req, res) => {
       status: 'valid',
       createdAt: Date.now()
     };
-    
+
     inductions.push(induction);
-    
+
     console.log('[SAFETY] ✅ Induction recorded:', induction.personName);
     res.json({
       success: true,
@@ -1852,20 +1872,20 @@ app.post('/api/safety/induction', (req, res) => {
 });
 
 // GET COMPLIANCE STATUS
-app.get('/api/safety/compliance/:siteId?', (req, res) => {
+app.get('/api/safety/compliance/:siteId?', optionalJwt, (req, res) => {
   try {
     const { siteId } = req.params;
-    
+
     let filteredIncidents = incidents;
     let filteredChecklists = safetyChecklists;
     let filteredRisks = risks;
-    
+
     if (siteId) {
       filteredIncidents = incidents.filter(i => i.siteId === siteId);
       filteredChecklists = safetyChecklists.filter(c => c.siteId === siteId);
       filteredRisks = risks.filter(r => r.siteId === siteId);
     }
-    
+
     const status = {
       incidents: {
         total: filteredIncidents.length,
@@ -1887,20 +1907,20 @@ app.get('/api/safety/compliance/:siteId?', (req, res) => {
         valid: inductions.filter(i => i.status === 'valid').length
       }
     };
-    
+
     // Calculate compliance score
     const openIncidentsScore = Math.max(0, 100 - (status.incidents.open * 5));
-    const checklistScore = status.checklists.total > 0 
-      ? (status.checklists.completed / status.checklists.total) * 100 
+    const checklistScore = status.checklists.total > 0
+      ? (status.checklists.completed / status.checklists.total) * 100
       : 100;
     const riskScore = Math.max(0, 100 - (status.risks.critical * 20) - (status.risks.high * 10));
-    
+
     status.overallScore = Math.round((openIncidentsScore + checklistScore + riskScore) / 3);
-    status.complianceLevel = 
+    status.complianceLevel =
       status.overallScore >= 90 ? 'excellent' :
-      status.overallScore >= 75 ? 'good' :
-      status.overallScore >= 60 ? 'acceptable' : 'critical';
-    
+        status.overallScore >= 75 ? 'good' :
+          status.overallScore >= 60 ? 'acceptable' : 'critical';
+
     res.json({
       success: true,
       status
@@ -1946,21 +1966,21 @@ app.use('/api/siteops', optionalJwt, siteopsRoutes);
 // ============================================
 
 // Weather API endpoint
-app.get('/api/weather', rateLimitMiddleware, async (req, res) => {
+app.get('/api/weather', rateLimitMiddleware, optionalJwt, async (req, res) => {
   try {
     const { lat, lon } = req.query;
-    
+
     if (!lat || !lon) {
       return res.status(400).json({ error: 'Latitude and longitude required' });
     }
-    
+
     // Try OpenWeatherMap API if configured
     const weatherApiKey = process.env.OPENWEATHER_API_KEY;
     if (weatherApiKey) {
       try {
         const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${weatherApiKey}&units=metric`;
         const weatherResponse = await fetch(weatherUrl);
-        
+
         if (weatherResponse.ok) {
           const weatherData = await weatherResponse.json();
           return res.json({
@@ -1978,7 +1998,7 @@ app.get('/api/weather', rateLimitMiddleware, async (req, res) => {
         console.warn('[Weather API] OpenWeatherMap error:', weatherError.message);
       }
     }
-    
+
     // Fallback: Return basic location info
     res.json({
       temp: null,
@@ -1996,17 +2016,17 @@ app.get('/api/weather', rateLimitMiddleware, async (req, res) => {
 });
 
 // News API endpoint
-app.get('/api/news', rateLimitMiddleware, async (req, res) => {
+app.get('/api/news', rateLimitMiddleware, optionalJwt, async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 5;
-    
+
     // Try NewsAPI.org if configured
     const newsApiKey = process.env.NEWS_API_KEY;
     if (newsApiKey) {
       try {
         const newsUrl = `https://newsapi.org/v2/top-headlines?country=gb&pageSize=${limit}&apiKey=${newsApiKey}`;
         const newsResponse = await fetch(newsUrl);
-        
+
         if (newsResponse.ok) {
           const newsData = await newsResponse.json();
           const articles = (newsData.articles || []).slice(0, limit).map(article => ({
@@ -2018,14 +2038,14 @@ app.get('/api/news', rateLimitMiddleware, async (req, res) => {
             description: article.description,
             publishedAt: article.publishedAt
           }));
-          
+
           return res.json({ articles, news: articles, total: articles.length });
         }
       } catch (newsError) {
         console.warn('[News API] NewsAPI.org error:', newsError.message);
       }
     }
-    
+
     // Fallback: Return placeholder
     res.json({
       articles: [{
@@ -2062,26 +2082,29 @@ if (!process.env.MEDIA_BASE_DIR && process.platform !== 'win32') {
 }
 
 // List folders and files in media directory
-app.get('/api/gallery/list', rateLimitMiddleware, async (req, res) => {
+app.get('/api/gallery/list', rateLimitMiddleware, optionalJwt, async (req, res) => {
+  if (!req.userId || req.userId === 'default') {
+    return res.status(401).json({ error: 'Authentication required' });
+  }
   try {
     const { folder = '' } = req.query;
     const targetPath = folder ? path.join(MEDIA_BASE_DIR, folder) : MEDIA_BASE_DIR;
-    
+
     // Security: Ensure path is within base directory
     const resolvedPath = path.resolve(targetPath);
     const resolvedBase = path.resolve(MEDIA_BASE_DIR);
-    
+
     if (!resolvedPath.startsWith(resolvedBase)) {
       return res.status(403).json({ error: 'Access denied' });
     }
-    
+
     const items = [];
     const entries = await fs.readdir(targetPath, { withFileTypes: true });
-    
+
     for (const entry of entries) {
       const fullPath = path.join(targetPath, entry.name);
       const relativePath = folder ? `${folder}/${entry.name}` : entry.name;
-      
+
       if (entry.isDirectory()) {
         items.push({
           type: 'folder',
@@ -2092,7 +2115,7 @@ app.get('/api/gallery/list', rateLimitMiddleware, async (req, res) => {
         const ext = path.extname(entry.name).toLowerCase();
         const isImage = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp'].includes(ext);
         const isVideo = ['.mp4', '.mov', '.avi', '.webm', '.mkv'].includes(ext);
-        
+
         if (isImage || isVideo) {
           const stats = await fs.stat(fullPath).catch(() => null);
           items.push({
@@ -2105,14 +2128,14 @@ app.get('/api/gallery/list', rateLimitMiddleware, async (req, res) => {
         }
       }
     }
-    
+
     // Sort: folders first, then by name
     items.sort((a, b) => {
       if (a.type === 'folder' && b.type !== 'folder') return -1;
       if (a.type !== 'folder' && b.type === 'folder') return 1;
       return a.name.localeCompare(b.name);
     });
-    
+
     res.json({
       folder: folder || '/',
       items,
@@ -2125,19 +2148,22 @@ app.get('/api/gallery/list', rateLimitMiddleware, async (req, res) => {
 });
 
 // Serve media files (images/videos)
-app.get('/api/gallery/media/*', rateLimitMiddleware, async (req, res) => {
+app.get('/api/gallery/media/*', rateLimitMiddleware, optionalJwt, async (req, res) => {
+  if (!req.userId || req.userId === 'default') {
+    return res.status(401).json({ error: 'Authentication required' });
+  }
   try {
     const mediaPath = req.params[0]; // Everything after /api/gallery/media/
     const fullPath = path.join(MEDIA_BASE_DIR, mediaPath);
-    
+
     // Security: Ensure path is within base directory
     const resolvedPath = path.resolve(fullPath);
     const resolvedBase = path.resolve(MEDIA_BASE_DIR);
-    
+
     if (!resolvedPath.startsWith(resolvedBase)) {
       return res.status(403).json({ error: 'Access denied' });
     }
-    
+
     // Check if file exists
     try {
       const stats = await fs.stat(fullPath);
@@ -2147,12 +2173,12 @@ app.get('/api/gallery/media/*', rateLimitMiddleware, async (req, res) => {
     } catch (err) {
       return res.status(404).json({ error: 'File not found' });
     }
-    
+
     // Set appropriate headers
     const ext = path.extname(fullPath).toLowerCase();
     const isImage = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp'].includes(ext);
     const isVideo = ['.mp4', '.mov', '.avi', '.webm', '.mkv'].includes(ext);
-    
+
     if (isImage) {
       res.setHeader('Content-Type', `image/${ext.slice(1)}`);
     } else if (isVideo) {
@@ -2161,11 +2187,11 @@ app.get('/api/gallery/media/*', rateLimitMiddleware, async (req, res) => {
     } else {
       return res.status(400).json({ error: 'Unsupported media type' });
     }
-    
+
     // Stream the file
     const fileStream = require('fs').createReadStream(fullPath);
     fileStream.pipe(res);
-    
+
   } catch (error) {
     log('error', 'Gallery media error', { error: error.message, path: req.params[0] });
     res.status(500).json({ error: 'Failed to serve media file', message: error.message });
@@ -2173,12 +2199,15 @@ app.get('/api/gallery/media/*', rateLimitMiddleware, async (req, res) => {
 });
 
 // Get folder tree structure
-app.get('/api/gallery/tree', rateLimitMiddleware, async (req, res) => {
+app.get('/api/gallery/tree', rateLimitMiddleware, optionalJwt, async (req, res) => {
+  if (!req.userId || req.userId === 'default') {
+    return res.status(401).json({ error: 'Authentication required' });
+  }
   try {
     async function buildTree(dirPath, relativePath = '') {
       const tree = { name: path.basename(dirPath), path: relativePath, folders: [], fileCount: 0 };
       const entries = await fs.readdir(dirPath, { withFileTypes: true }).catch(() => []);
-      
+
       for (const entry of entries) {
         if (entry.isDirectory()) {
           const subPath = path.join(dirPath, entry.name);
@@ -2192,10 +2221,10 @@ app.get('/api/gallery/tree', rateLimitMiddleware, async (req, res) => {
           }
         }
       }
-      
+
       return tree;
     }
-    
+
     const tree = await buildTree(MEDIA_BASE_DIR);
     res.json(tree);
   } catch (error) {
@@ -2221,7 +2250,7 @@ app.use((req, res) => {
 // Global error handler
 app.use((err, req, res, next) => {
   log('error', `Unhandled error: ${err.message}`, { requestId: req.requestId, stack: err.stack });
-  
+
   res.status(500).json({
     error: 'Internal server error',
     code: 'INTERNAL_ERROR',

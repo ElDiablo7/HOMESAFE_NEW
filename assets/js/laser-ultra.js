@@ -36,11 +36,11 @@ const GraceXLaserUltra = {
     button.className = 'gx-laser-button';
     button.innerHTML = '🎯';
     button.title = 'LASER™ ULTRA - Click ANYTHING: Elements, URLs, Names, IDs, Files, Links, Text';
-    
+
     button.addEventListener('click', () => {
       GraceXLaserUltra.toggle();
     });
-    
+
     // Position it near voice button
     button.style.cssText = `
       position: fixed;
@@ -58,10 +58,10 @@ const GraceXLaserUltra = {
       transition: all 0.2s;
       z-index: 999;
     `;
-    
+
     button.onmouseenter = () => button.style.transform = 'scale(1.1)';
     button.onmouseleave = () => button.style.transform = 'scale(1)';
-    
+
     document.body.appendChild(button);
   },
 
@@ -76,7 +76,7 @@ const GraceXLaserUltra = {
       display: none;
       pointer-events: none;
     `;
-    
+
     overlay.innerHTML = `
       <div style="
         position: absolute;
@@ -101,7 +101,7 @@ const GraceXLaserUltra = {
         </div>
       </div>
     `;
-    
+
     document.body.appendChild(overlay);
     GraceXLaserUltra.overlay = overlay;
   },
@@ -124,7 +124,7 @@ const GraceXLaserUltra = {
       display: none;
       overflow: hidden;
     `;
-    
+
     panel.innerHTML = `
       <div style="padding: 20px; border-bottom: 1px solid rgba(148, 163, 184, 0.2);">
         <div style="display: flex; align-items: center; justify-content: space-between;">
@@ -168,7 +168,7 @@ const GraceXLaserUltra = {
         </button>
       </div>
     `;
-    
+
     // Add action button styles
     const style = document.createElement('style');
     style.textContent = `
@@ -198,27 +198,27 @@ const GraceXLaserUltra = {
       }
     `;
     document.head.appendChild(style);
-    
+
     document.body.appendChild(panel);
     GraceXLaserUltra.panel = panel;
-    
+
     // Event listeners
     panel.querySelector('#gx-laser-ultra-close').addEventListener('click', () => {
       GraceXLaserUltra.deactivate();
     });
-    
+
     panel.querySelector('#gx-laser-copy').addEventListener('click', () => {
       GraceXLaserUltra.copyTargetData();
     });
-    
+
     panel.querySelector('#gx-laser-open').addEventListener('click', () => {
       GraceXLaserUltra.openTarget();
     });
-    
+
     panel.querySelector('#gx-laser-analyze').addEventListener('click', () => {
       GraceXLaserUltra.aiAnalyze();
     });
-    
+
     panel.querySelector('#gx-laser-search').addEventListener('click', () => {
       GraceXLaserUltra.webSearch();
     });
@@ -239,13 +239,13 @@ const GraceXLaserUltra = {
       box-shadow: 0 0 20px rgba(245, 158, 11, 0.6), inset 0 0 20px rgba(245, 158, 11, 0.3);
       animation: reticlePulse 1.5s ease-in-out infinite;
     `;
-    
+
     reticle.innerHTML = `
       <div style="position: absolute; top: 50%; left: 0; right: 0; height: 2px; background: #f59e0b;"></div>
       <div style="position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: #f59e0b;"></div>
       <div style="position: absolute; top: 50%; left: 50%; width: 6px; height: 6px; background: #f59e0b; border-radius: 50%; transform: translate(-50%, -50%);"></div>
     `;
-    
+
     const style = document.createElement('style');
     style.textContent = `
       @keyframes reticlePulse {
@@ -254,7 +254,7 @@ const GraceXLaserUltra = {
       }
     `;
     document.head.appendChild(style);
-    
+
     document.body.appendChild(reticle);
     GraceXLaserUltra.reticle = reticle;
   },
@@ -276,13 +276,13 @@ const GraceXLaserUltra = {
     GraceXLaserUltra.overlay.style.display = 'block';
     GraceXLaserUltra.panel.style.display = 'block';
     GraceXLaserUltra.reticle.style.display = 'block';
-    
+
     // Add event listeners
     document.addEventListener('mousemove', GraceXLaserUltra.handleMouseMove);
     document.addEventListener('click', GraceXLaserUltra.handleClick, true);
     document.addEventListener('contextmenu', GraceXLaserUltra.handleRightClick, true);
     document.addEventListener('keydown', GraceXLaserUltra.handleKeydown);
-    
+
     console.log('🎯 LASER™ ULTRA activated - inspect ANYTHING mode');
   },
 
@@ -291,13 +291,13 @@ const GraceXLaserUltra = {
     GraceXLaserUltra.overlay.style.display = 'none';
     GraceXLaserUltra.panel.style.display = 'none';
     GraceXLaserUltra.reticle.style.display = 'none';
-    
+
     // Remove event listeners
     document.removeEventListener('mousemove', GraceXLaserUltra.handleMouseMove);
     document.removeEventListener('click', GraceXLaserUltra.handleClick, true);
     document.removeEventListener('contextmenu', GraceXLaserUltra.handleRightClick, true);
     document.removeEventListener('keydown', GraceXLaserUltra.handleKeydown);
-    
+
     console.log('🎯 LASER™ ULTRA deactivated');
   },
 
@@ -313,29 +313,29 @@ const GraceXLaserUltra = {
 
   handleClick: (e) => {
     // Don't inspect laser UI itself
-    if (e.target.closest('#gx-laser-ultra-panel') || 
-        e.target.closest('#gx-laser-ultra-overlay') ||
-        e.target.closest('#gx-laser-ultra-btn')) {
+    if (e.target.closest('#gx-laser-ultra-panel') ||
+      e.target.closest('#gx-laser-ultra-overlay') ||
+      e.target.closest('#gx-laser-ultra-btn')) {
       return;
     }
-    
+
     e.preventDefault();
     e.stopPropagation();
-    
+
     GraceXLaserUltra.inspectTarget(e.target, e);
   },
 
   handleRightClick: (e) => {
     if (!GraceXLaserUltra.active) return;
-    
+
     // Don't block right-click on laser UI
     if (e.target.closest('#gx-laser-ultra-panel')) {
       return;
     }
-    
+
     e.preventDefault();
     e.stopPropagation();
-    
+
     // Show context options
     GraceXLaserUltra.showContextMenu(e);
   },
@@ -366,7 +366,7 @@ const GraceXLaserUltra = {
       event: event,
       data: GraceXLaserUltra.extractAllData(element, event)
     };
-    
+
     GraceXLaserUltra.displayAnalysis();
   },
 
@@ -376,14 +376,14 @@ const GraceXLaserUltra = {
       values: {},
       metadata: {}
     };
-    
+
     // Element data
     data.values.tagName = element.tagName;
     data.values.id = element.id;
     data.values.className = element.className;
     data.values.textContent = element.textContent?.trim().substring(0, 200);
     data.type.push('DOM Element');
-    
+
     // URLs and Links
     const href = element.href || element.getAttribute('href');
     if (href) {
@@ -391,7 +391,7 @@ const GraceXLaserUltra = {
       data.type.push('URL/Link');
       data.metadata.urlType = href.startsWith('http') ? 'External' : 'Internal';
     }
-    
+
     // Data attributes
     Array.from(element.attributes).forEach(attr => {
       if (attr.name.startsWith('data-')) {
@@ -399,25 +399,29 @@ const GraceXLaserUltra = {
         data.type.push('Data Attribute');
       }
     });
-    
+
     // Images
     if (element.tagName === 'IMG') {
       data.values.src = element.src;
       data.values.alt = element.alt;
       data.type.push('Image');
     }
-    
+
     // Forms and inputs
     if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
       data.values.inputType = element.type;
       data.values.name = element.name;
-      data.values.value = element.value;
+      if (element.type !== 'password') {
+        data.values.value = element.value;
+      } else {
+        data.values.value = '********';
+      }
       data.type.push('Form Input');
     }
-    
+
     // Extract emails, phone numbers, IDs from text
     const text = element.textContent || '';
-    
+
     // Email regex
     const emailRegex = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g;
     const emails = text.match(emailRegex);
@@ -425,7 +429,7 @@ const GraceXLaserUltra = {
       data.values.emails = emails;
       data.type.push('Email Address');
     }
-    
+
     // Phone regex (various formats)
     const phoneRegex = /(\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/g;
     const phones = text.match(phoneRegex);
@@ -433,7 +437,7 @@ const GraceXLaserUltra = {
       data.values.phones = phones;
       data.type.push('Phone Number');
     }
-    
+
     // URLs in text
     const urlRegex = /(https?:\/\/[^\s]+)/g;
     const urls = text.match(urlRegex);
@@ -441,7 +445,7 @@ const GraceXLaserUltra = {
       data.values.urlsInText = urls;
       data.type.push('URLs in Text');
     }
-    
+
     // File paths
     const filePathRegex = /([A-Za-z]:\\|\/)[^\s<>"|?*]+/g;
     const filePaths = text.match(filePathRegex);
@@ -449,7 +453,7 @@ const GraceXLaserUltra = {
       data.values.filePaths = filePaths;
       data.type.push('File Path');
     }
-    
+
     // User IDs, numbers
     const idRegex = /\b(id|ID|userId|user_id|#)[\s:=]?(\d+|[a-f0-9-]{8,})\b/gi;
     const ids = text.match(idRegex);
@@ -457,7 +461,7 @@ const GraceXLaserUltra = {
       data.values.identifiers = ids;
       data.type.push('Identifier/ID');
     }
-    
+
     // Names (capitalized words)
     const nameRegex = /\b[A-Z][a-z]+ [A-Z][a-z]+\b/g;
     const names = text.match(nameRegex);
@@ -465,7 +469,7 @@ const GraceXLaserUltra = {
       data.values.possibleNames = names;
       data.type.push('Possible Name');
     }
-    
+
     // Coordinates
     data.metadata.position = {
       x: event.clientX,
@@ -473,7 +477,7 @@ const GraceXLaserUltra = {
       scrollX: window.scrollX,
       scrollY: window.scrollY
     };
-    
+
     // Computed styles (key ones)
     const computed = window.getComputedStyle(element);
     data.metadata.styles = {
@@ -483,14 +487,14 @@ const GraceXLaserUltra = {
       backgroundColor: computed.backgroundColor,
       color: computed.color
     };
-    
+
     return data;
   },
 
   displayAnalysis: () => {
     const content = document.getElementById('gx-laser-ultra-content');
     const { data } = GraceXLaserUltra.target;
-    
+
     let html = `
       <div style="margin-bottom: 20px;">
         <div style="font-size: 0.85rem; color: #64748b; margin-bottom: 5px;">TARGET TYPE</div>
@@ -508,11 +512,11 @@ const GraceXLaserUltra = {
         </div>
       </div>
     `;
-    
+
     // Display all extracted values
     for (const [key, value] of Object.entries(data.values)) {
       if (!value || (Array.isArray(value) && value.length === 0)) continue;
-      
+
       html += `
         <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid rgba(148, 163, 184, 0.1);">
           <div style="font-size: 0.75rem; color: #64748b; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px;">
@@ -524,7 +528,7 @@ const GraceXLaserUltra = {
         </div>
       `;
     }
-    
+
     // Metadata
     if (data.metadata.position) {
       html += `
@@ -537,7 +541,7 @@ const GraceXLaserUltra = {
         </div>
       `;
     }
-    
+
     content.innerHTML = html;
   },
 
@@ -554,7 +558,7 @@ const GraceXLaserUltra = {
 
   openTarget: () => {
     const { data } = GraceXLaserUltra.target;
-    
+
     if (data.values.url) {
       window.open(data.values.url, '_blank');
     } else if (data.values.urlsInText && data.values.urlsInText[0]) {
@@ -569,7 +573,7 @@ const GraceXLaserUltra = {
   webSearch: () => {
     const { data } = GraceXLaserUltra.target;
     let query = '';
-    
+
     if (data.values.possibleNames && data.values.possibleNames[0]) {
       query = data.values.possibleNames[0];
     } else if (data.values.textContent) {
@@ -577,7 +581,7 @@ const GraceXLaserUltra = {
     } else if (data.values.emails && data.values.emails[0]) {
       query = data.values.emails[0];
     }
-    
+
     if (query) {
       window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
     } else {
@@ -589,7 +593,7 @@ const GraceXLaserUltra = {
     // Send to Core module for AI analysis
     const { data } = GraceXLaserUltra.target;
     const summary = `Analyze this data:\n${JSON.stringify(data, null, 2)}`;
-    
+
     // Try to send to brain if available
     if (window.GraceX && typeof window.GraceX.think === 'function') {
       window.GraceX.think({

@@ -21,6 +21,9 @@ router.use((req, res, next) => {
 
 // POST /api/builder/projects - Save (create or update) project
 router.post('/projects', (req, res) => {
+  if (!req.userId || req.userId === 'default') {
+    return res.status(401).json({ success: false, error: 'Authentication required' });
+  }
   try {
     const body = req.body || {};
     const id = body.id || generateId();
@@ -62,6 +65,9 @@ router.get('/projects/:id', (req, res) => {
 
 // PUT /api/builder/projects/:id - Update project
 router.put('/projects/:id', (req, res) => {
+  if (!req.userId || req.userId === 'default') {
+    return res.status(401).json({ success: false, error: 'Authentication required' });
+  }
   try {
     const existing = storage.read(MODULE, req.userId, 'project', req.params.id);
     if (!existing) return res.status(404).json({ success: false, error: 'Project not found' });
@@ -75,6 +81,9 @@ router.put('/projects/:id', (req, res) => {
 
 // DELETE /api/builder/projects/:id - Delete project
 router.delete('/projects/:id', (req, res) => {
+  if (!req.userId || req.userId === 'default') {
+    return res.status(401).json({ success: false, error: 'Authentication required' });
+  }
   try {
     storage.remove(MODULE, req.userId, 'project', req.params.id);
     storage.remove(MODULE, req.userId, 'scope', req.params.id);
@@ -87,6 +96,9 @@ router.delete('/projects/:id', (req, res) => {
 
 // POST /api/builder/scope-pack - Save scope pack (body: { projectId, items, assumptions, rooms })
 router.post('/scope-pack', (req, res) => {
+  if (!req.userId || req.userId === 'default') {
+    return res.status(401).json({ success: false, error: 'Authentication required' });
+  }
   try {
     const { projectId, items = [], assumptions = [], rooms = [] } = req.body || {};
     const id = projectId || generateId();
@@ -111,6 +123,9 @@ router.get('/scope-pack/:projectId', (req, res) => {
 
 // POST /api/builder/rams - Save RAMS (body: { projectId, rams } or full RAMS object)
 router.post('/rams', (req, res) => {
+  if (!req.userId || req.userId === 'default') {
+    return res.status(401).json({ success: false, error: 'Authentication required' });
+  }
   try {
     const body = req.body || {};
     const projectId = body.projectId || body.id || generateId();
