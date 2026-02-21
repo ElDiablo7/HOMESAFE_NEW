@@ -818,12 +818,9 @@ app.post('/api/sports/cache/clear', (req, res) => {
 });
 
 // Ollama dynamic model selection
+// Always use the configured model (llama3.2) to avoid referencing uninstalled models
 function selectOllamaModel(message){
-const msg=(message||'').toLowerCase();
-if(/analyse|analyze|legal|contract|critical|deep/.test(msg))return 'dolphin-mixtral:latest';
-if(/explain|architecture|design|build|system/.test(msg))return 'gpt-oss:20b';
-if(/how|why|what|help/.test(msg))return 'llama3.2:latest';
-return 'phi3.5:latest';
+  return process.env.OLLAMA_MODEL || 'llama3.2';
 }
 
 // Main brain API endpoint
@@ -1184,41 +1181,69 @@ async function callOllama(messages, temperature, max_tokens, modelOverride) {
   const baseUrl = process.env.OLLAMA_BASE_URL || process.env.OLLAMA_HOST || 'http://localhost:11434';
   const model = modelOverride != null ? modelOverride : (process.env.OLLAMA_MODEL || 'llama3.2');
 
-  // Convert messages to Ollama format
-  const response = await fetch(`${baseUrl}/api/chat`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      model: model,
-      messages: messages,
-      stream: false,
-      options: {
-        temperature: temperature,
-        num_predict: max_tokens
-      }
-    })
-  });
+  // Use a generous timeout for local inference (120 seconds)
+  const timeoutMs = parseInt(process.env.REQUEST_TIMEOUT) || 120000;
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    const error = new Error(`Ollama API error: ${response.status} - ${errorData.error || response.statusText}`);
-    error.code = 'OLLAMA_ERROR';
-    error.statusCode = 502;
-    throw error;
+  console.log(`[OLLAMA] Calling ${baseUrl}/api/chat with model=${model}`);
+
+  try {
+    // Convert messages to Ollama format
+    const response = await fetch(`${baseUrl}/api/chat`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: model,
+        messages: messages,
+        stream: false,
+        options: {
+          temperature: temperature,
+          num_predict: max_tokens
+        }
+      }),
+      signal: controller.signal
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      const error = new Error(`Ollama API error: ${response.status} - ${errorData.error || response.statusText}`);
+      error.code = 'OLLAMA_ERROR';
+      error.statusCode = 502;
+      throw error;
+    }
+
+    const data = await response.json();
+    
+    if (!data.message?.content) {
+      const error = new Error('Invalid response from Ollama');
+      error.code = 'INVALID_RESPONSE';
+      error.statusCode = 502;
+      throw error;
+    }
+
+    console.log(`[OLLAMA] ✅ Response received (${data.message.content.length} chars)`);
+    return data.message.content;
+  } catch (err) {
+    clearTimeout(timeoutId);
+    if (err.name === 'AbortError') {
+      const error = new Error(`Ollama request timed out after ${timeoutMs / 1000}s – is Ollama running on ${baseUrl}?`);
+      error.code = 'OLLAMA_TIMEOUT';
+      error.statusCode = 504;
+      throw error;
+    }
+    if (err.cause?.code === 'ECONNREFUSED') {
+      const error = new Error(`Cannot connect to Ollama at ${baseUrl} – is Ollama running? Start it with: ollama serve`);
+      error.code = 'OLLAMA_CONNECTION_REFUSED';
+      error.statusCode = 503;
+      throw error;
+    }
+    throw err;
   }
-
-  const data = await response.json();
-  
-  if (!data.message?.content) {
-    const error = new Error('Invalid response from Ollama');
-    error.code = 'INVALID_RESPONSE';
-    error.statusCode = 502;
-    throw error;
-  }
-
-  return data.message.content;
 }
 
 // ============================================
