@@ -645,7 +645,7 @@ app.get('/api/system/status', (req, res) => {
 // ============================================
 // SPORTS API ENDPOINTS
 // ============================================
-const sportsAPI = require('./sports-api');
+
 
 // Get live football scores
 app.get('/api/sports/football/live', rateLimitMiddleware, async (req, res) => {
@@ -1940,10 +1940,10 @@ console.log('');
 // ============================================
 // AUTH & BUILDER & SITEOPS API
 // ============================================
-const authRoutes = require('./routes/auth');
-const { optionalJwt } = require('./middleware/auth');
-const builderRoutes = require('./routes/builder');
-const siteopsRoutes = require('./routes/siteops');
+
+
+
+
 app.use('/api/auth', authRoutes);
 app.use('/api/builder', optionalJwt, builderRoutes);
 app.use('/api/siteops', optionalJwt, siteopsRoutes);
