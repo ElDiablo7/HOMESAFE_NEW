@@ -820,6 +820,11 @@
         const clearBtn = document.getElementById("measure-clear");
         const exportBtn = document.getElementById("measure-export");
         const scaleInput = document.getElementById("scale-input");
+        const colorInput = document.getElementById("measure-color");
+        const thicknessInput = document.getElementById("measure-thickness");
+        const unitSelect = document.getElementById("measure-unit-select");
+        const arToggleBtn = document.getElementById("measure-ar-toggle");
+        const arVideo = document.getElementById("measure-ar-video");
 
         if (!canvas || !readout || !startBtn || !scaleInput) {
             return;
@@ -828,6 +833,7 @@
         const ctx = canvas.getContext("2d");
         let measuring = false;
         let activeSegment = null;
+        let arStream = null;
 
         function getScale() {
             const raw = parseFloat(scaleInput.value);
@@ -848,8 +854,16 @@
             const { px, m } = lengthFor(seg);
             measureState.lastLengthPx = px;
             measureState.lastLengthM = m;
-            readout.textContent =
-                "Length: " + px.toFixed(1) + " px (" + m.toFixed(3) + " m)";
+
+            const unitType = unitSelect ? unitSelect.value : "m";
+            if (unitType === "ft") {
+                const totalInches = m * 39.3701;
+                const feet = Math.floor(totalInches / 12);
+                const inches = (totalInches % 12).toFixed(1);
+                readout.textContent = `Length: ${px.toFixed(1)} px (${feet}' ${inches}")`;
+            } else {
+                readout.textContent = `Length: ${px.toFixed(1)} px (${m.toFixed(3)} m)`;
+            }
         }
 
         function redraw() {
@@ -862,9 +876,11 @@
 
             // Draw stored segments
             ctx.save();
-            ctx.lineWidth = 2;
-            ctx.strokeStyle = "#4ade80";
-            ctx.fillStyle = "#4ade80";
+            ctx.lineWidth = thicknessInput ? parseInt(thicknessInput.value) : 2;
+            ctx.strokeStyle = colorInput ? colorInput.value : "#4ade80";
+            ctx.fillStyle = colorInput ? colorInput.value : "#4ade80";
+
+            const unitType = unitSelect ? unitSelect.value : "m";
 
             measureState.segments.forEach(function (seg) {
                 ctx.beginPath();
@@ -876,7 +892,16 @@
                 const midY = (seg.y1 + seg.y2) / 2;
                 const { m } = lengthFor(seg);
                 ctx.font = "12px ui-monospace, monospace";
-                ctx.fillText(m.toFixed(2) + " m", midX + 4, midY - 4);
+
+                let labelText = m.toFixed(2) + " m";
+                if (unitType === "ft") {
+                    const totalInches = m * 39.3701;
+                    const feet = Math.floor(totalInches / 12);
+                    const inches = (totalInches % 12).toFixed(1);
+                    labelText = `${feet}' ${inches}"`;
+                }
+
+                ctx.fillText(labelText, midX + 4, midY - 4);
             });
 
             // Active segment preview
@@ -961,7 +986,12 @@
                 if (last) {
                     updateReadout(last);
                 } else {
-                    readout.textContent = "Length: 0 px (0.000 m)";
+                    const unitType = unitSelect ? unitSelect.value : "m";
+                    if (unitType === "ft") {
+                        readout.textContent = "Length: 0 px (0' 0.0\")";
+                    } else {
+                        readout.textContent = "Length: 0 px (0.000 m)";
+                    }
                     measureState.lastLengthPx = 0;
                     measureState.lastLengthM = 0;
                 }
@@ -980,13 +1010,82 @@
             measureState.lastLengthM = 0;
             // Note: Clear button clears measurements but keeps blueprint
             // To clear blueprint, use the upload button again or refresh
-            readout.textContent = "Length: 0 px (0.000 m)";
+
+            const unitType = unitSelect ? unitSelect.value : "m";
+            if (unitType === "ft") {
+                readout.textContent = "Length: 0 px (0' 0.0\")";
+            } else {
+                readout.textContent = "Length: 0 px (0.000 m)";
+            }
             redraw();
             // Update calculator when measurements are cleared
             if (window.updateMeasurementCalculator) {
                 window.updateMeasurementCalculator();
             }
         });
+
+        // Add event listeners for styling and unit changes
+        [colorInput, thicknessInput, unitSelect].forEach(function (el) {
+            if (el) {
+                el.addEventListener("change", function () {
+                    const last = measureState.segments.length > 0 ? measureState.segments[measureState.segments.length - 1] : null;
+                    if (last) {
+                        updateReadout(last);
+                    } else {
+                        const unitType = unitSelect ? unitSelect.value : "m";
+                        if (unitType === "ft") {
+                            readout.textContent = "Length: 0 px (0' 0.0\")";
+                        } else {
+                            readout.textContent = "Length: 0 px (0.000 m)";
+                        }
+                    }
+                    redraw();
+                });
+            }
+        });
+
+        // AR/Camera Mode Toggle
+        if (arToggleBtn && arVideo) {
+            arToggleBtn.addEventListener("click", async function () {
+                if (arStream) {
+                    // Turn off AR
+                    arStream.getTracks().forEach(track => track.stop());
+                    arStream = null;
+                    arVideo.srcObject = null;
+                    arVideo.style.display = "none";
+                    arToggleBtn.textContent = "📷 AR Mode";
+                    if (window.GRACEX_Utils) {
+                        GRACEX_Utils.showToast("AR Mode Disabled", "info");
+                    }
+                } else {
+                    // Turn on AR
+                    try {
+                        arStream = await navigator.mediaDevices.getUserMedia({
+                            video: { facingMode: "environment" }
+                        });
+                        arVideo.srcObject = arStream;
+                        arVideo.style.display = "block";
+                        arToggleBtn.textContent = "🛑 Stop AR";
+
+                        // Clear any loaded blueprint so we only see the camera
+                        measureState.blueprintLoaded = false;
+                        measureState.blueprintImage = null;
+                        redraw();
+
+                        if (window.GRACEX_Utils) {
+                            GRACEX_Utils.showToast("AR Measurement Mode Active", "success");
+                        }
+                    } catch (err) {
+                        console.error("[GRACEX BUILDER] Camera Error:", err);
+                        if (window.GRACEX_Utils) {
+                            GRACEX_Utils.showToast("Failed to access camera", "error");
+                        } else {
+                            alert("Camera access is required for AR mode.");
+                        }
+                    }
+                }
+            });
+        }
 
         exportBtn && exportBtn.addEventListener("click", function () {
             if (!measureState.segments.length) {
@@ -1230,43 +1329,279 @@
     }
 
     // =====================================
-    // AR CARD (metadata-only for now)
+    // AR ROOM PLANNER (Dynamic & Smart)
     // =====================================
     function initARCard() {
-        const calibrateBtn = document.getElementById("ar-calibrate");
+        const toggleBtn = document.getElementById("ar-camera-toggle");
         const placeBtn = document.getElementById("ar-place-marker");
+        const undoBtn = document.getElementById("ar-undo");
         const clearBtn = document.getElementById("ar-clear");
-        const roomName = document.getElementById("ar-room-name");
-        const roomNotes = document.getElementById("ar-room-notes");
-        const heightInput = document.getElementById("ar-height");
-        const priorityInput = document.getElementById("ar-priority");
-        const hint = document.getElementById("ar-hint");
 
-        if (!calibrateBtn || !placeBtn || !clearBtn) {
-            return;
+        const video = document.getElementById("ar-video");
+        const canvas = document.getElementById("ar-canvas");
+        const reticle = document.getElementById("ar-reticle");
+        const statusOutput = document.getElementById("ar-status-readout");
+
+        const areaOutput = document.getElementById("ar-calc-area");
+        const perimOutput = document.getElementById("ar-calc-perimeter");
+        const heightInput = document.getElementById("ar-height");
+        const aiDataNode = document.getElementById("ar-ai-data");
+
+        if (!toggleBtn || !canvas) return;
+
+        const ctx = canvas.getContext("2d");
+        let stream = null;
+        let markers = [];
+        let polygonClosed = false;
+
+        // Ensure canvas sizing is correct relative to its container
+        function resizeCanvas() {
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+            redraw();
         }
 
-        function setHint(msg) {
-            if (hint) {
-                hint.textContent = msg;
+        window.addEventListener("resize", resizeCanvas);
+        // Initial sizing timeout to allow DOM to settle
+        setTimeout(resizeCanvas, 100);
+
+        function updateStatus(msg, type = "info") {
+            if (statusOutput) {
+                statusOutput.textContent = "Smart Status: " + msg;
+                if (type === "success") statusOutput.style.color = "#4ade80";
+                else if (type === "warn") statusOutput.style.color = "#facc15";
+                else if (type === "error") statusOutput.style.color = "#f87171";
+                else statusOutput.style.color = "inherit";
             }
         }
 
-        calibrateBtn.addEventListener("click", function () {
-            setHint("Calibration noted. Glasses / AR hooks will plug in here later.");
+        function getScale() {
+            // Assume the height input (e.g. 2.4m) represents the height of the screen
+            // This is a naive AR projection placeholder. A real ARKit/ARCore implementation would provide world geometry.
+            const h = parseFloat(heightInput?.value || 2.4);
+            const pxHeight = canvas.height || 500;
+            return h / pxHeight; // Meters per Pixel
+        }
+
+        function calculateDimensions() {
+            if (markers.length < 2) {
+                areaOutput.textContent = "0.00 m²";
+                perimOutput.textContent = "0.00 m";
+                if (aiDataNode) {
+                    aiDataNode.setAttribute("data-area", "0");
+                    aiDataNode.setAttribute("data-perimeter", "0");
+                    aiDataNode.setAttribute("data-status", "Planning");
+                }
+                return;
+            }
+
+            const scale = getScale();
+            let perimeterPx = 0;
+            let areaPxSq = 0;
+
+            // Perimeter
+            for (let i = 0; i < markers.length; i++) {
+                const p1 = markers[i];
+                // Connect back to start if closed, otherwise stop at last point
+                const p2 = (i === markers.length - 1) ? (polygonClosed ? markers[0] : null) : markers[i + 1];
+
+                if (p2) {
+                    const dx = p2.x - p1.x;
+                    const dy = p2.y - p1.y;
+                    perimeterPx += Math.sqrt(dx * dx + dy * dy);
+                }
+            }
+
+            const perimeterM = perimeterPx * scale;
+            perimOutput.textContent = perimeterM.toFixed(2) + " m";
+
+            // Area (Shoelace formula)
+            if (markers.length > 2 && polygonClosed) {
+                let j = markers.length - 1;
+                for (let i = 0; i < markers.length; i++) {
+                    areaPxSq += (markers[j].x + markers[i].x) * (markers[j].y - markers[i].y);
+                    j = i;
+                }
+                const areaM = Math.abs(areaPxSq / 2) * (scale * scale);
+                areaOutput.textContent = areaM.toFixed(2) + " m²";
+
+                if (aiDataNode) {
+                    aiDataNode.setAttribute("data-area", areaM.toFixed(2));
+                    aiDataNode.setAttribute("data-perimeter", perimeterM.toFixed(2));
+                    aiDataNode.setAttribute("data-status", "Room Captured");
+                }
+            } else {
+                areaOutput.textContent = "Close shape to calculate";
+                if (aiDataNode) {
+                    aiDataNode.setAttribute("data-area", "0");
+                    aiDataNode.setAttribute("data-perimeter", perimeterM.toFixed(2));
+                    aiDataNode.setAttribute("data-status", "In Progress");
+                }
+            }
+        }
+
+        function redraw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (markers.length === 0) return;
+
+            // Draw polygon fill and strokes
+            ctx.beginPath();
+            ctx.moveTo(markers[0].x, markers[0].y);
+
+            for (let i = 1; i < markers.length; i++) {
+                ctx.lineTo(markers[i].x, markers[i].y);
+            }
+
+            if (polygonClosed) {
+                ctx.closePath();
+                ctx.fillStyle = "rgba(74, 222, 128, 0.2)";
+                ctx.fill();
+            }
+
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = polygonClosed ? "#4ade80" : "#ffcc00";
+            ctx.stroke();
+
+            // Draw points
+            markers.forEach((m, idx) => {
+                ctx.beginPath();
+                ctx.arc(m.x, m.y, 6, 0, Math.PI * 2);
+                ctx.fillStyle = (idx === 0) ? "#f87171" : "#fff"; // Highlight first point
+                ctx.fill();
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = "#000";
+                ctx.stroke();
+            });
+
+            calculateDimensions();
+        }
+
+        function addMarker(x, y) {
+            if (polygonClosed) {
+                updateStatus("Room shape is already closed. Clear to start over.", "warn");
+                return;
+            }
+
+            // Snap to close logic
+            if (markers.length >= 2) {
+                const first = markers[0];
+                const dx = first.x - x;
+                const dy = first.y - y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                // If within 40px of the start point, snap and close it
+                if (dist < 40) {
+                    polygonClosed = true;
+                    updateStatus("Room boundary complete ✅", "success");
+                    redraw();
+                    if (undoBtn) undoBtn.disabled = false;
+                    return;
+                }
+            }
+
+            markers.push({ x, y });
+            updateStatus(`Marker ${markers.length} placed.`);
+            redraw();
+
+            if (undoBtn) undoBtn.disabled = false;
+            if (clearBtn) clearBtn.disabled = false;
+        }
+
+        // Camera Toggle
+        toggleBtn.addEventListener("click", async function () {
+            if (stream) {
+                // Turn OFF
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+                video.srcObject = null;
+                video.style.display = "none";
+                reticle.style.display = "none";
+                placeBtn.disabled = true;
+                toggleBtn.textContent = "▶️ Start Camera";
+                updateStatus("Camera off. Markers retained.");
+
+                if (aiDataNode) aiDataNode.setAttribute("data-status", "Camera Off");
+            } else {
+                // Turn ON
+                try {
+                    stream = await navigator.mediaDevices.getUserMedia({
+                        video: { facingMode: "environment" }
+                    });
+                    video.srcObject = stream;
+                    video.style.display = "block";
+                    reticle.style.display = "block";
+
+                    // Center the reticle
+                    reticle.style.left = "calc(50% - 15px)";
+                    reticle.style.top = "calc(50% - 15px)";
+
+                    placeBtn.disabled = false;
+                    toggleBtn.textContent = "🛑 Stop Camera";
+                    resizeCanvas();
+                    updateStatus("Camera active. Aim crosshair and place markers.", "success");
+
+                    if (aiDataNode) aiDataNode.setAttribute("data-status", "Scanning");
+
+                } catch (err) {
+                    console.error("[GRACEX BUILDER] AR Camera error:", err);
+                    updateStatus("Failed to access camera. Check permissions.", "error");
+                    if (window.GRACEX_Utils) {
+                        GRACEX_Utils.showToast("Cannot access camera", "error");
+                    }
+                }
+            }
         });
 
+        // Place marker via button (drops at reticle location)
         placeBtn.addEventListener("click", function () {
-            setHint("Marker placed in this room snapshot – measurements stay in the cards below.");
+            // Drop marker at canvas center (where reticle is)
+            const x = canvas.width / 2;
+            const y = canvas.height / 2;
+            addMarker(x, y);
         });
 
-        clearBtn.addEventListener("click", function () {
-            if (roomName) roomName.value = "";
-            if (roomNotes) roomNotes.value = "";
-            if (heightInput) heightInput.value = "";
-            if (priorityInput) priorityInput.value = "";
-            setHint("Room snapshot cleared – ready for a new space.");
+        // Place marker via touch/click on canvas directly
+        canvas.addEventListener("click", function (ev) {
+            if (!stream) return; // Only allow clicks if camera is active
+            const rect = canvas.getBoundingClientRect();
+            const x = ev.clientX - rect.left;
+            const y = ev.clientY - rect.top;
+            addMarker(x, y);
         });
+
+        undoBtn && undoBtn.addEventListener("click", function () {
+            if (markers.length > 0) {
+                if (polygonClosed) {
+                    polygonClosed = false;
+                } else {
+                    markers.pop();
+                }
+                redraw();
+                updateStatus("Last action undone.");
+                if (markers.length === 0) {
+                    undoBtn.disabled = true;
+                }
+            }
+        });
+
+        clearBtn && clearBtn.addEventListener("click", function () {
+            markers = [];
+            polygonClosed = false;
+            redraw();
+            updateStatus("Cleared. Ready for new room.", "info");
+            undoBtn && (undoBtn.disabled = true);
+
+            if (aiDataNode) {
+                aiDataNode.setAttribute("data-area", "0");
+                aiDataNode.setAttribute("data-perimeter", "0");
+                aiDataNode.setAttribute("data-status", stream ? "Scanning" : "Inactive");
+            }
+        });
+
+        // Listen to height input changes to trigger dynamic calculation
+        heightInput && heightInput.addEventListener("input", calculateDimensions);
     }
 
     // =====================================

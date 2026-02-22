@@ -309,15 +309,63 @@
 
   <div class="builder-card" id="ar-card">
     <h2>🛰️ AR Room Planner</h2>
+    <p class="hint">Use your camera to drop markers and automatically calculate floor area/perimeter.</p>
+
+    <!-- AI Readable State Container -->
+    <div id="ar-ai-data" data-area="0" data-perimeter="0" data-status="Inactive" style="display: none;"></div>
 
     <div class="builder-controls">
-      <button class="builder-btn" id="ar-calibrate" disabled title="Coming soon">Calibrate</button>
-      <button class="builder-btn" id="ar-place-marker" disabled title="Coming soon">Place marker</button>
-      <button class="builder-btn" id="ar-clear" disabled title="Coming soon">Clear</button>
-      <span class="hint">Coming soon – AR room planning in a future release.</span>
+      <button class="builder-btn" id="ar-camera-toggle">▶️ Start Camera</button>
+      <button class="builder-btn" id="ar-place-marker" disabled>📍 Place Marker</button>
+      <button class="builder-btn" id="ar-undo" disabled>↩️ Undo Last</button>
+      <button class="builder-btn" id="ar-clear">🗑️ Clear</button>
+      <span class="hint" id="ar-status-readout">Smart Status: Ready</span>
     </div>
 
-    <div class="summary-grid">
+    <!-- The actual AR interaction stage -->
+    <div class="measure-stage"
+      style="position: relative; overflow: hidden; height: 50vh; min-height: 400px; background: #1a1a24; border-radius: 8px; margin-top: 12px; display: flex; align-items: center; justify-content: center;">
+
+      <!-- Video stream -->
+      <video id="ar-video" autoplay playsinline
+        style="display: none; width: 100%; height: 100%; object-fit: cover; position: absolute; top:0; left:0; z-index: 1;"></video>
+
+      <!-- Interactive drawing canvas -->
+      <canvas id="ar-canvas"
+        style="position: absolute; top:0; left:0; width: 100%; height: 100%; z-index: 2; cursor: crosshair;"></canvas>
+
+      <!-- Smart Reticle (center of screen) -->
+      <div id="ar-reticle"
+        style="display: none; position: absolute; z-index: 3; pointer-events: none; width: 30px; height: 30px;">
+        <div
+          style="position: absolute; top: 14px; left: 0; width: 30px; height: 2px; background: rgba(255, 204, 0, 0.8);">
+        </div>
+        <div
+          style="position: absolute; top: 0; left: 14px; width: 2px; height: 30px; background: rgba(255, 204, 0, 0.8);">
+        </div>
+        <div
+          style="position: absolute; top: 12px; left: 12px; width: 6px; height: 6px; background: #ffcc00; border-radius: 50%;">
+        </div>
+      </div>
+
+    </div>
+
+    <div id="ar-results" class="builder-results" style="margin-top: 12px;">
+      <div class="result-row">
+        <span>Dynamic Floor Area:</span>
+        <strong id="ar-calc-area">0.00 m²</strong>
+      </div>
+      <div class="result-row">
+        <span>Dynamic Perimeter:</span>
+        <strong id="ar-calc-perimeter">0.00 m</strong>
+      </div>
+    </div>
+
+    <div class="summary-grid" style="margin-top: 12px;">
+      <label>
+        Ceiling height (m) scale reference
+        <input type="number" step="0.01" id="ar-height" value="2.4" placeholder="Standard 2.4m">
+      </label>
       <label>
         Room name
         <input type="text" id="ar-room-name" placeholder="Living room, Studio A, etc.">
@@ -327,17 +375,10 @@
         <input type="text" id="ar-room-notes" placeholder="e.g. Edit suite, rigging bay">
       </label>
       <label>
-        Ceiling height (m)
-        <input type="number" step="0.01" id="ar-height">
-      </label>
-      <label>
         Priority
         <input type="text" id="ar-priority" placeholder="High / Medium / Low">
       </label>
     </div>
-
-    <p class="hint" id="ar-hint">
-      Coming soon. Use Blueprint Overlay and measurements below for now.</p>
   </div>
 
   <!-- BLUEPRINT OVERLAY -->
@@ -368,19 +409,37 @@
       <button class="builder-btn" id="measure-undo">Undo</button>
       <button class="builder-btn" id="measure-clear">Clear</button>
       <button class="builder-btn" id="measure-export">Export</button>
+      <button class="builder-btn" id="measure-ar-toggle">📷 AR Mode</button>
 
       <label class="scale">
         Scale (m/px)
         <input id="scale-input" type="number" step="0.001" value="0.01">
+      </label>
+      <label class="scale">
+        Color
+        <input id="measure-color" type="color" value="#4ade80" style="width: 40px; height: 24px; padding: 0;">
+      </label>
+      <label class="scale">
+        Thickness
+        <input id="measure-thickness" type="number" step="1" min="1" max="20" value="2" style="width: 50px;">
+      </label>
+      <label class="scale">
+        Unit
+        <select id="measure-unit-select" style="width: 80px;">
+          <option value="m">Metric (m)</option>
+          <option value="ft">Imperial (ft/in)</option>
+        </select>
       </label>
 
       <!-- hidden file input for blueprint upload -->
       <input type="file" id="measure-file" accept="image/*" style="display:none">
     </div>
 
-    <div class="measure-stage">
-      <canvas id="measure-canvas" width="900" height="520"></canvas>
-      <div id="measure-readout">Length: 0 px (0.000 m)</div>
+    <div class="measure-stage" style="position: relative;">
+      <video id="measure-ar-video" autoplay playsinline
+        style="display: none; width: 100%; height: 100%; object-fit: cover; position: absolute; top:0; left:0; z-index: 1; border-radius: 8px;"></video>
+      <canvas id="measure-canvas" width="900" height="520" style="position: relative; z-index: 2;"></canvas>
+      <div id="measure-readout" style="position: relative; z-index: 3;">Length: 0 px (0.000 m)</div>
     </div>
   </div>
 
