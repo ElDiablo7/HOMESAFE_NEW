@@ -34,6 +34,7 @@ const { optionalJwt } = require('./middleware/auth');
 const builderRoutes = require('./routes/builder');
 const siteopsRoutes = require('./routes/siteops');
 const sportsAPI = require('./sports-api');
+const storage = require('./utils/storage');
 
 // ============================================
 // GRACE-X AI™ VOICE & CHARACTER MASTER SPEC
@@ -259,7 +260,7 @@ const CONFIG = {
 
   // Request limits
   maxBodySize: process.env.MAX_BODY_SIZE || '5mb',
-  requestTimeout: parseInt(process.env.REQUEST_TIMEOUT) || 30000, // 30 seconds
+  requestTimeout: parseInt(process.env.REQUEST_TIMEOUT) || 120000, // 120 seconds (matches Ollama inference time)
 
   // CORS
   corsOrigins: process.env.CORS_ORIGINS ? process.env.CORS_ORIGINS.split(',') : ['*'],
@@ -1441,14 +1442,14 @@ console.log('╚═════════════════════�
 console.log('');
 
 // ============================================
-// CALL SHEETS API
+// CALL SHEETS API (Persistent disk storage)
 // ============================================
 
-// In-memory storage for call sheets (replace with DB in production)
-const callSheets = [];
+const CS_MODULE = 'callsheets';
+const CS_USER = 'default';
 
 // CREATE CALL SHEET
-app.post('/api/callsheets/create', (req, res) => {
+app.post('/api/callsheets/create', rateLimitMiddleware, (req, res) => {
   try {
     const callSheet = {
       id: `cs-${Date.now()}`,
@@ -1457,118 +1458,79 @@ app.post('/api/callsheets/create', (req, res) => {
       updatedAt: Date.now()
     };
 
-    callSheets.push(callSheet);
+    storage.write(CS_MODULE, CS_USER, 'sheet', callSheet.id, callSheet);
 
     console.log('[CALLSHEETS] ✅ Created:', callSheet.id);
-    res.json({
-      success: true,
-      callSheet
-    });
+    res.json({ success: true, callSheet });
   } catch (error) {
     console.error('[CALLSHEETS] ❌ Create error:', error);
-    res.status(500).json({
-      success: false,
-      error: error.message
-    });
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 
 // GET DAILY CALL SHEETS
-app.get('/api/callsheets/daily/:date', (req, res) => {
+app.get('/api/callsheets/daily/:date', rateLimitMiddleware, (req, res) => {
   try {
     const { date } = req.params;
-    const sheets = callSheets.filter(s => s.date === date);
+    const allSheets = storage.list(CS_MODULE, CS_USER, 'sheet');
+    const sheets = allSheets.filter(s => s.date === date);
 
-    res.json({
-      success: true,
-      date,
-      sheets
-    });
+    res.json({ success: true, date, sheets });
   } catch (error) {
     console.error('[CALLSHEETS] ❌ Get daily error:', error);
-    res.status(500).json({
-      success: false,
-      error: error.message
-    });
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 
 // GET CALL SHEET BY ID
-app.get('/api/callsheets/:id', (req, res) => {
+app.get('/api/callsheets/:id', rateLimitMiddleware, (req, res) => {
   try {
-    const sheet = callSheets.find(s => s.id === req.params.id);
+    const sheet = storage.read(CS_MODULE, CS_USER, 'sheet', req.params.id);
 
     if (!sheet) {
-      return res.status(404).json({
-        success: false,
-        error: 'Call sheet not found'
-      });
+      return res.status(404).json({ success: false, error: 'Call sheet not found' });
     }
 
-    res.json({
-      success: true,
-      sheet
-    });
+    res.json({ success: true, sheet });
   } catch (error) {
     console.error('[CALLSHEETS] ❌ Get error:', error);
-    res.status(500).json({
-      success: false,
-      error: error.message
-    });
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 
 // UPDATE CALL SHEET
-app.put('/api/callsheets/:id', (req, res) => {
+app.put('/api/callsheets/:id', rateLimitMiddleware, (req, res) => {
   try {
-    const index = callSheets.findIndex(s => s.id === req.params.id);
+    const existing = storage.read(CS_MODULE, CS_USER, 'sheet', req.params.id);
 
-    if (index === -1) {
-      return res.status(404).json({
-        success: false,
-        error: 'Call sheet not found'
-      });
+    if (!existing) {
+      return res.status(404).json({ success: false, error: 'Call sheet not found' });
     }
 
-    callSheets[index] = {
-      ...callSheets[index],
-      ...req.body,
-      updatedAt: Date.now()
-    };
+    const updated = { ...existing, ...req.body, updatedAt: Date.now() };
+    storage.write(CS_MODULE, CS_USER, 'sheet', req.params.id, updated);
 
     console.log('[CALLSHEETS] ✅ Updated:', req.params.id);
-    res.json({
-      success: true,
-      sheet: callSheets[index]
-    });
+    res.json({ success: true, sheet: updated });
   } catch (error) {
     console.error('[CALLSHEETS] ❌ Update error:', error);
-    res.status(500).json({
-      success: false,
-      error: error.message
-    });
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 
 // CLOCK IN/OUT
-app.post('/api/callsheets/crew/clockin', (req, res) => {
+app.post('/api/callsheets/crew/clockin', rateLimitMiddleware, (req, res) => {
   try {
     const { sheetId, crewId, action } = req.body;
 
-    const sheet = callSheets.find(s => s.id === sheetId);
+    const sheet = storage.read(CS_MODULE, CS_USER, 'sheet', sheetId);
     if (!sheet) {
-      return res.status(404).json({
-        success: false,
-        error: 'Call sheet not found'
-      });
+      return res.status(404).json({ success: false, error: 'Call sheet not found' });
     }
 
     const crew = sheet.crew?.find(c => c.id === crewId);
     if (!crew) {
-      return res.status(404).json({
-        success: false,
-        error: 'Crew member not found'
-      });
+      return res.status(404).json({ success: false, error: 'Crew member not found' });
     }
 
     if (action === 'in') {
@@ -1581,43 +1543,27 @@ app.post('/api/callsheets/crew/clockin', (req, res) => {
     }
 
     sheet.updatedAt = Date.now();
+    storage.write(CS_MODULE, CS_USER, 'sheet', sheetId, sheet);
 
     console.log(`[CALLSHEETS] ✅ Clock ${action}:`, crew.name);
-    res.json({
-      success: true,
-      crew
-    });
+    res.json({ success: true, crew });
   } catch (error) {
     console.error('[CALLSHEETS] ❌ Clock error:', error);
-    res.status(500).json({
-      success: false,
-      error: error.message
-    });
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 
 // SYNC CALL SHEETS
-app.post('/api/callsheets/sync', (req, res) => {
+app.post('/api/callsheets/sync', rateLimitMiddleware, (req, res) => {
   try {
     const sheet = req.body;
-    const existing = callSheets.findIndex(s => s.id === sheet.id);
+    const id = sheet.id || `cs-${Date.now()}`;
+    storage.write(CS_MODULE, CS_USER, 'sheet', id, { ...sheet, id, synced: true });
 
-    if (existing !== -1) {
-      callSheets[existing] = { ...sheet, synced: true };
-    } else {
-      callSheets.push({ ...sheet, synced: true });
-    }
-
-    res.json({
-      success: true,
-      message: 'Synced successfully'
-    });
+    res.json({ success: true, message: 'Synced successfully' });
   } catch (error) {
     console.error('[CALLSHEETS] ❌ Sync error:', error);
-    res.status(500).json({
-      success: false,
-      error: error.message
-    });
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 
@@ -1635,17 +1581,14 @@ console.log('╚═════════════════════�
 console.log('');
 
 // ============================================
-// RISK & SAFETY API
+// RISK & SAFETY API (Persistent disk storage)
 // ============================================
 
-// In-memory storage for safety data (replace with DB in production)
-const incidents = [];
-const safetyChecklists = [];
-const risks = [];
-const inductions = [];
+const SAFETY_MODULE = 'safety';
+const SAFETY_USER = 'default';
 
 // REPORT INCIDENT
-app.post('/api/safety/incident', (req, res) => {
+app.post('/api/safety/incident', rateLimitMiddleware, (req, res) => {
   try {
     const incident = {
       id: `inc-${Date.now()}`,
@@ -1655,90 +1598,57 @@ app.post('/api/safety/incident', (req, res) => {
       updatedAt: Date.now()
     };
 
-    incidents.push(incident);
+    storage.write(SAFETY_MODULE, SAFETY_USER, 'incident', incident.id, incident);
 
     console.log(`[SAFETY] 🚨 Incident reported: ${incident.type} - ${incident.severity}`);
-    res.json({
-      success: true,
-      incident
-    });
+    res.json({ success: true, incident });
   } catch (error) {
     console.error('[SAFETY] ❌ Incident error:', error);
-    res.status(500).json({
-      success: false,
-      error: error.message
-    });
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 
 // GET INCIDENTS
-app.get('/api/safety/incidents/:siteId?', (req, res) => {
+app.get('/api/safety/incidents/:siteId?', rateLimitMiddleware, (req, res) => {
   try {
     const { siteId } = req.params;
     const { severity, status } = req.query;
 
-    let filtered = incidents;
+    let filtered = storage.list(SAFETY_MODULE, SAFETY_USER, 'incident');
 
-    if (siteId) {
-      filtered = filtered.filter(i => i.siteId === siteId);
-    }
+    if (siteId) filtered = filtered.filter(i => i.siteId === siteId);
+    if (severity) filtered = filtered.filter(i => i.severity === severity);
+    if (status) filtered = filtered.filter(i => i.status === status);
 
-    if (severity) {
-      filtered = filtered.filter(i => i.severity === severity);
-    }
-
-    if (status) {
-      filtered = filtered.filter(i => i.status === status);
-    }
-
-    res.json({
-      success: true,
-      incidents: filtered,
-      count: filtered.length
-    });
+    res.json({ success: true, incidents: filtered, count: filtered.length });
   } catch (error) {
     console.error('[SAFETY] ❌ Get incidents error:', error);
-    res.status(500).json({
-      success: false,
-      error: error.message
-    });
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 
 // UPDATE INCIDENT
-app.put('/api/safety/incident/:id', (req, res) => {
+app.put('/api/safety/incident/:id', rateLimitMiddleware, (req, res) => {
   try {
-    const index = incidents.findIndex(i => i.id === req.params.id);
+    const existing = storage.read(SAFETY_MODULE, SAFETY_USER, 'incident', req.params.id);
 
-    if (index === -1) {
-      return res.status(404).json({
-        success: false,
-        error: 'Incident not found'
-      });
+    if (!existing) {
+      return res.status(404).json({ success: false, error: 'Incident not found' });
     }
 
-    incidents[index] = {
-      ...incidents[index],
-      ...req.body,
-      updatedAt: Date.now()
-    };
+    const updated = { ...existing, ...req.body, updatedAt: Date.now() };
+    storage.write(SAFETY_MODULE, SAFETY_USER, 'incident', req.params.id, updated);
 
     console.log('[SAFETY] ✅ Incident updated:', req.params.id);
-    res.json({
-      success: true,
-      incident: incidents[index]
-    });
+    res.json({ success: true, incident: updated });
   } catch (error) {
     console.error('[SAFETY] ❌ Update incident error:', error);
-    res.status(500).json({
-      success: false,
-      error: error.message
-    });
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 
 // CREATE SAFETY CHECKLIST
-app.post('/api/safety/checklist', (req, res) => {
+app.post('/api/safety/checklist', rateLimitMiddleware, (req, res) => {
   try {
     const checklist = {
       id: `chk-${Date.now()}`,
@@ -1746,56 +1656,42 @@ app.post('/api/safety/checklist', (req, res) => {
       createdAt: Date.now()
     };
 
-    safetyChecklists.push(checklist);
+    storage.write(SAFETY_MODULE, SAFETY_USER, 'checklist', checklist.id, checklist);
 
     console.log('[SAFETY] ✅ Checklist created:', checklist.id);
-    res.json({
-      success: true,
-      checklist
-    });
+    res.json({ success: true, checklist });
   } catch (error) {
     console.error('[SAFETY] ❌ Checklist error:', error);
-    res.status(500).json({
-      success: false,
-      error: error.message
-    });
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 
 // COMPLETE SAFETY CHECKLIST
-app.post('/api/safety/checklist/complete', (req, res) => {
+app.post('/api/safety/checklist/complete', rateLimitMiddleware, (req, res) => {
   try {
     const { checklistId, signature, results } = req.body;
 
-    const checklist = safetyChecklists.find(c => c.id === checklistId);
+    const checklist = storage.read(SAFETY_MODULE, SAFETY_USER, 'checklist', checklistId);
     if (!checklist) {
-      return res.status(404).json({
-        success: false,
-        error: 'Checklist not found'
-      });
+      return res.status(404).json({ success: false, error: 'Checklist not found' });
     }
 
     checklist.status = 'completed';
     checklist.completedAt = Date.now();
     checklist.signature = signature;
     checklist.results = results;
+    storage.write(SAFETY_MODULE, SAFETY_USER, 'checklist', checklistId, checklist);
 
     console.log('[SAFETY] ✅ Checklist completed:', checklistId);
-    res.json({
-      success: true,
-      checklist
-    });
+    res.json({ success: true, checklist });
   } catch (error) {
     console.error('[SAFETY] ❌ Complete checklist error:', error);
-    res.status(500).json({
-      success: false,
-      error: error.message
-    });
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 
 // REGISTER RISK
-app.post('/api/safety/risk', (req, res) => {
+app.post('/api/safety/risk', rateLimitMiddleware, (req, res) => {
   try {
     const risk = {
       id: `risk-${Date.now()}`,
@@ -1805,47 +1701,36 @@ app.post('/api/safety/risk', (req, res) => {
       createdAt: Date.now()
     };
 
-    risks.push(risk);
+    storage.write(SAFETY_MODULE, SAFETY_USER, 'risk', risk.id, risk);
 
     console.log('[SAFETY] ✅ Risk registered:', risk.id, `(score: ${risk.riskScore})`);
-    res.json({
-      success: true,
-      risk
-    });
+    res.json({ success: true, risk });
   } catch (error) {
     console.error('[SAFETY] ❌ Risk error:', error);
-    res.status(500).json({
-      success: false,
-      error: error.message
-    });
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 
 // GET RISK MATRIX
-app.get('/api/safety/risks/matrix', (req, res) => {
+app.get('/api/safety/risks/matrix', rateLimitMiddleware, (req, res) => {
   try {
+    const allRisks = storage.list(SAFETY_MODULE, SAFETY_USER, 'risk');
     const matrix = {
-      critical: risks.filter(r => r.status === 'active' && r.riskScore > 20),
-      high: risks.filter(r => r.status === 'active' && r.riskScore >= 16 && r.riskScore <= 20),
-      medium: risks.filter(r => r.status === 'active' && r.riskScore >= 11 && r.riskScore < 16),
-      low: risks.filter(r => r.status === 'active' && r.riskScore <= 10)
+      critical: allRisks.filter(r => r.status === 'active' && r.riskScore > 20),
+      high: allRisks.filter(r => r.status === 'active' && r.riskScore >= 16 && r.riskScore <= 20),
+      medium: allRisks.filter(r => r.status === 'active' && r.riskScore >= 11 && r.riskScore < 16),
+      low: allRisks.filter(r => r.status === 'active' && r.riskScore <= 10)
     };
 
-    res.json({
-      success: true,
-      matrix
-    });
+    res.json({ success: true, matrix });
   } catch (error) {
     console.error('[SAFETY] ❌ Risk matrix error:', error);
-    res.status(500).json({
-      success: false,
-      error: error.message
-    });
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 
 // RECORD INDUCTION
-app.post('/api/safety/induction', (req, res) => {
+app.post('/api/safety/induction', rateLimitMiddleware, (req, res) => {
   try {
     const induction = {
       id: `ind-${Date.now()}`,
@@ -1854,56 +1739,51 @@ app.post('/api/safety/induction', (req, res) => {
       createdAt: Date.now()
     };
 
-    inductions.push(induction);
+    storage.write(SAFETY_MODULE, SAFETY_USER, 'induction', induction.id, induction);
 
     console.log('[SAFETY] ✅ Induction recorded:', induction.personName);
-    res.json({
-      success: true,
-      induction
-    });
+    res.json({ success: true, induction });
   } catch (error) {
     console.error('[SAFETY] ❌ Induction error:', error);
-    res.status(500).json({
-      success: false,
-      error: error.message
-    });
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 
 // GET COMPLIANCE STATUS
-app.get('/api/safety/compliance/:siteId?', (req, res) => {
+app.get('/api/safety/compliance/:siteId?', rateLimitMiddleware, (req, res) => {
   try {
     const { siteId } = req.params;
 
-    let filteredIncidents = incidents;
-    let filteredChecklists = safetyChecklists;
-    let filteredRisks = risks;
+    let allIncidents = storage.list(SAFETY_MODULE, SAFETY_USER, 'incident');
+    let allChecklists = storage.list(SAFETY_MODULE, SAFETY_USER, 'checklist');
+    let allRisks = storage.list(SAFETY_MODULE, SAFETY_USER, 'risk');
+    let allInductions = storage.list(SAFETY_MODULE, SAFETY_USER, 'induction');
 
     if (siteId) {
-      filteredIncidents = incidents.filter(i => i.siteId === siteId);
-      filteredChecklists = safetyChecklists.filter(c => c.siteId === siteId);
-      filteredRisks = risks.filter(r => r.siteId === siteId);
+      allIncidents = allIncidents.filter(i => i.siteId === siteId);
+      allChecklists = allChecklists.filter(c => c.siteId === siteId);
+      allRisks = allRisks.filter(r => r.siteId === siteId);
     }
 
     const status = {
       incidents: {
-        total: filteredIncidents.length,
-        open: filteredIncidents.filter(i => i.status === 'open').length,
-        critical: filteredIncidents.filter(i => i.severity === 'critical').length
+        total: allIncidents.length,
+        open: allIncidents.filter(i => i.status === 'open').length,
+        critical: allIncidents.filter(i => i.severity === 'critical').length
       },
       checklists: {
-        total: filteredChecklists.length,
-        completed: filteredChecklists.filter(c => c.status === 'completed').length,
-        pending: filteredChecklists.filter(c => c.status === 'pending').length
+        total: allChecklists.length,
+        completed: allChecklists.filter(c => c.status === 'completed').length,
+        pending: allChecklists.filter(c => c.status === 'pending').length
       },
       risks: {
-        total: filteredRisks.length,
-        critical: filteredRisks.filter(r => r.riskScore > 20).length,
-        high: filteredRisks.filter(r => r.riskScore >= 16 && r.riskScore <= 20).length
+        total: allRisks.length,
+        critical: allRisks.filter(r => r.riskScore > 20).length,
+        high: allRisks.filter(r => r.riskScore >= 16 && r.riskScore <= 20).length
       },
       inductions: {
-        total: inductions.length,
-        valid: inductions.filter(i => i.status === 'valid').length
+        total: allInductions.length,
+        valid: allInductions.filter(i => i.status === 'valid').length
       }
     };
 
@@ -1920,16 +1800,10 @@ app.get('/api/safety/compliance/:siteId?', (req, res) => {
         status.overallScore >= 75 ? 'good' :
           status.overallScore >= 60 ? 'acceptable' : 'critical';
 
-    res.json({
-      success: true,
-      status
-    });
+    res.json({ success: true, status });
   } catch (error) {
     console.error('[SAFETY] ❌ Compliance status error:', error);
-    res.status(500).json({
-      success: false,
-      error: error.message
-    });
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 
@@ -2069,9 +1943,7 @@ app.get('/api/news', rateLimitMiddleware, async (req, res) => {
 // ============================================
 
 // Base media directory (env, or local default; on Render use MEDIA_BASE_DIR or data/media)
-const defaultMediaDir = process.platform === 'win32'
-  ? 'C:\\Users\\anyth\\OneDrive\\Pictures'
-  : path.join(__dirname, 'data', 'media');
+const defaultMediaDir = path.join(__dirname, 'data', 'media');
 const MEDIA_BASE_DIR = (process.env.MEDIA_BASE_DIR || defaultMediaDir)
   .replace(/\\/g, path.sep)
   .replace(/\//g, path.sep);
@@ -2278,6 +2150,12 @@ const server = app.listen(PORT, () => {
 ║                                                           ║
 ╚═══════════════════════════════════════════════════════════╝
 `);
+
+  // JWT_SECRET warning
+  const jwtSecret = process.env.JWT_SECRET;
+  if (!jwtSecret || jwtSecret === 'gracex-homesafe-secret-change-in-production') {
+    console.log('⚠️  WARNING: JWT_SECRET is not set or using default! Set JWT_SECRET env var for production.');
+  }
 });
 
 // Graceful shutdown
