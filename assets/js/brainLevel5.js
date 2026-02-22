@@ -11,23 +11,23 @@
   const BRAIN_CONFIG = {
     // API endpoint - set this to your backend proxy
     apiEndpoint: window.GRACEX_BRAIN_API || '/api/brain',
-    
+
     // Fallback mode: 'keyword' (Level 1) or 'hybrid' (try API, fallback to keyword)
     fallbackMode: 'hybrid',
-    
+
     // Enable conversation memory
     enableMemory: true,
-    
+
     // Max conversation history to send
     maxHistory: 10,
-    
+
     // Request timeout (ms)
-    timeout: 30000,
-    
+    timeout: 120000,
+
     // Retry configuration
     maxRetries: 2,
     retryDelay: 1000,
-    
+
     // Module-specific system prompts
     systemPrompts: {
       builder: "You are GRACE-X Builder, a helpful assistant for construction, measurements, and building projects. Be practical, safety-focused, and concise. When discussing measurements, always clarify units.",
@@ -60,7 +60,7 @@
   // Get conversation history for a module
   function getConversationHistory(moduleId) {
     if (!BRAIN_CONFIG.enableMemory) return [];
-    
+
     const history = conversationMemory[moduleId] || [];
     // Return last N messages
     return history.slice(-BRAIN_CONFIG.maxHistory);
@@ -69,22 +69,22 @@
   // Add message to conversation history
   function addToHistory(moduleId, role, content) {
     if (!BRAIN_CONFIG.enableMemory) return;
-    
+
     if (!conversationMemory[moduleId]) {
       conversationMemory[moduleId] = [];
     }
-    
+
     conversationMemory[moduleId].push({
       role: role,
       content: content,
       timestamp: Date.now()
     });
-    
+
     // Keep history manageable
     if (conversationMemory[moduleId].length > BRAIN_CONFIG.maxHistory * 2) {
       conversationMemory[moduleId] = conversationMemory[moduleId].slice(-BRAIN_CONFIG.maxHistory);
     }
-    
+
     // Persist to localStorage
     try {
       localStorage.setItem(`gracex_history_${moduleId}`, JSON.stringify(conversationMemory[moduleId]));
@@ -129,7 +129,7 @@
   async function fetchWithTimeout(url, options, timeout) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
-    
+
     try {
       const response = await fetch(url, {
         ...options,
@@ -148,16 +148,16 @@
 
   // Call Level 5 brain API with retry logic
   async function callLevel5Brain(moduleId, userMessage, retryCount = 0) {
-    const systemPrompt = BRAIN_CONFIG.systemPrompts[moduleId] || 
+    const systemPrompt = BRAIN_CONFIG.systemPrompts[moduleId] ||
       `You are GRACE-X ${moduleId}, a helpful assistant. Be friendly, concise, and helpful.`;
-    
+
     // Load history if not already loaded
     if (!conversationMemory[moduleId]) {
       loadHistoryFromStorage(moduleId);
     }
-    
+
     const history = getConversationHistory(moduleId);
-    
+
     const messages = [
       { role: 'system', content: systemPrompt },
       ...history,
@@ -175,58 +175,58 @@
           module: moduleId,
           messages: messages,
           temperature: 0.7,
-          max_tokens: 500
+          max_tokens: 300
         })
       }, BRAIN_CONFIG.timeout);
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        
+
         // Handle rate limiting
         if (response.status === 429) {
           const retryAfter = errorData.retryAfter || 60;
           throw new Error(`Rate limited. Please wait ${retryAfter} seconds.`);
         }
-        
+
         throw new Error(errorData.error || `API error: ${response.status}`);
       }
 
       const data = await response.json();
-      
+
       if (data.error) {
         throw new Error(data.error);
       }
 
       const reply = data.reply || data.message || data.content || "I'm not sure how to respond to that.";
-      
+
       // Add to history
       addToHistory(moduleId, 'user', userMessage);
       addToHistory(moduleId, 'assistant', reply);
-      
+
       // Update connection status
       connectionStatus.lastSuccess = Date.now();
       connectionStatus.consecutiveFailures = 0;
       connectionStatus.isHealthy = true;
-      
+
       return reply;
     } catch (error) {
       console.warn('[GRACEX Level 5 Brain] API call failed:', error.message);
-      
+
       // Update connection status
       connectionStatus.lastError = Date.now();
       connectionStatus.consecutiveFailures++;
-      
+
       if (connectionStatus.consecutiveFailures >= 3) {
         connectionStatus.isHealthy = false;
       }
-      
+
       // Retry logic
       if (retryCount < BRAIN_CONFIG.maxRetries && !error.message.includes('Rate limited')) {
         console.info(`[GRACEX] Retrying (${retryCount + 1}/${BRAIN_CONFIG.maxRetries})...`);
         await new Promise(resolve => setTimeout(resolve, BRAIN_CONFIG.retryDelay));
         return callLevel5Brain(moduleId, userMessage, retryCount + 1);
       }
-      
+
       throw error;
     }
   }
@@ -261,9 +261,9 @@
     }
 
     // Check if API is configured
-    const apiConfigured = BRAIN_CONFIG.apiEndpoint && 
-                          BRAIN_CONFIG.apiEndpoint !== '/api/brain' &&
-                          BRAIN_CONFIG.apiEndpoint !== '';
+    const apiConfigured = BRAIN_CONFIG.apiEndpoint &&
+      BRAIN_CONFIG.apiEndpoint !== '/api/brain' &&
+      BRAIN_CONFIG.apiEndpoint !== '';
 
     // Try Level 5 API first if configured and healthy
     if (apiConfigured && (connectionStatus.isHealthy || connectionStatus.consecutiveFailures < 5)) {
@@ -305,19 +305,19 @@
   // Auto-upgrade runModuleBrain if Level 5 is available
   function setupBrainWrapper() {
     const originalRunModuleBrain = window.runModuleBrain;
-    
+
     if (originalRunModuleBrain && typeof originalRunModuleBrain === 'function' && !originalBrainStored) {
       // Store original for fallback
       window.runModuleBrainOriginal = originalRunModuleBrain;
       originalBrainStored = true;
-      
+
       // Wrap original to add Level 5 capability
-      const wrappedBrain = async function(moduleId, text) {
+      const wrappedBrain = async function (moduleId, text) {
         // Check if Level 5 is enabled (API endpoint configured)
-        const apiConfigured = BRAIN_CONFIG.apiEndpoint && 
-                              BRAIN_CONFIG.apiEndpoint !== '/api/brain' &&
-                              BRAIN_CONFIG.apiEndpoint !== '';
-        
+        const apiConfigured = BRAIN_CONFIG.apiEndpoint &&
+          BRAIN_CONFIG.apiEndpoint !== '/api/brain' &&
+          BRAIN_CONFIG.apiEndpoint !== '';
+
         if (apiConfigured) {
           try {
             return await runLevel5Brain(moduleId, text);
@@ -331,7 +331,7 @@
         const result = window.runModuleBrainOriginal(moduleId, text);
         return result instanceof Promise ? result : Promise.resolve(result);
       };
-      
+
       window.runModuleBrain = wrappedBrain;
       console.info('[GRACEX] Level 5 brain wrapper installed');
     } else if (!originalRunModuleBrain) {
@@ -342,7 +342,7 @@
 
   // Setup wrapper after short delay to ensure core.js loads first
   setTimeout(setupBrainWrapper, 100);
-  
+
   // Also setup on DOMContentLoaded in case setTimeout isn't enough
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
@@ -351,9 +351,9 @@
   }
 
   // Log configuration status
-  const apiConfigured = BRAIN_CONFIG.apiEndpoint && 
-                        BRAIN_CONFIG.apiEndpoint !== '/api/brain';
-  
+  const apiConfigured = BRAIN_CONFIG.apiEndpoint &&
+    BRAIN_CONFIG.apiEndpoint !== '/api/brain';
+
   console.info(
     `[GRACEX] Level 5 Brains v2.0 loaded\n` +
     `  API: ${apiConfigured ? BRAIN_CONFIG.apiEndpoint : 'Not configured (Level 1 fallback)'}\n` +
