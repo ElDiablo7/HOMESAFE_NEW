@@ -367,4 +367,128 @@ router.post('/export/excel', (req, res) => {
   }
 });
 
+// =====================================================
+// SITE DIARY
+// =====================================================
+
+// POST /api/siteops/diary - Save daily diary entry
+router.post('/diary', (req, res) => {
+  try {
+    const body = req.body || {};
+    const projectId = body.projectId;
+    if (!projectId) return res.status(400).json({ success: false, error: 'projectId required' });
+
+    const date = body.date || new Date().toISOString().slice(0, 10);
+    const entry = {
+      id: `diary-${projectId}-${date}`,
+      projectId,
+      date,
+      weather: body.weather || '',
+      temperature: body.temperature || '',
+      workforceCount: body.workforceCount || 0,
+      tradesOnSite: body.tradesOnSite || [],
+      activitiesCompleted: body.activitiesCompleted || '',
+      delays: body.delays || '',
+      visitors: body.visitors || '',
+      healthSafety: body.healthSafety || '',
+      notes: body.notes || '',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    storage.write(MODULE, req.userId, 'diary', entry.id, entry);
+    res.json({ success: true, entry });
+  } catch (e) {
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
+// GET /api/siteops/diary/:projectId - List diary entries for a project
+router.get('/diary/:projectId', (req, res) => {
+  try {
+    const all = storage.list(MODULE, req.userId, 'diary');
+    const entries = all
+      .filter(d => d.projectId === req.params.projectId)
+      .sort((a, b) => b.date.localeCompare(a.date));
+    res.json({ success: true, entries });
+  } catch (e) {
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
+// GET /api/siteops/diary/:projectId/:date - Get specific day's diary
+router.get('/diary/:projectId/:date', (req, res) => {
+  try {
+    const id = `diary-${req.params.projectId}-${req.params.date}`;
+    const entry = storage.read(MODULE, req.userId, 'diary', id);
+    if (!entry) return res.status(404).json({ success: false, error: 'No diary entry for this date' });
+    res.json({ success: true, entry });
+  } catch (e) {
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
+// =====================================================
+// SNAGGING LIST
+// =====================================================
+
+// POST /api/siteops/snags - Create snag item
+router.post('/snags', (req, res) => {
+  try {
+    const body = req.body || {};
+    const projectId = body.projectId;
+    if (!projectId) return res.status(400).json({ success: false, error: 'projectId required' });
+
+    const snag = {
+      id: `snag-${generateId()}`,
+      projectId,
+      location: body.location || '',
+      description: body.description || '',
+      severity: body.severity || 'minor',
+      responsibleTrade: body.responsibleTrade || '',
+      photoId: body.photoId || null,
+      status: 'open',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    storage.write(MODULE, req.userId, 'snag', snag.id, snag);
+    res.json({ success: true, snag });
+  } catch (e) {
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
+// GET /api/siteops/snags/:projectId - List snags for a project
+router.get('/snags/:projectId', (req, res) => {
+  try {
+    const all = storage.list(MODULE, req.userId, 'snag');
+    const snags = all
+      .filter(s => s.projectId === req.params.projectId)
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    res.json({ success: true, snags });
+  } catch (e) {
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
+// PUT /api/siteops/snags/:id - Update snag status
+router.put('/snags/:id', (req, res) => {
+  try {
+    const existing = storage.read(MODULE, req.userId, 'snag', req.params.id);
+    if (!existing) return res.status(404).json({ success: false, error: 'Snag not found' });
+
+    const updated = {
+      ...existing,
+      ...req.body,
+      id: req.params.id,
+      updatedAt: new Date().toISOString()
+    };
+    storage.write(MODULE, req.userId, 'snag', req.params.id, updated);
+    res.json({ success: true, snag: updated });
+  } catch (e) {
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
 module.exports = router;

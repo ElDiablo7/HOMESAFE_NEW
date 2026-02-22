@@ -1,67 +1,64 @@
 <section class="module-section siteops-container" id="siteops-root">
   <!-- Module Header -->
   <div class="module-header" id="siteops-header">
-        <div class="module-logo-slot">
-          <span class="module-logo-text">SO</span>
-        </div>
-        <div class="module-header-text">
-          <h1 class="module-title">GRACE-X SiteOps™</h1>
-          <p class="module-subtitle">
+    <div class="module-logo-slot">
+      <span class="module-logo-text">SO</span>
+    </div>
+    <div class="module-header-text">
+      <h1 class="module-title">GRACE-X SiteOps™</h1>
+      <p class="module-subtitle">
         Construction project control — multi-trade coordination, programme management & compliance
-          </p>
-        </div>
+      </p>
+    </div>
     <div class="siteops-header-status">
       <span class="siteops-status-badge" id="siteops-status-badge">Planning</span>
       <span class="siteops-health-indicator" id="siteops-health">🟢 Healthy</span>
-              </div>
-          </div>
+    </div>
+  </div>
 
   <!-- SiteOps AI Assistant -->
-      <div class="builder-card" id="siteops-brain-card">
+  <div class="builder-card" id="siteops-brain-card">
     <h2>🧠 GRACE-X SiteOps Assistant</h2>
-        <p class="hint">
+    <p class="hint">
       Ask about programme sequencing, trade coordination, compliance gates, or site logistics.
-        </p>
+    </p>
 
-        <div class="module-brain" id="siteops-brain-panel">
+    <div class="module-brain" id="siteops-brain-panel">
       <div id="siteops-brain-output" class="brain-output">
         <div class="brain-message brain-message-system">
           I'm GRACE-X SiteOps. I coordinate multi-trade projects and keep your programme on track. What's the project?
         </div>
       </div>
 
-          <div class="brain-input-row">
+      <div class="brain-input-row">
         <button type="button" class="brain-mic-btn" id="siteops-brain-mic" title="Voice input">
           🎙️
         </button>
-            <input
-              id="siteops-brain-input"
-              type="text"
-          placeholder="e.g. 'What's blocking the programme?' or 'Sequence plaster after M&E'"
-            />
-            <button id="siteops-brain-send">Ask</button>
-          </div>
+        <input id="siteops-brain-input" type="text"
+          placeholder="e.g. 'What's blocking the programme?' or 'Sequence plaster after M&E'" />
+        <button id="siteops-brain-send">Ask</button>
+      </div>
 
       <div class="brain-actions">
         <button class="builder-btn" id="siteops-brain-clear">Clear conversation</button>
       </div>
-          </div>
-        </div>
+    </div>
+  </div>
 
   <!-- DASHBOARD (Tab 1) -->
   <div class="builder-card" id="siteops-panel-dashboard">
     <h2>📊 Project Dashboard</h2>
-    
+
     <div class="summary-grid" style="margin-bottom: 16px;">
-            <label>
+      <label>
         Project Name
         <input type="text" id="siteops-project-name" placeholder="e.g. 14 Oak Lane Extension">
-            </label>
-            <label>
+      </label>
+      <label>
         Site Address
         <input type="text" id="siteops-project-address" placeholder="Site address">
-            </label>
-            <label>
+      </label>
+      <label>
         Status
         <select id="siteops-project-status">
           <option value="planning">Planning</option>
@@ -69,8 +66,8 @@
           <option value="hold">On Hold</option>
           <option value="completed">Completed</option>
         </select>
-            </label>
-            <label>
+      </label>
+      <label>
         Start Date
         <input type="date" id="siteops-project-start">
       </label>
@@ -131,8 +128,8 @@
       <label class="siteops-constraint">
         <input type="checkbox" id="siteops-constraint-parking">
         <span>Parking restrictions</span>
-            </label>
-          </div>
+      </label>
+    </div>
 
     <div class="summary-grid" style="margin-top: 12px;">
       <label>
@@ -288,7 +285,7 @@
     <pre id="siteops-rams-output" class="builder-output" style="max-height: 400px; overflow-y: auto;">
 Click "Generate Project RAMS" to create combined risk assessment across all phases.
           </pre>
-        </div>
+  </div>
 
   <!-- ISSUES / SNAGS / RISKS -->
   <div class="builder-card" id="siteops-panel-issues">
@@ -347,56 +344,139 @@ Click "Generate Project RAMS" to create combined risk assessment across all phas
     </table>
   </div>
 
-  <!-- DAILY OPS -->
-  <div class="builder-card" id="siteops-panel-dailyops">
-    <h2>📅 Daily Ops Log</h2>
-    <p class="hint">Record daily site activity, deliveries, delays, and incidents.</p>
+  <!-- SITE DIARY (Enhanced) -->
+  <div class="builder-card" id="siteops-panel-diary">
+    <h2>📓 Site Diary</h2>
+    <p class="hint">Structured daily record — weather, workforce, activities, delays, H&S. Saved to server.</p>
 
     <div class="summary-grid">
       <label>
         Date
-        <input type="date" id="siteops-daily-date">
-      </label>
-      <label>
-        Who on site
-        <input type="text" id="siteops-daily-who" placeholder="e.g. Plasterer, Sparks, Plumber">
-      </label>
-    </div>
-
-    <div class="summary-grid" style="margin-top: 8px;">
-      <label>
-        What happened
-        <textarea id="siteops-daily-what" rows="2" placeholder="Progress made today..."></textarea>
-      </label>
-      <label>
-        Deliveries
-        <input type="text" id="siteops-daily-deliveries" placeholder="Materials received">
-      </label>
-    </div>
-
-    <div class="summary-grid" style="margin-top: 8px;">
-      <label>
-        Delays/Issues
-        <input type="text" id="siteops-daily-delays" placeholder="Any delays?">
+        <input type="date" id="siteops-diary-date">
       </label>
       <label>
         Weather
-        <select id="siteops-daily-weather">
-          <option value="good">Good - no impact</option>
-          <option value="rain">Rain - external delayed</option>
-          <option value="cold">Cold - curing affected</option>
-          <option value="wind">Wind - height work paused</option>
+        <select id="siteops-diary-weather">
+          <option value="clear">☀️ Clear</option>
+          <option value="cloud">☁️ Overcast</option>
+          <option value="rain">🌧️ Rain</option>
+          <option value="wind">💨 Wind</option>
+          <option value="frost">🧊 Frost</option>
+          <option value="snow">❄️ Snow</option>
         </select>
+      </label>
+      <label>
+        Temperature (°C)
+        <input type="number" id="siteops-diary-temp" placeholder="e.g. 12">
+      </label>
+      <label>
+        Workforce on site
+        <input type="number" id="siteops-diary-workforce" placeholder="0" min="0">
+      </label>
+    </div>
+
+    <div style="margin-top: 12px;">
+      <p class="hint" style="margin-bottom: 6px;">Trades on site today:</p>
+      <div class="siteops-constraints-grid" id="siteops-diary-trades">
+        <label class="siteops-constraint"><input type="checkbox" value="Plasterer"><span>Plasterer</span></label>
+        <label class="siteops-constraint"><input type="checkbox" value="Electrician"><span>Electrician</span></label>
+        <label class="siteops-constraint"><input type="checkbox" value="Plumber"><span>Plumber</span></label>
+        <label class="siteops-constraint"><input type="checkbox" value="Carpenter"><span>Carpenter</span></label>
+        <label class="siteops-constraint"><input type="checkbox" value="Tiler"><span>Tiler</span></label>
+        <label class="siteops-constraint"><input type="checkbox" value="Painter"><span>Painter</span></label>
+        <label class="siteops-constraint"><input type="checkbox" value="Labourer"><span>Labourer</span></label>
+        <label class="siteops-constraint"><input type="checkbox" value="Roofer"><span>Roofer</span></label>
+      </div>
+    </div>
+
+    <div class="summary-grid" style="margin-top: 12px;">
+      <label>
+        Activities completed
+        <textarea id="siteops-diary-activities" rows="2" placeholder="Progress made today..."></textarea>
+      </label>
+      <label>
+        Delays / disruptions
+        <textarea id="siteops-diary-delays" rows="2" placeholder="Any delays? Cause?"></textarea>
+      </label>
+    </div>
+
+    <div class="summary-grid" style="margin-top: 8px;">
+      <label>
+        Visitors
+        <input type="text" id="siteops-diary-visitors" placeholder="e.g. Building Control, Client">
+      </label>
+      <label>
+        H&S observations
+        <input type="text" id="siteops-diary-hs" placeholder="Near misses, PPE, housekeeping...">
+      </label>
+      <label style="grid-column: 1 / -1;">
+        Notes
+        <textarea id="siteops-diary-notes" rows="2" placeholder="Anything else to record..."></textarea>
       </label>
     </div>
 
     <div class="builder-controls" style="margin-top: 12px;">
-      <button class="builder-btn" id="siteops-daily-save">💾 Save Daily Log</button>
-      <button class="builder-btn" id="siteops-daily-view">📋 View History</button>
-      <button class="builder-btn" id="siteops-daily-tomorrow">📅 Plan Tomorrow</button>
+      <button class="builder-btn" id="siteops-diary-save">💾 Save Diary Entry</button>
+      <button class="builder-btn" id="siteops-diary-history">📋 View History</button>
     </div>
 
-    <pre id="siteops-daily-output" class="builder-output" style="display: none; max-height: 300px; overflow-y: auto;"></pre>
+    <pre id="siteops-diary-output" class="builder-output"
+      style="display: none; max-height: 300px; overflow-y: auto;"></pre>
+  </div>
+
+  <!-- SNAGGING LIST -->
+  <div class="builder-card" id="siteops-panel-snagging">
+    <h2>🔍 Snagging List</h2>
+    <p class="hint">Track defects and quality issues. Assign to trades and track to resolution.</p>
+
+    <div class="builder-controls">
+      <button class="builder-btn" id="siteops-btn-snag-add">➕ Add Snag</button>
+      <button class="builder-btn" id="siteops-btn-snag-filter">🔍 Filter Open</button>
+    </div>
+
+    <div class="summary-grid" id="siteops-snag-form" style="display: none; margin-top: 12px;">
+      <label>
+        Location
+        <input type="text" id="siteops-snag-location" placeholder="e.g. Kitchen, Bathroom 1">
+      </label>
+      <label>
+        Description
+        <input type="text" id="siteops-snag-desc" placeholder="What's the defect?">
+      </label>
+      <label>
+        Severity
+        <select id="siteops-snag-severity">
+          <option value="minor">Minor</option>
+          <option value="moderate">Moderate</option>
+          <option value="major">Major</option>
+        </select>
+      </label>
+      <label>
+        Responsible Trade
+        <input type="text" id="siteops-snag-trade" placeholder="e.g. Plasterer">
+      </label>
+      <button class="builder-btn" id="siteops-snag-save" style="align-self: end;">Save Snag</button>
+    </div>
+
+    <table class="siteops-table" id="siteops-snags-table" style="margin-top: 12px;">
+      <thead>
+        <tr>
+          <th>Location</th>
+          <th>Description</th>
+          <th>Severity</th>
+          <th>Trade</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="siteops-snags-body">
+        <!-- Snags will be added here -->
+      </tbody>
+    </table>
+
+    <div id="siteops-snags-empty" class="hint" style="text-align: center; padding: 20px;">
+      No snags recorded. Add snags as you find defects during inspection.
+    </div>
   </div>
 
   <!-- CHANGE CONTROL -->
@@ -409,7 +489,8 @@ Click "Generate Project RAMS" to create combined risk assessment across all phas
       <button class="builder-btn" id="siteops-btn-change-impact">📊 Impact Analysis</button>
     </div>
 
-    <div id="siteops-change-form" style="display: none; margin-top: 12px; padding: 16px; background: rgba(255,255,255,0.05); border-radius: 8px;">
+    <div id="siteops-change-form"
+      style="display: none; margin-top: 12px; padding: 16px; background: rgba(255,255,255,0.05); border-radius: 8px;">
       <h4 style="margin-top: 0;">📝 Change Request</h4>
       <div class="summary-grid">
         <label>
@@ -482,21 +563,22 @@ Click "Generate Project RAMS" to create combined risk assessment across all phas
       <button class="builder-btn" id="siteops-btn-export-programme">📋 Export Programme</button>
       <button class="builder-btn" id="siteops-btn-export-rams">📝 Export RAMS</button>
       <button class="builder-btn" id="siteops-btn-export-all">📦 Export All</button>
-          </div>
+    </div>
 
-    <pre id="siteops-report-output" class="builder-output" style="display: none; max-height: 400px; overflow-y: auto;"></pre>
-        </div>
+    <pre id="siteops-report-output" class="builder-output"
+      style="display: none; max-height: 400px; overflow-y: auto;"></pre>
+  </div>
 
   <!-- Voice Panel -->
   <div class="builder-card">
     <h2>🎙️ Voice Dictation</h2>
     <p class="hint">Use this for continuous voice input and transcript viewing.</p>
-    
+
     <div class="module-voice-panel" data-module="siteops" style="background: transparent; padding: 0; margin: 0;">
       <button type="button" class="module-voice-btn">🎙 Talk to GRACE-X SiteOps</button>
       <span class="module-voice-status">Mic off</span>
       <textarea class="module-voice-text" placeholder="Voice transcript appears here…" rows="3"></textarea>
       <div class="module-voice-reply"></div>
     </div>
-        </div>
-      </section>
+  </div>
+</section>

@@ -28,11 +28,8 @@
         <button type="button" class="brain-mic-btn" id="builder-brain-mic" title="Voice input">
           🎙️
         </button>
-        <input
-          id="builder-brain-input"
-          type="text"
-          placeholder="e.g. 'Plaster a 4x3m bedroom' or 'Quote for kitchen refit'"
-        />
+        <input id="builder-brain-input" type="text"
+          placeholder="e.g. 'Plaster a 4x3m bedroom' or 'Quote for kitchen refit'" />
         <button id="builder-brain-send">Ask</button>
       </div>
 
@@ -153,7 +150,163 @@
     </div>
   </div>
 
-  <!-- AR / ROOM PLANNER -->
+  <!-- SITE PHOTOS -->
+  <div class="builder-card" id="site-photos-card">
+    <h2>📸 Site Photos</h2>
+    <p class="hint">Capture timestamped, GPS-tagged photos for evidence, compliance, and handover.</p>
+
+    <div class="summary-grid">
+      <label>
+        Room / Area
+        <input type="text" id="photo-room" placeholder="e.g. Kitchen, Bathroom 1">
+      </label>
+      <label>
+        Trade
+        <input type="text" id="photo-trade" placeholder="e.g. Plasterer">
+      </label>
+      <label>
+        Stage
+        <select id="photo-stage">
+          <option value="before">Before</option>
+          <option value="during" selected>During</option>
+          <option value="after">After</option>
+          <option value="snag">Snag / Defect</option>
+        </select>
+      </label>
+      <label>
+        Caption
+        <input type="text" id="photo-caption" placeholder="Brief description">
+      </label>
+    </div>
+
+    <div class="builder-controls" style="margin-top: 12px;">
+      <button class="builder-btn" id="photo-capture">📷 Take Photo</button>
+      <button class="builder-btn" id="photo-upload">📁 Upload</button>
+      <input type="file" id="photo-file" accept="image/*" capture="environment" style="display:none">
+    </div>
+
+    <div id="photo-gallery" class="capture-frames-grid" style="margin-top: 12px;">
+      <!-- Photos will appear here -->
+    </div>
+    <div id="photo-empty" class="hint" style="text-align: center; padding: 20px;">
+      No site photos yet. Capture or upload photos to build your evidence trail.
+    </div>
+  </div>
+
+  <!-- MATERIALS TRACKER -->
+  <div class="builder-card" id="materials-tracker-card">
+    <h2>🧱 Materials Tracker</h2>
+    <p class="hint">Log deliveries, track consumption, and monitor stock levels.</p>
+
+    <div class="builder-controls">
+      <button class="builder-btn" id="mat-btn-delivery">📦 Log Delivery</button>
+      <button class="builder-btn" id="mat-btn-consume">📉 Log Consumption</button>
+      <button class="builder-btn" id="mat-btn-stock">📊 Stock Levels</button>
+    </div>
+
+    <div class="summary-grid" id="mat-form" style="display: none; margin-top: 12px;">
+      <label>
+        Material
+        <input type="text" id="mat-name" placeholder="e.g. Plasterboard, Cement, Screws">
+      </label>
+      <label>
+        Quantity
+        <input type="number" id="mat-qty" placeholder="0" min="0" step="0.5">
+      </label>
+      <label>
+        Unit
+        <select id="mat-unit">
+          <option value="units">Units</option>
+          <option value="bags">Bags</option>
+          <option value="sheets">Sheets</option>
+          <option value="metres">Metres</option>
+          <option value="litres">Litres</option>
+          <option value="kg">Kg</option>
+          <option value="boxes">Boxes</option>
+        </select>
+      </label>
+      <label>
+        Supplier / Notes
+        <input type="text" id="mat-supplier" placeholder="e.g. Travis Perkins, Jewson">
+      </label>
+      <label>
+        Cost (£)
+        <input type="number" id="mat-cost" placeholder="0.00" step="0.01">
+      </label>
+      <button class="builder-btn" id="mat-save" style="align-self: end;">Save</button>
+    </div>
+
+    <div id="mat-stock-display" style="display: none; margin-top: 12px;">
+      <h4>📊 Current Stock Levels</h4>
+      <table class="siteops-table" id="mat-stock-table">
+        <thead>
+          <tr>
+            <th>Material</th>
+            <th>Delivered</th>
+            <th>Used</th>
+            <th>Remaining</th>
+            <th>Unit</th>
+          </tr>
+        </thead>
+        <tbody id="mat-stock-body">
+          <!-- Stock rows appear here -->
+        </tbody>
+      </table>
+    </div>
+
+    <pre id="mat-output" class="builder-output" style="display: none; max-height: 200px; overflow-y: auto;"></pre>
+  </div>
+
+  <!-- TOOL REGISTER -->
+  <div class="builder-card" id="tool-register-card">
+    <h2>🔧 Tool Register</h2>
+    <p class="hint">Track tools on site — check in/out with person and condition.</p>
+
+    <div class="builder-controls">
+      <button class="builder-btn" id="tool-btn-checkin">✅ Check In</button>
+      <button class="builder-btn" id="tool-btn-checkout">📤 Check Out</button>
+    </div>
+
+    <div class="summary-grid" id="tool-form" style="display: none; margin-top: 12px;">
+      <label>
+        Tool Name
+        <input type="text" id="tool-name" placeholder="e.g. SDS Drill, Angle Grinder">
+      </label>
+      <label>
+        Person
+        <input type="text" id="tool-person" placeholder="Who has the tool?">
+      </label>
+      <label>
+        Condition
+        <select id="tool-condition">
+          <option value="good">Good</option>
+          <option value="fair">Fair</option>
+          <option value="damaged">Damaged</option>
+          <option value="needs-repair">Needs Repair</option>
+        </select>
+      </label>
+      <button class="builder-btn" id="tool-save" style="align-self: end;">Save</button>
+    </div>
+
+    <table class="siteops-table" id="tool-status-table" style="margin-top: 12px;">
+      <thead>
+        <tr>
+          <th>Tool</th>
+          <th>Status</th>
+          <th>Person</th>
+          <th>Condition</th>
+          <th>Last Updated</th>
+        </tr>
+      </thead>
+      <tbody id="tool-status-body">
+        <!-- Tool rows appear here -->
+      </tbody>
+    </table>
+    <div id="tool-empty" class="hint" style="text-align: center; padding: 20px;">
+      No tools registered. Check in tools to start tracking.
+    </div>
+  </div>
+
   <div class="builder-card" id="ar-card">
     <h2>🛰️ AR Room Planner</h2>
 
@@ -658,7 +811,8 @@ Select work activities and click Generate to create your method statement and ri
     <p class="hint">Your personal knowledge base of fixes. Search previous solutions or add new ones.</p>
 
     <div class="builder-controls">
-      <input type="text" id="ps-search" placeholder="Search problems... e.g. 'damp', 'blown plaster', 'RCD trips'" style="flex: 2;">
+      <input type="text" id="ps-search" placeholder="Search problems... e.g. 'damp', 'blown plaster', 'RCD trips'"
+        style="flex: 2;">
       <button class="builder-btn" id="ps-search-btn">🔎 Search</button>
       <button class="builder-btn" id="ps-add-btn">➕ Add New</button>
     </div>
@@ -668,7 +822,8 @@ Select work activities and click Generate to create your method statement and ri
       <p class="hint">Enter a search term or add a new Problem → Solved entry.</p>
     </div>
 
-    <div id="ps-add-form" style="display: none; margin-top: 16px; padding: 16px; background: rgba(255,255,255,0.05); border-radius: 8px;">
+    <div id="ps-add-form"
+      style="display: none; margin-top: 16px; padding: 16px; background: rgba(255,255,255,0.05); border-radius: 8px;">
       <h4 style="margin-top: 0;">➕ Add Problem → Solved Entry</h4>
       <div class="summary-grid">
         <label>
@@ -789,7 +944,7 @@ Select work activities and click Generate to create your method statement and ri
   <div class="builder-card">
     <h2>🎙️ Voice Dictation</h2>
     <p class="hint">Use this for continuous voice input and transcript viewing.</p>
-    
+
     <div class="module-voice-panel" data-module="builder" style="background: transparent; padding: 0; margin: 0;">
       <button type="button" class="module-voice-btn">🎙 Talk to GRACE-X Builder</button>
       <span class="module-voice-status">Mic off</span>

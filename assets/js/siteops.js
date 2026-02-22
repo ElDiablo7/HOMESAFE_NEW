@@ -4,13 +4,13 @@
 // Multi-trade coordination, programme control, compliance
 // =====================================================
 
-(function() {
+(function () {
   'use strict';
 
   // =====================================================
   // STATE MANAGEMENT
   // =====================================================
-  
+
   const STORAGE_KEY = 'gracex_siteops_project';
   const SITEOPS_API_BASE = window.GRACEX_API_BASE || 'http://localhost:3000';
 
@@ -39,7 +39,7 @@
   // =====================================================
   // STANDARD CONSTRUCTION DEPENDENCIES
   // =====================================================
-  
+
   const STANDARD_DEPENDENCIES = [
     { from: 'demolition', to: 'structural', reason: 'Structural cannot start until demolition complete' },
     { from: 'structural', to: 'first-fix', reason: 'First fix requires structural sign-off' },
@@ -74,7 +74,7 @@
   // =====================================================
   // PERSISTENCE (localStorage + optional API sync)
   // =====================================================
-  
+
   function saveState() {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
@@ -108,7 +108,7 @@
         .then(data => {
           if (data.success && data.id) state.id = data.id;
         })
-        .catch(() => {});
+        .catch(() => { });
     }
   }
 
@@ -149,7 +149,7 @@
             updateDashboard();
           }
         })
-        .catch(() => {});
+        .catch(() => { });
     }
   }
 
@@ -172,14 +172,14 @@
   // =====================================================
   // DASHBOARD
   // =====================================================
-  
+
   function updateDashboard() {
     // Update project info
     const nameEl = document.getElementById('siteops-project-name');
     const addressEl = document.getElementById('siteops-project-address');
     const statusEl = document.getElementById('siteops-project-status');
     const startEl = document.getElementById('siteops-project-start');
-    
+
     if (nameEl) nameEl.value = state.project.name || '';
     if (addressEl) addressEl.value = state.project.address || '';
     if (statusEl) statusEl.value = state.project.status || 'planning';
@@ -268,7 +268,7 @@
   // =====================================================
   // PROGRAMME MANAGEMENT
   // =====================================================
-  
+
   function addPhase(phaseData = null) {
     const phase = phaseData || {
       id: phaseIdCounter++,
@@ -337,7 +337,7 @@
 
     // Wire event listeners
     tbody.querySelectorAll('.phase-status-select').forEach(select => {
-      select.addEventListener('change', function() {
+      select.addEventListener('change', function () {
         const id = parseInt(this.dataset.id);
         const phase = state.phases.find(p => p.id === id);
         if (phase) {
@@ -349,7 +349,7 @@
     });
 
     tbody.querySelectorAll('.phase-delete-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
+      btn.addEventListener('click', function () {
         const id = parseInt(this.dataset.id);
         if (confirm('Delete this phase?')) {
           state.phases = state.phases.filter(p => p.id !== id);
@@ -392,12 +392,12 @@
 
   function validateSequence() {
     const warnings = [];
-    
+
     // Check each dependency
     state.dependencies.forEach(dep => {
       const fromPhase = state.phases.find(p => p.name.toLowerCase().includes(dep.from) || p.trade?.toLowerCase().includes(dep.from));
       const toPhase = state.phases.find(p => p.name.toLowerCase().includes(dep.to) || p.trade?.toLowerCase().includes(dep.to));
-      
+
       if (fromPhase && toPhase) {
         const fromEnd = fromPhase.startDay + fromPhase.duration;
         if (toPhase.startDay < fromEnd) {
@@ -419,7 +419,7 @@
       if (warnings.length > 0) {
         warningEl.innerHTML = warnings.join('<br>');
         warningEl.style.display = 'block';
-    } else {
+      } else {
         warningEl.style.display = 'none';
       }
     }
@@ -434,7 +434,7 @@
   // =====================================================
   // TRADES MANAGEMENT
   // =====================================================
-  
+
   function addTrade() {
     const trade = {
       id: Date.now(),
@@ -478,7 +478,7 @@
     `).join('');
 
     container.querySelectorAll('.trade-delete-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
+      btn.addEventListener('click', function () {
         const id = parseInt(this.dataset.id);
         state.trades = state.trades.filter(t => t.id !== id);
         saveState();
@@ -490,7 +490,7 @@
   // =====================================================
   // GATES & INSPECTIONS
   // =====================================================
-  
+
   function addGate() {
     const type = prompt('Gate type (e.g. Building Control, Part P, Gas Safe):');
     if (!type) return;
@@ -547,7 +547,7 @@
     `).join('');
 
     tbody.querySelectorAll('.gate-status-select').forEach(select => {
-      select.addEventListener('change', function() {
+      select.addEventListener('change', function () {
         const id = parseInt(this.dataset.id);
         const gate = state.gates.find(g => g.id === id);
         if (gate) {
@@ -559,7 +559,7 @@
     });
 
     tbody.querySelectorAll('.gate-delete-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
+      btn.addEventListener('click', function () {
         const id = parseInt(this.dataset.id);
         state.gates = state.gates.filter(g => g.id !== id);
         saveState();
@@ -571,7 +571,7 @@
   // =====================================================
   // ISSUES MANAGEMENT
   // =====================================================
-  
+
   function toggleIssueForm() {
     const form = document.getElementById('siteops-issue-form');
     if (form) {
@@ -640,7 +640,7 @@
     `).join('');
 
     tbody.querySelectorAll('.issue-status-select').forEach(select => {
-      select.addEventListener('change', function() {
+      select.addEventListener('change', function () {
         const id = parseInt(this.dataset.id);
         const issue = state.issues.find(i => i.id === id);
         if (issue) {
@@ -652,7 +652,7 @@
     });
 
     tbody.querySelectorAll('.issue-delete-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
+      btn.addEventListener('click', function () {
         const id = parseInt(this.dataset.id);
         state.issues = state.issues.filter(i => i.id !== id);
         saveState();
@@ -663,68 +663,99 @@
   }
 
   // =====================================================
-  // DAILY OPS
+  // SITE DIARY (Enhanced)
   // =====================================================
-  
-  function saveDailyLog() {
-    const date = document.getElementById('siteops-daily-date')?.value;
-    const who = document.getElementById('siteops-daily-who')?.value;
-    const what = document.getElementById('siteops-daily-what')?.value;
-    const deliveries = document.getElementById('siteops-daily-deliveries')?.value;
-    const delays = document.getElementById('siteops-daily-delays')?.value;
-    const weather = document.getElementById('siteops-daily-weather')?.value;
 
-    if (!date || !what) {
-      if (window.GRACEX_Utils) GRACEX_Utils.showToast('Date and activity required', 'error');
+  function getApiBase() {
+    return (window.GRACEX_CONFIG && GRACEX_CONFIG.apiBase) || '';
+  }
+
+  function saveDiaryEntry() {
+    const date = document.getElementById('siteops-diary-date')?.value;
+    const weather = document.getElementById('siteops-diary-weather')?.value;
+    const temp = document.getElementById('siteops-diary-temp')?.value;
+    const workforce = document.getElementById('siteops-diary-workforce')?.value;
+    const activities = document.getElementById('siteops-diary-activities')?.value;
+    const delays = document.getElementById('siteops-diary-delays')?.value;
+    const visitors = document.getElementById('siteops-diary-visitors')?.value;
+    const hs = document.getElementById('siteops-diary-hs')?.value;
+    const notes = document.getElementById('siteops-diary-notes')?.value;
+
+    // Collect checked trades
+    const tradeCheckboxes = document.querySelectorAll('#siteops-diary-trades input[type=checkbox]:checked');
+    const tradesOnSite = Array.from(tradeCheckboxes).map(cb => cb.value);
+
+    if (!date) {
+      if (window.GRACEX_Utils) GRACEX_Utils.showToast('Date required', 'error');
       return;
     }
 
-    const log = {
-      date: date,
-      who: who,
-      what: what,
-      deliveries: deliveries,
-      delays: delays,
-      weather: weather,
-      timestamp: new Date().toISOString()
+    const projectId = state.project?.id || state.id || 'default';
+    const entry = {
+      projectId,
+      date,
+      weather: weather || '',
+      temperature: temp || '',
+      workforceCount: parseInt(workforce) || 0,
+      tradesOnSite,
+      activitiesCompleted: activities || '',
+      delays: delays || '',
+      visitors: visitors || '',
+      healthSafety: hs || '',
+      notes: notes || ''
     };
 
-    state.dailyLogs.push(log);
+    // Save to local state
+    const existing = state.dailyLogs.findIndex(l => l.date === date);
+    if (existing >= 0) {
+      state.dailyLogs[existing] = { ...state.dailyLogs[existing], ...entry, timestamp: new Date().toISOString() };
+    } else {
+      state.dailyLogs.push({ ...entry, timestamp: new Date().toISOString() });
+    }
     saveState();
 
-    // Clear form
-    document.getElementById('siteops-daily-what').value = '';
-    document.getElementById('siteops-daily-deliveries').value = '';
-    document.getElementById('siteops-daily-delays').value = '';
+    // Also save to API
+    fetch(getApiBase() + '/api/siteops/diary', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(entry)
+    }).catch(err => console.warn('[SITEOPS] Diary API save failed (offline?):', err));
 
-    if (window.GRACEX_Utils) {
-      GRACEX_Utils.showToast('Daily log saved', 'success');
-    }
+    // Clear text fields
+    ['siteops-diary-activities', 'siteops-diary-delays', 'siteops-diary-visitors', 'siteops-diary-hs', 'siteops-diary-notes'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+
+    if (window.GRACEX_Utils) GRACEX_Utils.showToast('Diary entry saved ✅', 'success');
   }
 
-  function viewDailyHistory() {
-    const output = document.getElementById('siteops-daily-output');
+  function viewDiaryHistory() {
+    const output = document.getElementById('siteops-diary-output');
     if (!output) return;
 
     if (state.dailyLogs.length === 0) {
-      output.textContent = 'No daily logs recorded yet.';
+      output.textContent = 'No diary entries recorded yet.';
       output.style.display = 'block';
       return;
     }
 
     const lines = [];
     lines.push('═══════════════════════════════════════');
-    lines.push('DAILY OPS LOG HISTORY');
+    lines.push('📓 SITE DIARY HISTORY');
     lines.push('═══════════════════════════════════════');
 
     state.dailyLogs.slice().reverse().forEach(log => {
       lines.push('');
       lines.push(`📅 ${log.date}`);
-      lines.push(`Who: ${log.who || '—'}`);
-      lines.push(`Activity: ${log.what}`);
-      if (log.deliveries) lines.push(`Deliveries: ${log.deliveries}`);
+      lines.push(`Weather: ${log.weather || '—'}  |  Temp: ${log.temperature || log.temp || '—'}°C`);
+      lines.push(`Workforce: ${log.workforceCount || log.workforce || '—'}`);
+      if (log.tradesOnSite && log.tradesOnSite.length) lines.push(`Trades: ${log.tradesOnSite.join(', ')}`);
+      if (log.activitiesCompleted || log.what) lines.push(`Activities: ${log.activitiesCompleted || log.what}`);
       if (log.delays) lines.push(`Delays: ${log.delays}`);
-      lines.push(`Weather: ${log.weather}`);
+      if (log.visitors) lines.push(`Visitors: ${log.visitors}`);
+      if (log.healthSafety) lines.push(`H&S: ${log.healthSafety}`);
+      if (log.notes) lines.push(`Notes: ${log.notes}`);
       lines.push('───────────────────────────────────────');
     });
 
@@ -733,9 +764,115 @@
   }
 
   // =====================================================
+  // SNAGGING LIST
+  // =====================================================
+
+  function toggleSnagForm() {
+    const form = document.getElementById('siteops-snag-form');
+    if (form) form.style.display = form.style.display === 'none' ? 'grid' : 'none';
+  }
+
+  function saveSnag() {
+    const location = document.getElementById('siteops-snag-location')?.value;
+    const desc = document.getElementById('siteops-snag-desc')?.value;
+    const severity = document.getElementById('siteops-snag-severity')?.value;
+    const trade = document.getElementById('siteops-snag-trade')?.value;
+
+    if (!desc) {
+      if (window.GRACEX_Utils) GRACEX_Utils.showToast('Description required', 'error');
+      return;
+    }
+
+    const projectId = state.project?.id || state.id || 'default';
+    const snag = {
+      id: 'snag-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+      projectId,
+      location: location || '',
+      description: desc,
+      severity: severity || 'minor',
+      responsibleTrade: trade || '',
+      status: 'open',
+      createdAt: new Date().toISOString()
+    };
+
+    if (!state.snags) state.snags = [];
+    state.snags.push(snag);
+    saveState();
+
+    // Also save to API
+    fetch(getApiBase() + '/api/siteops/snags', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(snag)
+    }).catch(err => console.warn('[SITEOPS] Snag API save failed (offline?):', err));
+
+    // Clear form and hide
+    ['siteops-snag-location', 'siteops-snag-desc', 'siteops-snag-trade'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+    toggleSnagForm();
+    renderSnags();
+
+    if (window.GRACEX_Utils) GRACEX_Utils.showToast('Snag recorded ✅', 'success');
+  }
+
+  function renderSnags() {
+    const tbody = document.getElementById('siteops-snags-body');
+    const empty = document.getElementById('siteops-snags-empty');
+    if (!tbody) return;
+
+    const snags = state.snags || [];
+    tbody.innerHTML = '';
+
+    if (snags.length === 0) {
+      if (empty) empty.style.display = 'block';
+      return;
+    }
+    if (empty) empty.style.display = 'none';
+
+    snags.forEach((snag, idx) => {
+      const tr = document.createElement('tr');
+      const severityColors = { minor: '#4caf50', moderate: '#ff9800', major: '#f44336' };
+      const statusColors = { open: '#f44336', 'in-progress': '#ff9800', resolved: '#4caf50' };
+
+      tr.innerHTML = `
+        <td>${snag.location || '—'}</td>
+        <td>${snag.description}</td>
+        <td><span style="color:${severityColors[snag.severity] || '#ccc'}">${snag.severity}</span></td>
+        <td>${snag.responsibleTrade || '—'}</td>
+        <td><span style="color:${statusColors[snag.status] || '#ccc'}">${snag.status}</span></td>
+        <td>
+          ${snag.status === 'open' ? `<button class="builder-btn" onclick="window._siteopsResolveSnag(${idx})" style="font-size:0.8em;padding:2px 6px;">✅ Resolve</button>` : ''}
+          ${snag.status === 'resolved' ? `<button class="builder-btn" onclick="window._siteopsReopenSnag(${idx})" style="font-size:0.8em;padding:2px 6px;">🔄 Reopen</button>` : ''}
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  window._siteopsResolveSnag = function (idx) {
+    if (state.snags && state.snags[idx]) {
+      state.snags[idx].status = 'resolved';
+      state.snags[idx].resolvedAt = new Date().toISOString();
+      saveState();
+      renderSnags();
+    }
+  };
+
+  window._siteopsReopenSnag = function (idx) {
+    if (state.snags && state.snags[idx]) {
+      state.snags[idx].status = 'open';
+      delete state.snags[idx].resolvedAt;
+      saveState();
+      renderSnags();
+    }
+  };
+
+  // =====================================================
   // CHANGE CONTROL
   // =====================================================
-  
+
   function toggleChangeForm() {
     const form = document.getElementById('siteops-change-form');
     if (form) {
@@ -807,7 +944,7 @@
     `).join('');
 
     tbody.querySelectorAll('.change-status-select').forEach(select => {
-      select.addEventListener('change', function() {
+      select.addEventListener('change', function () {
         const id = parseInt(this.dataset.id);
         const change = state.changes.find(c => c.id === id);
         if (change) {
@@ -823,7 +960,7 @@
     });
 
     tbody.querySelectorAll('.change-delete-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
+      btn.addEventListener('click', function () {
         const id = parseInt(this.dataset.id);
         state.changes = state.changes.filter(c => c.id !== id);
         saveState();
@@ -835,7 +972,7 @@
   // =====================================================
   // RAMS GENERATION
   // =====================================================
-  
+
   function generateProjectRAMS() {
     const output = document.getElementById('siteops-rams-output');
     if (!output) return;
@@ -849,7 +986,7 @@
     lines.push(`Site: ${state.project.address || '—'}`);
     lines.push(`Generated: ${new Date().toLocaleString()}`);
     lines.push('');
-    
+
     lines.push('SITE CONSTRAINTS');
     lines.push('────────────────');
     if (document.getElementById('siteops-constraint-occupied')?.checked) {
@@ -865,11 +1002,11 @@
 
     lines.push('PHASE-BY-PHASE HAZARDS');
     lines.push('──────────────────────');
-    
+
     state.phases.forEach(phase => {
       lines.push('');
       lines.push(`▶ ${phase.name} (${phase.trade})`);
-      
+
       // Generic hazards by trade
       const hazards = getHazardsForTrade(phase.trade);
       hazards.forEach(h => lines.push(`  • ${h}`));
@@ -895,7 +1032,7 @@
 
   function getHazardsForTrade(trade) {
     const t = (trade || '').toLowerCase();
-    
+
     if (t.includes('demolition') || t.includes('strip')) {
       return ['Flying debris', 'Dust inhalation', 'Structural collapse', 'Hidden services'];
     }
@@ -917,7 +1054,7 @@
   // =====================================================
   // REPORTS
   // =====================================================
-  
+
   function generateWeeklyReport() {
     const output = document.getElementById('siteops-report-output');
     if (!output) return;
@@ -930,7 +1067,7 @@
     lines.push(`Week ending: ${new Date().toLocaleDateString()}`);
     lines.push(`Status: ${state.project.status}`);
     lines.push('');
-    
+
     lines.push('PROGRAMME STATUS');
     lines.push('────────────────');
     const done = state.phases.filter(p => p.status === 'done').length;
@@ -1087,7 +1224,7 @@
       setTimeout(exportRAMS, 300);
     }
     if (window.GRACEX_Exports && window.GRACEX_Exports.downloadSiteOpsPdf) {
-      setTimeout(function() {
+      setTimeout(function () {
         const payload = {
           project: state.project,
           phases: state.phases,
@@ -1106,7 +1243,7 @@
   // =====================================================
   // EXPORT
   // =====================================================
-  
+
   function exportProgramme() {
     const lines = [];
     lines.push('GRACE-X SITEOPS PROGRAMME EXPORT');
@@ -1115,7 +1252,7 @@
     lines.push('');
     lines.push('PHASES');
     lines.push('──────');
-    
+
     state.phases.forEach((p, idx) => {
       lines.push(`${idx + 1}. ${p.name}`);
       lines.push(`   Trade: ${p.trade}`);
@@ -1141,7 +1278,7 @@
   // =====================================================
   // BUILDER INTEGRATION
   // =====================================================
-  
+
   function importFromBuilder() {
     function getBuilderDataFromStorage() {
       try {
@@ -1234,7 +1371,7 @@
   // =====================================================
   // WIRE BRAIN
   // =====================================================
-  
+
   function wireSiteOpsBrain() {
     if (window.setupModuleBrain) {
       window.setupModuleBrain('siteops', {
@@ -1251,18 +1388,21 @@
   // =====================================================
   // INITIALIZATION
   // =====================================================
-  
+
   function init() {
     console.log('[GRACEX SITEOPS] Initializing v2.0...');
 
     // Load saved state
     loadState();
 
-    // Set today's date for daily log
-    const dateInput = document.getElementById('siteops-daily-date');
+    // Set today's date for diary
+    const dateInput = document.getElementById('siteops-diary-date');
     if (dateInput && !dateInput.value) {
       dateInput.value = new Date().toISOString().split('T')[0];
     }
+
+    // Ensure snags array exists in state
+    if (!state.snags) state.snags = [];
 
     // Wire up all buttons
     document.getElementById('siteops-btn-add-phase')?.addEventListener('click', addPhase);
@@ -1272,8 +1412,10 @@
     document.getElementById('siteops-btn-gate-add')?.addEventListener('click', addGate);
     document.getElementById('siteops-btn-issue-add')?.addEventListener('click', toggleIssueForm);
     document.getElementById('siteops-issue-save')?.addEventListener('click', saveIssue);
-    document.getElementById('siteops-daily-save')?.addEventListener('click', saveDailyLog);
-    document.getElementById('siteops-daily-view')?.addEventListener('click', viewDailyHistory);
+    document.getElementById('siteops-diary-save')?.addEventListener('click', saveDiaryEntry);
+    document.getElementById('siteops-diary-history')?.addEventListener('click', viewDiaryHistory);
+    document.getElementById('siteops-btn-snag-add')?.addEventListener('click', toggleSnagForm);
+    document.getElementById('siteops-snag-save')?.addEventListener('click', saveSnag);
     document.getElementById('siteops-btn-change-new')?.addEventListener('click', toggleChangeForm);
     document.getElementById('siteops-change-save')?.addEventListener('click', saveChange);
     document.getElementById('siteops-change-cancel')?.addEventListener('click', toggleChangeForm);
@@ -1289,7 +1431,7 @@
 
     // Project info save on change
     ['siteops-project-name', 'siteops-project-address', 'siteops-project-status', 'siteops-project-start'].forEach(id => {
-      document.getElementById(id)?.addEventListener('change', function() {
+      document.getElementById(id)?.addEventListener('change', function () {
         state.project[this.id.replace('siteops-project-', '')] = this.value;
         saveState();
         updateDashboard();
@@ -1298,7 +1440,7 @@
 
     // Constraints save on change
     ['occupied', 'kids', 'pets', 'elderly', 'neighbours', 'parking'].forEach(c => {
-      document.getElementById('siteops-constraint-' + c)?.addEventListener('change', function() {
+      document.getElementById('siteops-constraint-' + c)?.addEventListener('change', function () {
         state.project.constraints[c] = this.checked;
         saveState();
         updateConstraintsSummary();
@@ -1311,6 +1453,7 @@
     renderGates();
     renderIssues();
     renderChanges();
+    renderSnags();
     updateDashboard();
 
     // Wire brain
@@ -1322,8 +1465,8 @@
   // =====================================================
   // MODULE HOOKS
   // =====================================================
-  
-  document.addEventListener('gracex:module:loaded', function(ev) {
+
+  document.addEventListener('gracex:module:loaded', function (ev) {
     try {
       const detail = ev.detail || {};
       const mod = detail.module || '';

@@ -160,5 +160,167 @@ router.post('/export/excel', (req, res) => {
     res.status(500).json({ success: false, error: e.message });
   }
 });
+// =====================================================
+// PHOTO EVIDENCE
+// =====================================================
+
+// POST /api/builder/photos - Save photo metadata
+router.post('/photos', (req, res) => {
+  try {
+    const body = req.body || {};
+    const projectId = body.projectId;
+    if (!projectId) return res.status(400).json({ success: false, error: 'projectId required' });
+
+    const photo = {
+      id: `photo-${generateId()}`,
+      projectId,
+      caption: body.caption || '',
+      room: body.room || '',
+      trade: body.trade || '',
+      stage: body.stage || 'during',
+      timestamp: body.timestamp || new Date().toISOString(),
+      gps: body.gps || null,
+      thumbnail: body.thumbnail || null,
+      createdAt: new Date().toISOString()
+    };
+
+    storage.write(MODULE, req.userId, 'photo', photo.id, photo);
+    res.json({ success: true, photo });
+  } catch (e) {
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
+// GET /api/builder/photos/:projectId - List all photos for a project
+router.get('/photos/:projectId', (req, res) => {
+  try {
+    const all = storage.list(MODULE, req.userId, 'photo');
+    const photos = all
+      .filter(p => p.projectId === req.params.projectId)
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    res.json({ success: true, photos });
+  } catch (e) {
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
+// DELETE /api/builder/photos/:id - Delete a photo
+router.delete('/photos/:id', (req, res) => {
+  try {
+    storage.remove(MODULE, req.userId, 'photo', req.params.id);
+    res.json({ success: true });
+  } catch (e) {
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
+// =====================================================
+// TOOL & MATERIAL TRACKER
+// =====================================================
+
+// POST /api/builder/materials - Log material delivery or consumption
+router.post('/materials', (req, res) => {
+  try {
+    const body = req.body || {};
+    const projectId = body.projectId;
+    if (!projectId) return res.status(400).json({ success: false, error: 'projectId required' });
+
+    const entry = {
+      id: `mat-${generateId()}`,
+      projectId,
+      type: body.type || 'delivery',
+      material: body.material || '',
+      quantity: body.quantity || 0,
+      unit: body.unit || 'units',
+      supplier: body.supplier || '',
+      cost: body.cost || 0,
+      notes: body.notes || '',
+      date: body.date || new Date().toISOString().slice(0, 10),
+      createdAt: new Date().toISOString()
+    };
+
+    storage.write(MODULE, req.userId, 'material', entry.id, entry);
+    res.json({ success: true, entry });
+  } catch (e) {
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
+// GET /api/builder/materials/:projectId - Get material ledger
+router.get('/materials/:projectId', (req, res) => {
+  try {
+    const all = storage.list(MODULE, req.userId, 'material');
+    const entries = all
+      .filter(m => m.projectId === req.params.projectId)
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    // Calculate stock levels
+    const stock = {};
+    entries.forEach(e => {
+      if (!stock[e.material]) stock[e.material] = { delivered: 0, consumed: 0, unit: e.unit };
+      if (e.type === 'delivery') stock[e.material].delivered += e.quantity;
+      if (e.type === 'consumption') stock[e.material].consumed += e.quantity;
+    });
+    Object.keys(stock).forEach(k => {
+      stock[k].remaining = stock[k].delivered - stock[k].consumed;
+    });
+
+    res.json({ success: true, entries, stock });
+  } catch (e) {
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
+// POST /api/builder/tools - Check-in or check-out a tool
+router.post('/tools', (req, res) => {
+  try {
+    const body = req.body || {};
+    const projectId = body.projectId;
+    if (!projectId) return res.status(400).json({ success: false, error: 'projectId required' });
+
+    const entry = {
+      id: `tool-${generateId()}`,
+      projectId,
+      action: body.action || 'check-in',
+      toolName: body.toolName || '',
+      person: body.person || '',
+      condition: body.condition || 'good',
+      timestamp: new Date().toISOString()
+    };
+
+    storage.write(MODULE, req.userId, 'tool', entry.id, entry);
+    res.json({ success: true, entry });
+  } catch (e) {
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
+// GET /api/builder/tools/:projectId - Get tool register
+router.get('/tools/:projectId', (req, res) => {
+  try {
+    const all = storage.list(MODULE, req.userId, 'tool');
+    const entries = all
+      .filter(t => t.projectId === req.params.projectId)
+      .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+    // Build current tool status
+    const toolStatus = {};
+    entries.forEach(e => {
+      if (!toolStatus[e.toolName]) {
+        toolStatus[e.toolName] = {
+          toolName: e.toolName,
+          currentAction: e.action,
+          person: e.action === 'check-out' ? e.person : '',
+          condition: e.condition,
+          lastUpdated: e.timestamp
+        };
+      }
+    });
+
+    res.json({ success: true, entries, currentTools: Object.values(toolStatus) });
+  } catch (e) {
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
 
 module.exports = router;

@@ -3,7 +3,7 @@
     // GRACE-X BUILDER™ v2.0
     // Comprehensive Construction/Trades Brain
     // =====================================
-    
+
     let bpCanvas;
     let bpCtx;
     let bpUploadBtn;
@@ -45,7 +45,7 @@
     // PROBLEM → SOLVED LIBRARY
     // =====================================
     const STORAGE_KEY_PS = 'gracex_builder_problem_solved';
-    
+
     function getProblemSolvedLibrary() {
         try {
             return JSON.parse(localStorage.getItem(STORAGE_KEY_PS) || '[]');
@@ -53,7 +53,7 @@
             return [];
         }
     }
-    
+
     function saveProblemSolvedLibrary(library) {
         localStorage.setItem(STORAGE_KEY_PS, JSON.stringify(library));
     }
@@ -229,13 +229,13 @@
 
     // Cache all the DOM elements Builder needs
     function cacheDom() {
-        bpCanvas     = document.getElementById("bp-canvas");
-        bpUploadBtn  = document.getElementById("bp-upload");
-        bpFileInput  = document.getElementById("bp-file");
-        bpClearBtn   = document.getElementById("bp-clear");
-        sumCalcBtn   = document.getElementById("sum-calc");
-        sumOutEl     = document.getElementById("sum-out");
-        bpCtx        = bpCanvas ? bpCanvas.getContext("2d") : null;
+        bpCanvas = document.getElementById("bp-canvas");
+        bpUploadBtn = document.getElementById("bp-upload");
+        bpFileInput = document.getElementById("bp-file");
+        bpClearBtn = document.getElementById("bp-clear");
+        sumCalcBtn = document.getElementById("sum-calc");
+        sumOutEl = document.getElementById("sum-out");
+        bpCtx = bpCanvas ? bpCanvas.getContext("2d") : null;
     }
 
     // Load a blueprint image into the canvas
@@ -244,9 +244,9 @@
 
         const img = new Image();
         img.onload = function () {
-            bpState.image   = img;
-            bpState.loaded  = true;
-            bpState.scale   = 1;
+            bpState.image = img;
+            bpState.loaded = true;
+            bpState.scale = 1;
             bpState.offsetX = 0;
             bpState.offsetY = 0;
             drawBlueprint();
@@ -285,7 +285,7 @@
                     if (window.GRACEX_Utils) {
                         const loader = GRACEX_Utils.showLoading(bpCanvas || document.body, "Loading blueprint...");
                         try {
-                handleBlueprintFile(file);
+                            handleBlueprintFile(file);
                             setTimeout(() => {
                                 GRACEX_Utils.hideLoading(loader);
                                 GRACEX_Utils.showToast("Blueprint loaded successfully", "success");
@@ -308,7 +308,7 @@
                     if (window.GRACEX_Utils) {
                         const loader = GRACEX_Utils.showLoading(bpCanvas || document.body, "Loading blueprint...");
                         try {
-                handleBlueprintFile(file);
+                            handleBlueprintFile(file);
                             setTimeout(() => {
                                 GRACEX_Utils.hideLoading(loader);
                                 GRACEX_Utils.showToast("Blueprint loaded successfully", "success");
@@ -328,9 +328,9 @@
         // Clear blueprint
         if (bpClearBtn) {
             bpClearBtn.addEventListener("click", function () {
-                bpState.loaded  = false;
-                bpState.image   = null;
-                bpState.scale   = 1;
+                bpState.loaded = false;
+                bpState.image = null;
+                bpState.scale = 1;
                 bpState.offsetX = 0;
                 bpState.offsetY = 0;
                 drawBlueprint();
@@ -392,7 +392,7 @@
         );
 
         // Simple site summary – just reports basic state for now
-        
+
         if (sumCalcBtn && sumOutEl) {
             sumCalcBtn.addEventListener("click", function () {
                 const lines = [];
@@ -406,21 +406,21 @@
                 lines.push("Scale: x" + bpState.scale.toFixed(2));
 
                 // AR snapshot (metadata from the card above)
-                const roomNameEl   = document.getElementById("ar-room-name");
-                const roomNotesEl  = document.getElementById("ar-room-notes");
-                const heightEl     = document.getElementById("ar-height");
-                const priorityEl   = document.getElementById("ar-priority");
+                const roomNameEl = document.getElementById("ar-room-name");
+                const roomNotesEl = document.getElementById("ar-room-notes");
+                const heightEl = document.getElementById("ar-height");
+                const priorityEl = document.getElementById("ar-priority");
 
                 const roomName = roomNameEl ? roomNameEl.value.trim() : "";
-                const notes    = roomNotesEl ? roomNotesEl.value.trim() : "";
-                const height   = heightEl && heightEl.value ? parseFloat(heightEl.value) : NaN;
+                const notes = roomNotesEl ? roomNotesEl.value.trim() : "";
+                const height = heightEl && heightEl.value ? parseFloat(heightEl.value) : NaN;
                 const priority = priorityEl ? priorityEl.value.trim() : "";
 
                 if (roomName || notes || priority || !isNaN(height)) {
                     lines.push("");
                     lines.push("Room snapshot:");
                     if (roomName) lines.push("  Name: " + roomName);
-                    if (notes)    lines.push("  Use / notes: " + notes);
+                    if (notes) lines.push("  Use / notes: " + notes);
                     if (!isNaN(height)) lines.push("  Ceiling height: " + height.toFixed(2) + " m");
                     if (priority) lines.push("  Priority: " + priority);
                 }
@@ -446,10 +446,9 @@
             });
         }
 
-// Initial clear
+        // Initial clear
         drawBlueprint();
     }
-
     // =====================================
     // TINY-BRAIN WIRING (BUILDER ASSISTANT)
     // =====================================
@@ -468,18 +467,324 @@
     }
 
     // =====================================
+    // SITE PHOTOS
+    // =====================================
+    const sitePhotos = [];
+    const materialLog = [];
+    const toolLog = [];
+    let currentMatType = 'delivery';
+    let currentToolAction = 'check-in';
+
+    function getBuilderApiBase() {
+        return (window.GRACEX_CONFIG && GRACEX_CONFIG.apiBase) || '';
+    }
+
+    function capturePhoto() {
+        const fileInput = document.getElementById('photo-file');
+        if (fileInput) fileInput.click();
+    }
+
+    function handlePhotoUpload(file) {
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const photo = {
+                id: 'photo-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+                room: document.getElementById('photo-room')?.value || '',
+                trade: document.getElementById('photo-trade')?.value || '',
+                stage: document.getElementById('photo-stage')?.value || 'during',
+                caption: document.getElementById('photo-caption')?.value || '',
+                thumbnail: e.target.result,
+                timestamp: new Date().toISOString(),
+                gps: null
+            };
+
+            // Try to get GPS
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function (pos) {
+                        photo.gps = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                    },
+                    function () { /* GPS not available */ }
+                );
+            }
+
+            sitePhotos.push(photo);
+            renderPhotoGallery();
+
+            // Save to API
+            fetch(getBuilderApiBase() + '/api/builder/photos', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ...photo, projectId: 'default' })
+            }).catch(err => console.warn('[BUILDER] Photo API save failed:', err));
+
+            if (window.GRACEX_Utils) GRACEX_Utils.showToast('Photo captured ✅', 'success');
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function renderPhotoGallery() {
+        const gallery = document.getElementById('photo-gallery');
+        const empty = document.getElementById('photo-empty');
+        if (!gallery) return;
+
+        gallery.innerHTML = '';
+
+        if (sitePhotos.length === 0) {
+            if (empty) empty.style.display = 'block';
+            return;
+        }
+        if (empty) empty.style.display = 'none';
+
+        sitePhotos.forEach(function (photo, idx) {
+            const div = document.createElement('div');
+            div.style.cssText = 'position: relative; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; overflow: hidden; background: rgba(0,0,0,0.2);';
+            div.innerHTML = `
+                <img src="${photo.thumbnail}" alt="${photo.caption}" style="width:100%; height:120px; object-fit:cover;">
+                <div style="padding: 6px; font-size: 0.8em;">
+                    <div><strong>${photo.stage.toUpperCase()}</strong> ${photo.room ? '— ' + photo.room : ''}</div>
+                    <div style="opacity:0.7">${photo.caption || 'No caption'}</div>
+                    <div style="opacity:0.5">${new Date(photo.timestamp).toLocaleString()}</div>
+                </div>
+                <button onclick="window._builderDeletePhoto(${idx})" style="position:absolute;top:4px;right:4px;background:rgba(255,0,0,0.7);border:none;color:#fff;border-radius:50%;width:24px;height:24px;cursor:pointer;font-size:12px;">✕</button>
+            `;
+            gallery.appendChild(div);
+        });
+    }
+
+    window._builderDeletePhoto = function (idx) {
+        sitePhotos.splice(idx, 1);
+        renderPhotoGallery();
+    };
+
+    // =====================================
+    // MATERIALS TRACKER
+    // =====================================
+    function showMatForm(type) {
+        currentMatType = type;
+        const form = document.getElementById('mat-form');
+        if (form) form.style.display = 'grid';
+        const stockDisplay = document.getElementById('mat-stock-display');
+        if (stockDisplay) stockDisplay.style.display = 'none';
+    }
+
+    function showMatStock() {
+        const form = document.getElementById('mat-form');
+        if (form) form.style.display = 'none';
+        renderMatStock();
+    }
+
+    function saveMaterial() {
+        const mat = document.getElementById('mat-name')?.value;
+        const qty = parseFloat(document.getElementById('mat-qty')?.value) || 0;
+        const unit = document.getElementById('mat-unit')?.value || 'units';
+        const supplier = document.getElementById('mat-supplier')?.value || '';
+        const cost = parseFloat(document.getElementById('mat-cost')?.value) || 0;
+
+        if (!mat) {
+            if (window.GRACEX_Utils) GRACEX_Utils.showToast('Material name required', 'error');
+            return;
+        }
+
+        const entry = {
+            id: 'mat-' + Date.now().toString(36),
+            type: currentMatType,
+            material: mat,
+            quantity: qty,
+            unit: unit,
+            supplier: supplier,
+            cost: cost,
+            date: new Date().toISOString().slice(0, 10),
+            createdAt: new Date().toISOString()
+        };
+
+        materialLog.push(entry);
+
+        // Save to API
+        fetch(getBuilderApiBase() + '/api/builder/materials', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ...entry, projectId: 'default' })
+        }).catch(err => console.warn('[BUILDER] Material API save failed:', err));
+
+        // Clear form
+        ['mat-name', 'mat-supplier'].forEach(function (id) {
+            const el = document.getElementById(id);
+            if (el) el.value = '';
+        });
+        document.getElementById('mat-qty').value = '';
+        document.getElementById('mat-cost').value = '';
+
+        const form = document.getElementById('mat-form');
+        if (form) form.style.display = 'none';
+
+        if (window.GRACEX_Utils) GRACEX_Utils.showToast(currentMatType === 'delivery' ? 'Delivery logged 📦' : 'Consumption logged 📉', 'success');
+    }
+
+    function renderMatStock() {
+        const stockDisplay = document.getElementById('mat-stock-display');
+        const tbody = document.getElementById('mat-stock-body');
+        if (!tbody || !stockDisplay) return;
+
+        stockDisplay.style.display = 'block';
+        tbody.innerHTML = '';
+
+        const stock = {};
+        materialLog.forEach(function (e) {
+            if (!stock[e.material]) stock[e.material] = { delivered: 0, consumed: 0, unit: e.unit };
+            if (e.type === 'delivery') stock[e.material].delivered += e.quantity;
+            if (e.type === 'consumption') stock[e.material].consumed += e.quantity;
+        });
+
+        const keys = Object.keys(stock);
+        if (keys.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;opacity:0.6">No materials logged yet</td></tr>';
+            return;
+        }
+
+        keys.forEach(function (k) {
+            const s = stock[k];
+            const remaining = s.delivered - s.consumed;
+            const color = remaining <= 0 ? '#f44336' : remaining < s.delivered * 0.2 ? '#ff9800' : '#4caf50';
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${k}</td>
+                <td>${s.delivered}</td>
+                <td>${s.consumed}</td>
+                <td style="color:${color};font-weight:bold;">${remaining}</td>
+                <td>${s.unit}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    // =====================================
+    // TOOL REGISTER
+    // =====================================
+    function showToolForm(action) {
+        currentToolAction = action;
+        const form = document.getElementById('tool-form');
+        if (form) form.style.display = 'grid';
+    }
+
+    function saveTool() {
+        const toolName = document.getElementById('tool-name')?.value;
+        const person = document.getElementById('tool-person')?.value || '';
+        const condition = document.getElementById('tool-condition')?.value || 'good';
+
+        if (!toolName) {
+            if (window.GRACEX_Utils) GRACEX_Utils.showToast('Tool name required', 'error');
+            return;
+        }
+
+        const entry = {
+            id: 'tool-' + Date.now().toString(36),
+            action: currentToolAction,
+            toolName: toolName,
+            person: person,
+            condition: condition,
+            timestamp: new Date().toISOString()
+        };
+
+        toolLog.push(entry);
+
+        // Save to API
+        fetch(getBuilderApiBase() + '/api/builder/tools', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ...entry, projectId: 'default' })
+        }).catch(err => console.warn('[BUILDER] Tool API save failed:', err));
+
+        // Clear form and hide
+        document.getElementById('tool-name').value = '';
+        document.getElementById('tool-person').value = '';
+        const form = document.getElementById('tool-form');
+        if (form) form.style.display = 'none';
+
+        renderToolStatus();
+        if (window.GRACEX_Utils) GRACEX_Utils.showToast(currentToolAction === 'check-in' ? 'Tool checked in ✅' : 'Tool checked out 📤', 'success');
+    }
+
+    function renderToolStatus() {
+        const tbody = document.getElementById('tool-status-body');
+        const empty = document.getElementById('tool-empty');
+        if (!tbody) return;
+
+        // Build current status from log
+        const toolStatus = {};
+        toolLog.forEach(function (e) {
+            toolStatus[e.toolName] = {
+                toolName: e.toolName,
+                currentAction: e.action,
+                person: e.action === 'check-out' ? e.person : '',
+                condition: e.condition,
+                lastUpdated: e.timestamp
+            };
+        });
+
+        const tools = Object.values(toolStatus);
+        tbody.innerHTML = '';
+
+        if (tools.length === 0) {
+            if (empty) empty.style.display = 'block';
+            return;
+        }
+        if (empty) empty.style.display = 'none';
+
+        tools.forEach(function (t) {
+            const statusColor = t.currentAction === 'check-in' ? '#4caf50' : '#ff9800';
+            const condColors = { good: '#4caf50', fair: '#ff9800', damaged: '#f44336', 'needs-repair': '#f44336' };
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${t.toolName}</td>
+                <td style="color:${statusColor}">${t.currentAction}</td>
+                <td>${t.person || '—'}</td>
+                <td style="color:${condColors[t.condition] || '#ccc'}">${t.condition}</td>
+                <td style="opacity:0.7">${new Date(t.lastUpdated).toLocaleString()}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    // =====================================
     // INIT
     // =====================================
     function initBuilder() {
         try {
-        cacheDom();
-        if (bpCanvas && bpCtx) {
-            initBlueprint();
-        }
-        initQuickMeasurements();
+            cacheDom();
+            if (bpCanvas && bpCtx) {
+                initBlueprint();
+            }
+            initQuickMeasurements();
             initMeasurementCalculator();
-        initARCard();
-            
+            initARCard();
+
+            // Wire site photos
+            document.getElementById('photo-capture')?.addEventListener('click', capturePhoto);
+            document.getElementById('photo-upload')?.addEventListener('click', function () {
+                document.getElementById('photo-file')?.click();
+            });
+            document.getElementById('photo-file')?.addEventListener('change', function () {
+                if (this.files && this.files[0]) handlePhotoUpload(this.files[0]);
+            });
+
+            // Wire materials tracker
+            document.getElementById('mat-btn-delivery')?.addEventListener('click', function () { showMatForm('delivery'); });
+            document.getElementById('mat-btn-consume')?.addEventListener('click', function () { showMatForm('consumption'); });
+            document.getElementById('mat-btn-stock')?.addEventListener('click', showMatStock);
+            document.getElementById('mat-save')?.addEventListener('click', saveMaterial);
+
+            // Wire tool register
+            document.getElementById('tool-btn-checkin')?.addEventListener('click', function () { showToolForm('check-in'); });
+            document.getElementById('tool-btn-checkout')?.addEventListener('click', function () { showToolForm('check-out'); });
+            document.getElementById('tool-save')?.addEventListener('click', saveTool);
+
+            // Render initial state
+            renderPhotoGallery();
+            renderToolStatus();
+
             // Add keyboard shortcuts
             if (window.GRACEX_Utils) {
                 // Enter key support for inputs (if needed)
@@ -688,12 +993,12 @@
                 if (window.GRACEX_Utils) {
                     GRACEX_Utils.showToast("No measurements to export yet.", "error");
                 } else {
-                alert("No measurements to export yet.");
+                    alert("No measurements to export yet.");
                 }
                 return;
             }
             try {
-            const scale = getScale();
+                const scale = getScale();
                 const data = measureState.segments.map(function (seg, idx) {
                     const { px, m } = lengthFor(seg);
                     return {
@@ -702,22 +1007,22 @@
                         "Meters": m.toFixed(3)
                     };
                 });
-                
+
                 if (window.GRACEX_Utils) {
                     GRACEX_Utils.exportToCSV(data, "builder-measurements.csv");
                     GRACEX_Utils.showToast("Measurements exported successfully!", "success");
                 } else {
                     // Fallback to text export
-            const lines = ["GRACE-X Builder – Quick Measurements:"];
-            measureState.segments.forEach(function (seg, idx) {
-                const { px, m } = lengthFor(seg);
-                lines.push(
-                    "  #" + (idx + 1) + ": " + px.toFixed(1) + " px (" + m.toFixed(3) + " m)"
-                );
-            });
-            lines.push("");
-            lines.push("Scale used: " + scale + " m/px");
-            alert(lines.join("\n"));
+                    const lines = ["GRACE-X Builder – Quick Measurements:"];
+                    measureState.segments.forEach(function (seg, idx) {
+                        const { px, m } = lengthFor(seg);
+                        lines.push(
+                            "  #" + (idx + 1) + ": " + px.toFixed(1) + " px (" + m.toFixed(3) + " m)"
+                        );
+                    });
+                    lines.push("");
+                    lines.push("Scale used: " + scale + " m/px");
+                    alert(lines.join("\n"));
                 }
             } catch (err) {
                 console.error("[GRACEX BUILDER] Export error:", err);
@@ -980,7 +1285,7 @@
 
         if (!calcBtn) return;
 
-        calcBtn.addEventListener("click", function() {
+        calcBtn.addEventListener("click", function () {
             const length = parseFloat(lengthInput?.value || 0);
             const width = parseFloat(widthInput?.value || 0);
             const height = parseFloat(heightInput?.value || 0);
@@ -1004,7 +1309,7 @@
         });
 
         if (clearBtn) {
-            clearBtn.addEventListener("click", function() {
+            clearBtn.addEventListener("click", function () {
                 if (lengthInput) lengthInput.value = "";
                 if (widthInput) widthInput.value = "";
                 if (heightInput) heightInput.value = "";
@@ -1041,7 +1346,7 @@
         };
 
         if (typeSelect && coverageInput) {
-            typeSelect.addEventListener("change", function() {
+            typeSelect.addEventListener("change", function () {
                 const type = typeSelect.value;
                 if (coverageRates[type]) {
                     coverageInput.value = coverageRates[type];
@@ -1050,7 +1355,7 @@
         }
 
         if (calcBtn) {
-            calcBtn.addEventListener("click", function() {
+            calcBtn.addEventListener("click", function () {
                 const area = parseFloat(areaInput?.value || 0);
                 const coverage = parseFloat(coverageInput?.value || 1);
                 const waste = parseFloat(wasteInput?.value || 10) / 100;
@@ -1071,7 +1376,7 @@
         }
 
         if (clearBtn) {
-            clearBtn.addEventListener("click", function() {
+            clearBtn.addEventListener("click", function () {
                 if (areaInput) areaInput.value = "";
                 if (coverageInput) coverageInput.value = "";
                 if (wasteInput) wasteInput.value = "10";
@@ -1097,7 +1402,7 @@
         const totalOut = document.getElementById("cost-total");
 
         if (calcBtn) {
-            calcBtn.addEventListener("click", function() {
+            calcBtn.addEventListener("click", function () {
                 const materialUnit = parseFloat(materialUnitInput?.value || 0);
                 const units = parseFloat(unitsInput?.value || 0);
                 const laborRate = parseFloat(laborRateInput?.value || 0);
@@ -1114,7 +1419,7 @@
         }
 
         if (clearBtn) {
-            clearBtn.addEventListener("click", function() {
+            clearBtn.addEventListener("click", function () {
                 if (materialUnitInput) materialUnitInput.value = "";
                 if (unitsInput) unitsInput.value = "";
                 if (laborRateInput) laborRateInput.value = "";
@@ -1143,7 +1448,7 @@
         const tasks = [];
 
         if (addBtn && taskList) {
-            addBtn.addEventListener("click", function() {
+            addBtn.addEventListener("click", function () {
                 const task = taskInput?.value.trim();
                 const days = parseFloat(taskDaysInput?.value || 0);
 
@@ -1161,7 +1466,7 @@
         }
 
         if (generateBtn && output) {
-            generateBtn.addEventListener("click", function() {
+            generateBtn.addEventListener("click", function () {
                 if (tasks.length === 0) {
                     output.textContent = "Add tasks first, then generate timeline.";
                     return;
@@ -1180,7 +1485,7 @@
                 tasks.forEach((t, idx) => {
                     const endDate = new Date(currentDate);
                     endDate.setDate(endDate.getDate() + Math.ceil(t.days) - 1);
-                    
+
                     lines.push(`${idx + 1}. ${t.task}`);
                     lines.push(`   ${currentDate.toLocaleDateString()} → ${endDate.toLocaleDateString()} (${t.days} day(s))`);
                     lines.push("");
@@ -1200,7 +1505,7 @@
         }
 
         if (clearBtn) {
-            clearBtn.addEventListener("click", function() {
+            clearBtn.addEventListener("click", function () {
                 tasks.length = 0;
                 if (taskList) taskList.innerHTML = "";
                 if (jobNameInput) jobNameInput.value = "";
@@ -1244,7 +1549,7 @@
         };
 
         if (calcBtn) {
-            calcBtn.addEventListener("click", function() {
+            calcBtn.addEventListener("click", function () {
                 const value = parseFloat(valueInput?.value || 0);
                 const from = fromSelect?.value || "m";
                 const to = toSelect?.value || "m";
@@ -1277,7 +1582,7 @@
         }
 
         if (clearBtn) {
-            clearBtn.addEventListener("click", function() {
+            clearBtn.addEventListener("click", function () {
                 if (valueInput) valueInput.value = "";
                 if (output) output.textContent = "—";
             });
@@ -1289,13 +1594,13 @@
     // =====================================
     const undoStack = [];
     const redoStack = [];
-    
+
     function saveState() {
         undoStack.push(JSON.stringify(measureState.segments));
         if (undoStack.length > 20) undoStack.shift();
         redoStack.length = 0; // Clear redo on new action
     }
-    
+
     function undo() {
         if (undoStack.length === 0) {
             if (window.GRACEX_Utils) GRACEX_Utils.showToast("Nothing to undo", "info");
@@ -1308,7 +1613,7 @@
         if (window.updateMeasurementCalculator) window.updateMeasurementCalculator();
         if (window.GRACEX_Utils) GRACEX_Utils.showToast("Undone", "info");
     }
-    
+
     function redo() {
         if (redoStack.length === 0) {
             if (window.GRACEX_Utils) GRACEX_Utils.showToast("Nothing to redo", "info");
@@ -1321,22 +1626,22 @@
         if (window.updateMeasurementCalculator) window.updateMeasurementCalculator();
         if (window.GRACEX_Utils) GRACEX_Utils.showToast("Redone", "info");
     }
-    
+
     // Expose undo/redo globally
     window.builderUndo = undo;
     window.builderRedo = redo;
     window.builderSaveState = saveState;
-    
+
     // =====================================
     // SAVE/LOAD PROJECT
     // =====================================
     function initProjectSaveLoad() {
         if (!window.GRACEX_Utils) return;
-        
+
         // Create save/load buttons
         const container = document.querySelector(".builder-card, .module-section");
         if (!container || document.getElementById("builder-project-btns")) return;
-        
+
         const btnDiv = document.createElement("div");
         btnDiv.id = "builder-project-btns";
         btnDiv.style.cssText = "display:flex;gap:8px;margin:12px 0;flex-wrap:wrap;";
@@ -1347,7 +1652,7 @@
             <button id="builder-redo" class="builder-btn" style="padding:8px 12px;font-size:12px;">↪️ Redo</button>
         `;
         container.insertBefore(btnDiv, container.firstChild);
-        
+
         // Save project
         document.getElementById("builder-save-project")?.addEventListener("click", () => {
             const project = {
@@ -1356,13 +1661,13 @@
                 timestamp: new Date().toISOString(),
                 name: prompt("Project name:", "My Project") || "Unnamed"
             };
-            
+
             const projects = GRACEX_Utils.getStorage("builder_projects", []);
             projects.push(project);
             GRACEX_Utils.setStorage("builder_projects", projects);
             GRACEX_Utils.showToast(`Project "${project.name}" saved`, "success");
         });
-        
+
         // Load project
         document.getElementById("builder-load-project")?.addEventListener("click", () => {
             const projects = GRACEX_Utils.getStorage("builder_projects", []);
@@ -1370,11 +1675,11 @@
                 GRACEX_Utils.showToast("No saved projects", "info");
                 return;
             }
-            
+
             const names = projects.map((p, i) => `${i + 1}. ${p.name} (${new Date(p.timestamp).toLocaleDateString()})`).join("\n");
             const choice = prompt(`Select project number:\n${names}`, "1");
             const idx = parseInt(choice) - 1;
-            
+
             if (idx >= 0 && idx < projects.length) {
                 measureState.segments = projects[idx].segments || [];
                 const scaleInput = document.getElementById("scale-input");
@@ -1384,25 +1689,25 @@
                 GRACEX_Utils.showToast(`Loaded "${projects[idx].name}"`, "success");
             }
         });
-        
+
         // Undo/Redo buttons
         document.getElementById("builder-undo")?.addEventListener("click", undo);
         document.getElementById("builder-redo")?.addEventListener("click", redo);
-        
+
         // Keyboard shortcuts for undo/redo
         GRACEX_Utils.addKeyboardShortcut({ key: "z", ctrl: true }, undo);
         GRACEX_Utils.addKeyboardShortcut({ key: "y", ctrl: true }, redo);
     }
-    
+
     // =====================================
     // ROOM TEMPLATES
     // =====================================
     function initRoomTemplates() {
         if (!window.GRACEX_Utils) return;
-        
+
         const container = document.getElementById("builder-project-btns");
         if (!container || document.getElementById("builder-templates")) return;
-        
+
         const templatesBtn = document.createElement("button");
         templatesBtn.id = "builder-templates";
         templatesBtn.className = "builder-btn";
@@ -1416,11 +1721,11 @@
                 "Kitchen (4x3m)": { length: 4, width: 3 },
                 "Bathroom (2.5x2m)": { length: 2.5, width: 2 }
             };
-            
+
             const choice = prompt(Object.keys(templates).map((t, i) => `${i + 1}. ${t}`).join("\n") + "\n\nSelect template:");
             const keys = Object.keys(templates);
             const idx = parseInt(choice) - 1;
-            
+
             if (idx >= 0 && idx < keys.length) {
                 const t = templates[keys[idx]];
                 const areaLength = document.getElementById("area-length") || document.getElementById("calc-area-length");
@@ -1472,7 +1777,7 @@
             if (materialsOut) materialsOut.textContent = data.materials?.join(', ') || '—';
             if (labourOut) labourOut.textContent = labourHours.toFixed(1) + ' hrs';
             if (costOut) costOut.textContent = `£${lowCost.toFixed(0)} - £${highCost.toFixed(0)}`;
-            
+
             if (complianceOut && data.compliance) {
                 complianceOut.textContent = data.compliance;
                 complianceOut.style.display = 'block';
@@ -1499,7 +1804,7 @@
         calcBtn.addEventListener('click', calculate);
 
         if (addBtn) {
-            addBtn.addEventListener('click', function() {
+            addBtn.addEventListener('click', function () {
                 const item = calculate();
                 if (item) {
                     scopePack.items.push(item);
@@ -1515,7 +1820,7 @@
         }
 
         if (clearBtn) {
-            clearBtn.addEventListener('click', function() {
+            clearBtn.addEventListener('click', function () {
                 if (tradeSelect) tradeSelect.value = '';
                 if (finishSelect) finishSelect.value = 'standard';
                 if (roomInput) roomInput.value = '';
@@ -1563,7 +1868,7 @@
 
         // Wire remove buttons
         itemsList.querySelectorAll('.scope-item-remove').forEach(btn => {
-            btn.addEventListener('click', function() {
+            btn.addEventListener('click', function () {
                 const idx = parseInt(this.dataset.idx);
                 scopePack.items.splice(idx, 1);
                 updateScopePack();
@@ -1594,7 +1899,7 @@
         const clearBtn = document.getElementById('scope-clear');
 
         if (exportBtn) {
-            exportBtn.addEventListener('click', function() {
+            exportBtn.addEventListener('click', function () {
                 if (scopePack.items.length === 0) {
                     if (window.GRACEX_Utils) GRACEX_Utils.showToast('No scope items to export', 'error');
                     return;
@@ -1604,7 +1909,7 @@
         }
 
         if (clearBtn) {
-            clearBtn.addEventListener('click', function() {
+            clearBtn.addEventListener('click', function () {
                 if (confirm('Clear all scope items?')) {
                     scopePack.items = [];
                     updateScopePack();
@@ -1622,7 +1927,7 @@
         lines.push('');
         lines.push('WORK SCOPE');
         lines.push('──────────');
-        
+
         scopePack.items.forEach((item, idx) => {
             lines.push(`${idx + 1}. ${item.trade} - ${item.room}`);
             lines.push(`   Area: ${item.area.toFixed(1)} m²`);
@@ -1690,7 +1995,7 @@
             }
         }
 
-        startBtn.addEventListener('click', function() {
+        startBtn.addEventListener('click', function () {
             captureState.active = true;
             if (indicator) indicator.textContent = '🔴 Recording';
             if (indicator) indicator.style.color = '#ef4444';
@@ -1706,7 +2011,7 @@
         });
 
         if (photoBtn) {
-            photoBtn.addEventListener('click', function() {
+            photoBtn.addEventListener('click', function () {
                 if (!captureState.active) {
                     if (window.GRACEX_Utils) GRACEX_Utils.showToast('Start capture first', 'info');
                     return;
@@ -1733,7 +2038,7 @@
         }
 
         if (stopBtn) {
-            stopBtn.addEventListener('click', function() {
+            stopBtn.addEventListener('click', function () {
                 captureState.active = false;
                 if (indicator) indicator.textContent = '⚪ Ready';
                 if (indicator) indicator.style.color = '';
@@ -1842,7 +2147,7 @@
                 lines.push('  Control Measures:');
                 data.controls.forEach(c => lines.push(`    ✓ ${c}`));
                 lines.push('');
-                
+
                 if (data.compliance) {
                     lines.push(`  ${data.compliance}`);
                     lines.push('');
@@ -1899,7 +2204,7 @@
             lines.push('');
 
             let step = 1;
-            
+
             // Pre-start
             lines.push(`${step}. PRE-START`);
             lines.push('   • Review RAMS with all operatives');
@@ -1925,7 +2230,7 @@
                 };
 
                 lines.push(`${step}. ${labels[activity] || activity.toUpperCase()}`);
-                
+
                 const data = HAZARDS_DATA[activity];
                 if (data) {
                     data.controls.slice(0, 3).forEach(c => {
@@ -1954,7 +2259,7 @@
         if (generateMethodBtn) generateMethodBtn.addEventListener('click', generateMethodStatement);
 
         if (exportBtn) {
-            exportBtn.addEventListener('click', function() {
+            exportBtn.addEventListener('click', function () {
                 const content = output?.textContent;
                 if (!content || content.includes('Select work activities')) {
                     if (window.GRACEX_Utils) GRACEX_Utils.showToast('Generate RAMS first', 'error');
@@ -1992,7 +2297,7 @@
                 return library.slice(0, 10); // Show recent 10
             }
             const q = query.toLowerCase();
-            return library.filter(entry => 
+            return library.filter(entry =>
                 entry.symptoms?.toLowerCase().includes(q) ||
                 entry.cause?.toLowerCase().includes(q) ||
                 entry.tags?.toLowerCase().includes(q) ||
@@ -2002,7 +2307,7 @@
 
         function renderResults(entries) {
             if (!results) return;
-            
+
             if (entries.length === 0) {
                 results.innerHTML = '<p class="hint">No matching entries found. Try a different search or add a new entry.</p>';
                 return;
@@ -2029,32 +2334,32 @@
             results.innerHTML = html;
         }
 
-        searchBtn.addEventListener('click', function() {
+        searchBtn.addEventListener('click', function () {
             const query = searchInput?.value || '';
             const entries = searchLibrary(query);
             renderResults(entries);
         });
 
         if (searchInput) {
-            searchInput.addEventListener('keypress', function(e) {
+            searchInput.addEventListener('keypress', function (e) {
                 if (e.key === 'Enter') searchBtn.click();
             });
         }
 
         if (addBtn && addForm) {
-            addBtn.addEventListener('click', function() {
+            addBtn.addEventListener('click', function () {
                 addForm.style.display = 'block';
             });
         }
 
         if (cancelBtn && addForm) {
-            cancelBtn.addEventListener('click', function() {
+            cancelBtn.addEventListener('click', function () {
                 addForm.style.display = 'none';
             });
         }
 
         if (saveBtn) {
-            saveBtn.addEventListener('click', function() {
+            saveBtn.addEventListener('click', function () {
                 const symptoms = document.getElementById('ps-symptoms')?.value?.trim();
                 const cause = document.getElementById('ps-cause')?.value?.trim();
                 const fix = document.getElementById('ps-fix')?.value?.trim();
@@ -2130,7 +2435,7 @@
         }
 
         if (saveBtn) {
-            saveBtn.addEventListener('click', function() {
+            saveBtn.addEventListener('click', function () {
                 const name = document.getElementById('project-name')?.value?.trim();
                 const address = document.getElementById('project-address')?.value?.trim();
 
@@ -2158,21 +2463,21 @@
                         method: 'POST',
                         headers: headers,
                         body: JSON.stringify({ name: name, address: address || '' })
-                    }).then(function(r) { return r.json(); }).then(function(data) {
+                    }).then(function (r) { return r.json(); }).then(function (data) {
                         if (data.success && data.id) {
                             fetch(builderApiBase + '/api/builder/scope-pack', {
                                 method: 'POST',
                                 headers: headers,
                                 body: JSON.stringify({ projectId: data.id, items: scopePack.items || [], assumptions: [], rooms: [] })
-                            }).catch(function() {});
+                            }).catch(function () { });
                         }
-                    }).catch(function() {});
+                    }).catch(function () { });
                 }
             });
         }
 
         if (loadBtn) {
-            loadBtn.addEventListener('click', function() {
+            loadBtn.addEventListener('click', function () {
                 const projects = getProjects();
                 if (projects.length === 0) {
                     if (window.GRACEX_Utils) GRACEX_Utils.showToast('No saved projects', 'info');
@@ -2196,10 +2501,10 @@
         }
 
         if (listBtn && listPanel && savedList) {
-            listBtn.addEventListener('click', function() {
+            listBtn.addEventListener('click', function () {
                 const projects = getProjects();
                 listPanel.style.display = listPanel.style.display === 'none' ? 'block' : 'none';
-                
+
                 if (projects.length === 0) {
                     savedList.innerHTML = '<li class="hint">No saved projects</li>';
                     return;
@@ -2233,7 +2538,7 @@
         initUnitConverter();
         initProjectSaveLoad();
         initRoomTemplates();
-        
+
         // NEW FEATURES
         initTaskPicker();
         initScopePack();
@@ -2241,7 +2546,7 @@
         initRAMSGenerator();
         initProblemSolved();
         initProjectMemory();
-        
+
         console.log('[GRACEX BUILDER] v2.0 initialized with full feature set');
     }
 
