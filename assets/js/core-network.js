@@ -5,28 +5,28 @@
    © 2026 Zachary Charles Anthony Crockett
    ============================================ */
 
-(function() {
+(function () {
     'use strict';
-    
+
     // Network configuration
     const NetworkConfig = {
         // API Base URLs
         brainAPI: window.GRACEX_BRAIN_API || 'http://localhost:3000/api/brain',
         sportAPI: window.GRACEX_SPORT_API || 'http://localhost:3000/api/sport',
-        
+
         // Timeouts
-        defaultTimeout: 30000,
+        defaultTimeout: 120000,
         longTimeout: 60000,
-        
+
         // Retry policy
         maxRetries: 3,
         retryDelay: 1000,
-        
+
         // Status
         online: navigator.onLine,
         coreReady: false
     };
-    
+
     // ============================================
     // CORE NETWORK MANAGER
     // ============================================
@@ -37,7 +37,7 @@
             this.apiCache = new Map();
             this.setupOnlineDetection();
         }
-        
+
         // ============================================
         // ONLINE/OFFLINE DETECTION
         // ============================================
@@ -50,7 +50,7 @@
                 }
                 this.processQueue();
             });
-            
+
             window.addEventListener('offline', () => {
                 NetworkConfig.online = false;
                 console.warn('[CORE] Network connection lost');
@@ -59,18 +59,18 @@
                 }
             });
         }
-        
+
         // ============================================
         // CORE API REQUEST - All modules use this
         // ============================================
         async request(endpoint, options = {}) {
             const requestId = `${Date.now()}-${Math.random()}`;
-            
+
             // Check if online
             if (!NetworkConfig.online) {
                 return this.handleOfflineRequest(endpoint, options);
             }
-            
+
             // Build request config
             const config = {
                 method: options.method || 'POST',
@@ -82,27 +82,27 @@
                 },
                 timeout: options.timeout || NetworkConfig.defaultTimeout
             };
-            
+
             if (options.body) {
                 config.body = JSON.stringify(options.body);
             }
-            
+
             // Log request
             console.log(`[CORE] API Request: ${endpoint}`, {
                 method: config.method,
                 requestId
             });
-            
+
             try {
                 // Execute request with timeout
                 const response = await this.fetchWithTimeout(endpoint, config);
-                
+
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
-                
+
                 const data = await response.json();
-                
+
                 // Cache successful responses
                 if (options.cache) {
                     this.apiCache.set(endpoint, {
@@ -110,21 +110,21 @@
                         timestamp: Date.now()
                     });
                 }
-                
+
                 return {
                     success: true,
                     data,
                     requestId
                 };
-                
+
             } catch (error) {
                 console.error(`[CORE] API Error:`, error);
-                
+
                 // Retry logic
                 if (options.retry && this.shouldRetry(error, options.retryCount || 0)) {
                     return this.retryRequest(endpoint, options);
                 }
-                
+
                 return {
                     success: false,
                     error: error.message,
@@ -132,7 +132,7 @@
                 };
             }
         }
-        
+
         // ============================================
         // FETCH WITH TIMEOUT
         // ============================================
@@ -141,41 +141,41 @@
                 const timeout = setTimeout(() => {
                     reject(new Error('Request timeout'));
                 }, config.timeout);
-                
+
                 fetch(url, config)
                     .then(resolve)
                     .catch(reject)
                     .finally(() => clearTimeout(timeout));
             });
         }
-        
+
         // ============================================
         // RETRY LOGIC
         // ============================================
         shouldRetry(error, retryCount) {
             if (retryCount >= NetworkConfig.maxRetries) return false;
             if (!NetworkConfig.online) return false;
-            
+
             // Retry on network errors, not on client errors
-            return error.message.includes('timeout') || 
-                   error.message.includes('Failed to fetch') ||
-                   error.message.includes('Network');
+            return error.message.includes('timeout') ||
+                error.message.includes('Failed to fetch') ||
+                error.message.includes('Network');
         }
-        
+
         async retryRequest(endpoint, options) {
             const retryCount = (options.retryCount || 0) + 1;
             const delay = NetworkConfig.retryDelay * retryCount;
-            
+
             console.log(`[CORE] Retrying request (${retryCount}/${NetworkConfig.maxRetries})`);
-            
+
             await this.sleep(delay);
-            
+
             return this.request(endpoint, {
                 ...options,
                 retryCount
             });
         }
-        
+
         // ============================================
         // OFFLINE HANDLING
         // ============================================
@@ -191,48 +191,48 @@
                     timestamp: cached.timestamp
                 };
             }
-            
+
             // Queue for later
             if (options.queue) {
                 this.requestQueue.push({ endpoint, options });
                 console.log('[CORE] Request queued for when online');
             }
-            
+
             return {
                 success: false,
                 error: 'Offline: No internet connection',
                 queued: !!options.queue
             };
         }
-        
+
         // ============================================
         // PROCESS QUEUED REQUESTS
         // ============================================
         async processQueue() {
             if (this.requestQueue.length === 0) return;
-            
+
             console.log(`[CORE] Processing ${this.requestQueue.length} queued requests`);
-            
+
             const queue = [...this.requestQueue];
             this.requestQueue = [];
-            
+
             for (const { endpoint, options } of queue) {
                 await this.request(endpoint, options);
             }
         }
-        
+
         // ============================================
         // UTILITY METHODS
         // ============================================
         sleep(ms) {
             return new Promise(resolve => setTimeout(resolve, ms));
         }
-        
+
         clearCache() {
             this.apiCache.clear();
             console.log('[CORE] API cache cleared');
         }
-        
+
         getStatus() {
             return {
                 online: NetworkConfig.online,
@@ -243,7 +243,7 @@
             };
         }
     }
-    
+
     // ============================================
     // MODULE PROXY - Secure API access
     // ============================================
@@ -252,7 +252,7 @@
             this.moduleName = moduleName;
             this.network = window.GRACEX_NETWORK;
         }
-        
+
         async callAPI(endpoint, data, options = {}) {
             // Validate module is registered
             if (!this.isAuthorized()) {
@@ -262,7 +262,7 @@
                     error: 'Module not authorized'
                 };
             }
-            
+
             // Route through Core
             return this.network.request(endpoint, {
                 body: {
@@ -273,7 +273,7 @@
                 ...options
             });
         }
-        
+
         isAuthorized() {
             // Check if module is in registered modules list
             const registeredModules = [
@@ -285,31 +285,31 @@
             return registeredModules.includes(this.moduleName);
         }
     }
-    
+
     // ============================================
     // INITIALIZE CORE NETWORK
     // ============================================
     const network = new CoreNetworkManager();
     NetworkConfig.coreReady = true;
-    
+
     // Export to window
     window.GRACEX_NETWORK = network;
     window.GRACEX_NETWORK_CONFIG = NetworkConfig;
-    
+
     // Helper function for modules to get proxy
     window.GRACEX_GetModuleProxy = (moduleName) => {
         return new ModuleProxy(moduleName);
     };
-    
+
     console.log('[CORE] Network Manager initialized', network.getStatus());
-    
+
     // Announce ready
     if (window.GRACEX_TTS) {
         setTimeout(() => {
             GRACEX_TTS.speak('Core network systems online');
         }, 2000);
     }
-    
+
 })();
 
 /* ============================================
