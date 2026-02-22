@@ -56,7 +56,7 @@
       bootScreen.id = 'gracex-boot-screen';
       bootScreen.innerHTML = `
         <!-- Boot Background Video -->
-        <video class="boot-bg-video" src="assets/video/gracex-boot.mp4" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
+        <video class="boot-bg-video" src="assets/video/gracex-boot.mp4" autoplay muted playsinline preload="auto" aria-hidden="true"></video>
 
         <!-- Animated Grid Background -->
         <div class="boot-grid"></div>
