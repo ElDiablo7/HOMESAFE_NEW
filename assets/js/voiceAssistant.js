@@ -3,7 +3,7 @@
 // Extended listening duration for natural conversation
 // ------------------------------
 
-(function() {
+(function () {
   if (window.GRACEX_VoiceAssistant) {
     return;
   }
@@ -21,7 +21,7 @@
   }
 
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  
+
   if (!SpeechRecognition) {
     console.warn('[GRACEX VOICE ASSISTANT] Speech recognition not supported');
     window.GRACEX_VoiceAssistant = { isSupported: false };
@@ -31,7 +31,7 @@
   // ============================================
   // CONFIGURATION
   // ============================================
-  
+
   const CONFIG = {
     // Wake words - includes both "Grace" and "Gracie" variants
     wakeWords: [
@@ -50,7 +50,7 @@
   // ============================================
   // STATE
   // ============================================
-  
+
   let isListening = false;
   let isActiveMode = false;
   let wakeWordRecognizer = null;
@@ -64,7 +64,7 @@
   // ============================================
   // UI - Status Indicator
   // ============================================
-  
+
   function createStatusIndicator() {
     if (document.getElementById('gracex-voice-status')) {
       return document.getElementById('gracex-voice-status');
@@ -91,7 +91,7 @@
       box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
       transition: all 0.3s ease;
     `;
-    
+
     indicator.innerHTML = `
       <div class="pulse-dot" style="
         width: 12px;
@@ -176,10 +176,10 @@
   // ============================================
   // WAKE WORD DETECTION
   // ============================================
-  
+
   function initWakeWordListener() {
     if (wakeWordRecognizer) {
-      try { wakeWordRecognizer.stop(); } catch(e) {}
+      try { wakeWordRecognizer.stop(); } catch (e) { }
     }
 
     wakeWordRecognizer = new SpeechRecognition();
@@ -206,7 +206,7 @@
           console.log('[GRACEX VOICE] Wake word detected:', transcript);
 
           // Stop wake word listener before speaking/active mode
-          try { wakeWordRecognizer.stop(); } catch(e) {}
+          try { wakeWordRecognizer.stop(); } catch (e) { }
 
           const go = () => startActiveListening();
 
@@ -229,7 +229,7 @@
       // Restart wake word listening after error
       if (CONFIG.backgroundListening && !isActiveMode) {
         setTimeout(() => {
-          try { startWakeWordListening(); } catch(e) {}
+          try { startWakeWordListening(); } catch (e) { }
         }, 1000);
       }
     };
@@ -238,7 +238,7 @@
       // Restart wake word listening if not in active mode
       if (CONFIG.backgroundListening && !isActiveMode) {
         setTimeout(() => {
-          try { startWakeWordListening(); } catch(e) {}
+          try { startWakeWordListening(); } catch (e) { }
         }, 500);
       }
     };
@@ -246,12 +246,12 @@
 
   function startWakeWordListening() {
     if (isActiveMode) return;
-    
+
     try {
       initWakeWordListener();
       wakeWordRecognizer.start();
       isListening = true;
-        console.log('[GRACEX VOICE] Wake word listener active - say "Hey Grace" or "Gracie"');
+      console.log('[GRACEX VOICE] Wake word listener active - say "Hey Grace" or "Gracie"');
     } catch (err) {
       console.warn('[GRACEX VOICE] Could not start wake word listener:', err);
     }
@@ -259,7 +259,7 @@
 
   function stopWakeWordListening() {
     if (wakeWordRecognizer) {
-      try { wakeWordRecognizer.stop(); } catch(e) {}
+      try { wakeWordRecognizer.stop(); } catch (e) { }
     }
     isListening = false;
   }
@@ -267,7 +267,7 @@
   // ============================================
   // ACTIVE LISTENING MODE
   // ============================================
-  
+
   function startActiveListening() {
     // While listening, stop any speech to prevent talking-over / cutting you off
     if (window.GRACEX_TTS && typeof window.GRACEX_TTS.stop === 'function') window.GRACEX_TTS.stop();
@@ -276,7 +276,7 @@
 
     // Stop any existing command recognizer
     if (commandRecognizer) {
-      try { commandRecognizer.stop(); } catch(e) {}
+      try { commandRecognizer.stop(); } catch (e) { }
     }
 
     commandRecognizer = new SpeechRecognition();
@@ -292,7 +292,7 @@
 
     commandRecognizer.onresult = (event) => {
       lastSpeechTime = Date.now();
-      
+
       // Reset silence timer
       if (silenceTimer) clearTimeout(silenceTimer);
       silenceTimer = setTimeout(() => {
@@ -310,7 +310,7 @@
         // Still inside the active window — keep listening.
         // Re-arm the timer so we can keep checking without stopping the recognizer.
         if (silenceTimer) clearTimeout(silenceTimer);
-        silenceTimer = setTimeout(() => {}, 0); // no-op; real timeout is controlled by the main active timer
+        silenceTimer = setTimeout(() => { }, 0); // no-op; real timeout is controlled by the main active timer
       }, CONFIG.silenceTimeout);
 
       // Build transcript
@@ -335,7 +335,7 @@
       if (event.error !== 'no-speech' && event.error !== 'aborted') {
         console.warn('[GRACEX VOICE] Command recognition error:', event.error);
       }
-      
+
       // If we have partial transcript, process it
       if (!hasProcessed && finalTranscript.trim()) {
         hasProcessed = true;
@@ -356,16 +356,16 @@
     try {
       commandRecognizer.start();
       console.log('[GRACEX VOICE] Active listening started - speak now');
-      
+
       // Set maximum listen duration
       activeTimeout = setTimeout(() => {
         if (!hasProcessed && finalTranscript.trim()) {
-        hasProcessed = true;
-        processCommand(finalTranscript.trim());
-      }
-      endActiveListening();
+          hasProcessed = true;
+          processCommand(finalTranscript.trim());
+        }
+        endActiveListening();
       }, CONFIG.activeListenDuration);
-      
+
     } catch (err) {
       console.warn('[GRACEX VOICE] Could not start active listening:', err);
       endActiveListening();
@@ -374,18 +374,18 @@
 
   function endActiveListening() {
     isActiveMode = false;
-    
+
     // Clear timers
     if (activeTimeout) clearTimeout(activeTimeout);
     if (silenceTimer) clearTimeout(silenceTimer);
-    
+
     // Stop command recognizer
     if (commandRecognizer) {
-      try { commandRecognizer.stop(); } catch(e) {}
+      try { commandRecognizer.stop(); } catch (e) { }
     }
-    
+
     updateStatus('hidden');
-    
+
     // Restart wake word listening
     if (CONFIG.backgroundListening) {
       setTimeout(() => {
@@ -397,7 +397,7 @@
   // ============================================
   // COMMAND PROCESSING
   // ============================================
-  
+
   async function processCommand(text) {
     console.log('[GRACEX VOICE] Processing command:', text);
     updateStatus('processing', 'Thinking...');
@@ -420,20 +420,20 @@
     // Try to get response from brain
     let result;
     try {
-      if (window.GraceX && typeof window.GraceX.think === 'function') {
-        const res = window.GraceX.think({
-          text: cleanText,
-          module: 'core',
-          mode: 'voice'
-        });
-        result = res.reply || "I heard you, but I'm not sure how to respond.";
-      } else if (typeof window.runModuleBrain === 'function') {
+      if (typeof window.runModuleBrain === 'function') {
         const reply = window.runModuleBrain('core', cleanText);
         if (reply && typeof reply.then === 'function') {
           result = await reply;
         } else {
           result = reply;
         }
+      } else if (window.GraceX && typeof window.GraceX.think === 'function') {
+        const res = window.GraceX.think({
+          text: cleanText,
+          module: 'core',
+          mode: 'voice'
+        });
+        result = res.reply || "I heard you, but I'm not sure how to respond.";
       } else {
         result = "I heard: " + cleanText + ". But my brain isn't fully connected right now.";
       }
@@ -467,11 +467,11 @@
   // ============================================
   // MANUAL ACTIVATION (for mic buttons)
   // ============================================
-  
+
   function manualActivate() {
     // Stop wake word listener
     stopWakeWordListening();
-    
+
     // Start active listening directly
     if (window.GRACEX_TTS && window.GRACEX_TTS.isEnabled()) {
       window.GRACEX_TTS.speak("I'm listening.").then(() => {
@@ -487,16 +487,16 @@
   // ============================================
   // PUBLIC API
   // ============================================
-  
+
   function start() {
     if (!SpeechRecognition) {
       console.warn('[GRACEX VOICE] Speech recognition not supported');
       return false;
     }
-    
+
     createStatusIndicator();
     startWakeWordListening();
-      console.log('[GRACEX VOICE ASSISTANT] Started - say "Hey Grace" or "Gracie" to activate');
+    console.log('[GRACEX VOICE ASSISTANT] Started - say "Hey Grace" or "Gracie" to activate');
     return true;
   }
 
@@ -522,7 +522,7 @@
   // ============================================
   // INITIALIZATION
   // ============================================
-  
+
   window.GRACEX_VoiceAssistant = {
     start,
     stop,
