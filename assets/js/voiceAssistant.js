@@ -420,6 +420,21 @@
     // Try to get response from brain
     let result;
     try {
+      // Step 1: Immediately give offline feedback so the user isn't hanging
+      let offlineFeedback = null;
+      if (window.GraceX && typeof window.GraceX.route === 'function') {
+        const routeRes = window.GraceX.route({
+          text: cleanText,
+          module: 'core',
+          mode: 'voice'
+        });
+        offlineFeedback = routeRes.reply || "Thinking...";
+        if (window.GRACEX_TTS && window.GRACEX_TTS.isEnabled()) {
+          window.GRACEX_TTS.speak(offlineFeedback);
+        }
+      }
+
+      // Step 2: Now wait for the deep LLM response
       if (typeof window.runModuleBrain === 'function') {
         const reply = window.runModuleBrain('core', cleanText);
         if (reply && typeof reply.then === 'function') {
@@ -427,15 +442,8 @@
         } else {
           result = reply;
         }
-      } else if (window.GraceX && typeof window.GraceX.think === 'function') {
-        const res = window.GraceX.think({
-          text: cleanText,
-          module: 'core',
-          mode: 'voice'
-        });
-        result = res.reply || "I heard you, but I'm not sure how to respond.";
       } else {
-        result = "I heard: " + cleanText + ". But my brain isn't fully connected right now.";
+        result = offlineFeedback || "I heard: " + cleanText + ". But my brain isn't fully connected right now.";
       }
     } catch (err) {
       console.warn('[GRACEX VOICE] Brain error:', err);
@@ -456,9 +464,12 @@
 
     // Speak the response
     if (window.GRACEX_TTS && window.GRACEX_TTS.isEnabled() && result) {
-      await window.GRACEX_TTS.speak(result).catch(err => {
-        console.warn('[GRACEX VOICE] TTS error:', err);
-      });
+      // If the LLM result is identical to the offline feedback, don't repeat it
+      if (result !== offlineFeedback) {
+        await window.GRACEX_TTS.speak(result).catch(err => {
+          console.warn('[GRACEX VOICE] TTS error:', err);
+        });
+      }
     }
 
     updateStatus('hidden');
