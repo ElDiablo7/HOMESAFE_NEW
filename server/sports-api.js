@@ -60,9 +60,10 @@ const usage = {
  */
 function makeRequest(url, options = {}) {
   return new Promise((resolve, reject) => {
-    const protocol = url.startsWith('https') ? https : http;
+    const parsedUrl = new URL(url);
+    const protocol = parsedUrl.protocol === 'https:' ? https : http;
 
-    const req = protocol.request(url, options, (res) => {
+    const req = protocol.request(parsedUrl, options, (res) => {
       let data = '';
       res.on('data', chunk => data += chunk);
       res.on('end', () => {

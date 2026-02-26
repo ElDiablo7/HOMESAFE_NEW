@@ -60,9 +60,10 @@ const usage = {
  */
 function makeRequest(url, options = {}) {
   return new Promise((resolve, reject) => {
-    const protocol = url.startsWith('https') ? https : http;
-    
-    const req = protocol.request(url, options, (res) => {
+    const parsedUrl = new URL(url);
+    const protocol = parsedUrl.protocol === 'https:' ? https : http;
+
+    const req = protocol.request(parsedUrl, options, (res) => {
       let data = '';
       res.on('data', chunk => data += chunk);
       res.on('end', () => {
@@ -77,17 +78,17 @@ function makeRequest(url, options = {}) {
         }
       });
     });
-    
+
     req.on('error', reject);
     req.setTimeout(15000, () => {
       req.destroy();
       reject(new Error('Request timeout'));
     });
-    
+
     if (options.method === 'POST' && options.body) {
       req.write(options.body);
     }
-    
+
     req.end();
   });
 }
@@ -144,7 +145,7 @@ async function getFootballFromFootballData() {
   }
 
   trackApiCall('footballData');
-  
+
   const url = 'https://api.football-data.org/v4/matches';
   const options = {
     headers: { 'X-Auth-Token': apiKey }
@@ -156,7 +157,7 @@ async function getFootballFromFootballData() {
 
 function formatFootballDataMatches(data) {
   if (!data.matches) return [];
-  
+
   return data.matches.slice(0, 20).map(match => ({
     id: match.id,
     league: match.competition.name,
@@ -195,7 +196,7 @@ async function getFootballFromRapidAPI() {
 
 function formatRapidAPIFootball(data) {
   if (!data.response) return [];
-  
+
   return data.response.slice(0, 20).map(match => ({
     id: match.fixture.id,
     league: match.league.name,
@@ -214,7 +215,7 @@ function formatRapidAPIFootball(data) {
  */
 async function getFootballFromTheSportsDB() {
   const apiKey = KEYS.theSportsDb || '3'; // '3' is the free tier key
-  
+
   // TheSportsDB doesn't have live scores in free tier, use fixtures
   const url = `https://www.thesportsdb.com/api/v1/json/${apiKey}/eventsnextleague.php?id=4328`;
   const data = await makeRequest(url);
@@ -223,7 +224,7 @@ async function getFootballFromTheSportsDB() {
 
 function formatTheSportsDBMatches(data) {
   if (!data.events) return [];
-  
+
   return data.events.slice(0, 20).map(match => ({
     id: match.idEvent,
     league: match.strLeague,
@@ -247,14 +248,14 @@ function formatTheSportsDBMatches(data) {
 async function getBasketballFromBalldontlie() {
   const today = new Date().toISOString().split('T')[0];
   const url = `https://www.balldontlie.io/api/v1/games?dates[]=${today}`;
-  
+
   const data = await makeRequest(url);
   return formatBalldontlieGames(data);
 }
 
 function formatBalldontlieGames(data) {
   if (!data.data) return [];
-  
+
   return data.data.map(game => ({
     id: game.id,
     league: 'NBA',
@@ -279,14 +280,14 @@ async function getBasketballFromNBAOfficial() {
       'Referer': 'https://www.nba.com/'
     }
   };
-  
+
   const data = await makeRequest(url, options);
   return formatNBAOfficialGames(data);
 }
 
 function formatNBAOfficialGames(data) {
   if (!data.scoreboard || !data.scoreboard.games) return [];
-  
+
   return data.scoreboard.games.map(game => ({
     id: game.gameId,
     league: 'NBA',
@@ -318,14 +319,14 @@ async function getOddsFromTheOddsAPI(sport = 'soccer_epl') {
   const regions = process.env.THE_ODDS_API_REGIONS || 'uk';
   const markets = process.env.THE_ODDS_API_MARKETS || 'h2h';
   const url = `https://api.the-odds-api.com/v4/sports/${sport}/odds/?apiKey=${apiKey}&regions=${regions}&markets=${markets}`;
-  
+
   const data = await makeRequest(url);
   return formatTheOddsAPIData(data);
 }
 
 function formatTheOddsAPIData(data) {
   if (!Array.isArray(data)) return [];
-  
+
   return data.slice(0, 10).map(match => ({
     id: match.id,
     homeTeam: match.home_team,
@@ -351,7 +352,7 @@ async function getOddsFromOddsAPIIO(sport = 'football') {
 
 function formatOddsAPIIOData(data) {
   if (!data.data) return [];
-  
+
   return data.data.map(match => ({
     id: match.id,
     homeTeam: match.home,
@@ -378,7 +379,7 @@ function formatErgastF1Data(data) {
   if (!data.MRData || !data.MRData.RaceTable || !data.MRData.RaceTable.Races) {
     return [];
   }
-  
+
   const race = data.MRData.RaceTable.Races[0];
   return {
     season: race.season,
@@ -415,14 +416,14 @@ async function getF1FromOpenF1() {
 async function getBaseballFromMLBOfficial() {
   const today = new Date().toISOString().split('T')[0];
   const url = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${today}`;
-  
+
   const data = await makeRequest(url);
   return formatMLBOfficialGames(data);
 }
 
 function formatMLBOfficialGames(data) {
   if (!data.dates || data.dates.length === 0) return [];
-  
+
   const games = data.dates[0].games || [];
   return games.map(game => ({
     id: game.gamePk,
@@ -458,7 +459,7 @@ async function getCricketFromCricAPI() {
 
 function formatCricAPIMatches(data) {
   if (!data.data) return [];
-  
+
   return data.data.slice(0, 10).map(match => ({
     id: match.id,
     name: match.name,
@@ -510,7 +511,7 @@ async function getFootballLiveScores() {
 
   try {
     let data;
-    
+
     switch (CONFIG.football) {
       case 'football-data':
         data = await getFootballFromFootballData();
@@ -528,17 +529,17 @@ async function getFootballLiveScores() {
         console.warn(`Unknown football provider: ${CONFIG.football}, using mock`);
         data = getMockFootballData();
     }
-    
+
     setCache(cacheKey, data);
     return data;
   } catch (error) {
     console.error(`Football API error (${CONFIG.football}):`, error.message);
-    
+
     if (CONFIG.fallbackMode === 'mock') {
       console.log('📋 Falling back to mock data');
       return getMockFootballData();
     }
-    
+
     throw error;
   }
 }
@@ -557,7 +558,7 @@ async function getBasketballLiveScores() {
 
   try {
     let data;
-    
+
     switch (CONFIG.basketball) {
       case 'balldontlie':
         data = await getBasketballFromBalldontlie();
@@ -574,7 +575,7 @@ async function getBasketballLiveScores() {
       default:
         data = getMockBasketballData();
     }
-    
+
     setCache(cacheKey, data);
     return data;
   } catch (error) {
@@ -597,7 +598,7 @@ async function getBettingOdds(sport = 'soccer_epl') {
 
   try {
     let data;
-    
+
     switch (CONFIG.odds) {
       case 'theoddsapi':
         data = await getOddsFromTheOddsAPI(sport);
@@ -611,7 +612,7 @@ async function getBettingOdds(sport = 'soccer_epl') {
       default:
         data = getMockOddsData();
     }
-    
+
     setCache(cacheKey, data);
     return data;
   } catch (error) {
@@ -630,7 +631,7 @@ async function getF1Data() {
 
   try {
     let data;
-    
+
     switch (CONFIG.f1) {
       case 'ergast':
         data = await getF1FromErgast();
@@ -641,7 +642,7 @@ async function getF1Data() {
       default:
         data = await getF1FromErgast(); // Default to free Ergast
     }
-    
+
     setCache(cacheKey, data);
     return data;
   } catch (error) {
@@ -660,7 +661,7 @@ async function getBaseballLiveScores() {
 
   try {
     let data;
-    
+
     switch (CONFIG.baseball) {
       case 'mlb-official':
         data = await getBaseballFromMLBOfficial();
@@ -671,7 +672,7 @@ async function getBaseballLiveScores() {
       default:
         data = await getBaseballFromMLBOfficial();
     }
-    
+
     setCache(cacheKey, data);
     return data;
   } catch (error) {
@@ -776,7 +777,7 @@ async function getTennisLiveScores() {
   const cacheKey = 'tennis_live';
   const cached = getCached(cacheKey);
   if (cached) return cached;
-  
+
   const data = getMockTennisData();
   setCache(cacheKey, data);
   return data;
@@ -786,7 +787,7 @@ async function getRacingCards() {
   const cacheKey = 'racing_cards';
   const cached = getCached(cacheKey);
   if (cached) return cached;
-  
+
   const data = getMockRacingData();
   setCache(cacheKey, data);
   return data;
