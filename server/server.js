@@ -834,35 +834,29 @@ app.post('/api/brain', rateLimitMiddleware, async (req, res) => {
   let liveDataInjection = '';
   if (module === 'sport') {
     try {
+      // Use cached data if available to avoid blocking
       const liveScores = await sportsAPI.getFootballLiveScores();
-      liveDataInjection = `\n\n## LIVE SPORTS DATA (CURRENT STATUS)\n${JSON.stringify(liveScores, null, 2)}`;
+      if (liveScores && liveScores.length > 0) {
+        liveDataInjection = `\n\n## LIVE SPORTS DATA (CURRENT STATUS)\n${JSON.stringify(liveScores.slice(0, 5), null, 2)}`;
+      }
     } catch (e) {
-      liveDataInjection = `\n\n## LIVE SPORTS DATA\nCurrently unavailable. Continue with general knowledge.`;
+      console.warn('[BRAIN] Sports API lookup failed, continuing without live data');
     }
   }
 
   const fullSystemPrompt = `${GRACEX_SYSTEM_PROMPT}\n\n## Current Module Context\n${moduleContext}${liveDataInjection}`;
 
-  // Sanitize messages and inject system prompt
+  // Sanitize messages and inject system prompt efficiently
   const sanitizedMessages = [];
 
-  // First, add/replace the system message with our GRACE-X identity
-  const existingSystem = messages.find(m => m.role === 'system');
-  if (existingSystem) {
-    // Combine existing system context with our identity
-    sanitizedMessages.push({
-      role: 'system',
-      content: `${fullSystemPrompt}\n\n## Additional Context\n${sanitizeInput(existingSystem.content)}`
-    });
-  } else {
-    // Just use our system prompt
-    sanitizedMessages.push({
-      role: 'system',
-      content: fullSystemPrompt
-    });
-  }
+  // Add our master system prompt
+  sanitizedMessages.push({
+    role: 'system',
+    content: fullSystemPrompt
+  });
 
-  // Add the rest of the messages (excluding any system messages)
+  // Add the rest of the messages, but filter out redundant system messages from frontend
+  // This prevents double-stacking the system prompt which slows down local LLMs
   messages.filter(m => m.role !== 'system').forEach(m => {
     sanitizedMessages.push({
       role: m.role,
