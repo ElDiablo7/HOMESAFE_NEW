@@ -30,7 +30,8 @@ const https = require('https');
 
 // Routes and Middleware Requires
 const authRoutes = require('./routes/auth');
-const { optionalJwt } = require('./middleware/auth');
+const authMiddleware = require('./middleware/auth');
+const { optionalJwt } = authMiddleware;
 const builderRoutes = require('./routes/builder');
 const siteopsRoutes = require('./routes/siteops');
 const sportsAPI = require('./sports-api');

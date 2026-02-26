@@ -4,7 +4,7 @@
 // COMPREHENSIVE WIRING FIX - V7.1
 // ------------------------------
 
-(function() {
+(function () {
   'use strict';
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -33,7 +33,7 @@
     const standardId = moduleId + '-brain-' + (type === 'send' ? 'send' : type);
     const standard = document.getElementById(standardId);
     if (standard) return standard;
-    
+
     // Try fallback
     if (fallbackId) {
       return document.getElementById(fallbackId);
@@ -42,25 +42,25 @@
   }
 
   // Initialize v5 brain panel for a module
-  window.initBrainV5 = function(moduleId, options) {
+  window.initBrainV5 = function (moduleId, options) {
     options = options || {};
     const panel = document.getElementById(moduleId + '-brain-panel');
-    
+
     // Handle button ID variations
-    const input = getElement(moduleId, 'input') || 
-                  document.getElementById(moduleId + '-brain-input');
-    const send = getElement(moduleId, 'send') || 
-                 document.getElementById(moduleId + '-brain-send') || 
-                 document.getElementById(moduleId + '-brain-btn');
-    const output = getElement(moduleId, 'output') || 
-                   document.getElementById(moduleId + '-brain-output');
-    const clearBtn = getElement(moduleId, 'clear') || 
-                     document.getElementById(moduleId + '-brain-clear');
+    const input = getElement(moduleId, 'input') ||
+      document.getElementById(moduleId + '-brain-input');
+    const send = getElement(moduleId, 'send') ||
+      document.getElementById(moduleId + '-brain-send') ||
+      document.getElementById(moduleId + '-brain-btn');
+    const output = getElement(moduleId, 'output') ||
+      document.getElementById(moduleId + '-brain-output');
+    const clearBtn = getElement(moduleId, 'clear') ||
+      document.getElementById(moduleId + '-brain-clear');
 
     if (!panel || !input || !send || !output) {
       // Only log if we found at least one element (partial wiring)
       if (panel || input || send || output) {
-        console.warn('[GRACEX Brain V5] Partial elements found for', moduleId, 
+        console.warn('[GRACEX Brain V5] Partial elements found for', moduleId,
           { panel: !!panel, input: !!input, send: !!send, output: !!output });
       }
       return false;
@@ -132,10 +132,10 @@
         } else {
           result = "Brain system not available.";
         }
-        
+
         setLoading(false);
         appendMessage('ai', result);
-        
+
         // Speak the response using TTS
         if (window.GRACEX_TTS && window.GRACEX_TTS.isEnabled()) {
           window.GRACEX_TTS.speak(result).catch(err => {
@@ -151,7 +151,7 @@
 
     // Clear conversation
     if (clearBtn) {
-      clearBtn.addEventListener('click', function() {
+      clearBtn.addEventListener('click', function () {
         output.innerHTML = '';
         if (window.clearBrainHistory) {
           window.clearBrainHistory(moduleId);
@@ -170,7 +170,7 @@
     send.addEventListener('click', handleQuestion);
 
     // Enter key
-    input.addEventListener('keydown', function(e) {
+    input.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
         handleQuestion();
@@ -184,7 +184,7 @@
   };
 
   // setupModuleBrain - handles explicit element IDs (used by builder, siteops, etc.)
-  window.setupModuleBrain = function(moduleId, options) {
+  window.setupModuleBrain = function (moduleId, options) {
     options = options || {};
     const panel = document.getElementById(options.panelId || moduleId + '-brain-panel');
     const input = document.getElementById(options.inputId || moduleId + '-brain-input');
@@ -255,13 +255,13 @@
         } else {
           reply = "Brain system not available.";
         }
-        
+
         // Remove thinking state
         if (thinkingRow.parentNode) {
           thinkingRow.parentNode.removeChild(thinkingRow);
         }
         appendMessage("ai", reply || "(no reply)");
-        
+
         // Speak the response using TTS
         if (window.GRACEX_TTS && window.GRACEX_TTS.isEnabled() && reply) {
           window.GRACEX_TTS.speak(reply).catch(err => {
@@ -303,21 +303,21 @@
   };
 
   // Wire up brain mic button for voice input
-  window.wireBrainMic = function(moduleId) {
+  window.wireBrainMic = function (moduleId) {
     const micBtn = document.getElementById(moduleId + '-brain-mic');
     const input = document.getElementById(moduleId + '-brain-input');
     const sendBtn = document.getElementById(moduleId + '-brain-send') || document.getElementById(moduleId + '-brain-btn');
-    
+
     if (!micBtn || !input) {
       return false;
     }
-    
+
     // Prevent double initialization
     if (micBtn.dataset.wired === '1') {
       return true;
     }
     micBtn.dataset.wired = '1';
-    
+
     // Check for Speech Recognition API
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
@@ -325,7 +325,7 @@
       micBtn.style.opacity = '0.5';
       return false;
     }
-    
+
     let recognition = null;
     // IMPORTANT:
     // - isListening controls UI state
@@ -350,17 +350,17 @@
           }
           window.GRACEX_VoiceAssistant.stop();
         }
-      } catch (e) {}
+      } catch (e) { }
     }
 
     function resumeOtherVoiceSystems() {
       try {
         if (resumeVoiceAssistantAfter && window.GRACEX_VoiceAssistant && typeof window.GRACEX_VoiceAssistant.start === 'function') {
           setTimeout(() => {
-            try { window.GRACEX_VoiceAssistant.start(); } catch (e) {}
+            try { window.GRACEX_VoiceAssistant.start(); } catch (e) { }
           }, 350);
         }
-      } catch (e) {}
+      } catch (e) { }
       resumeVoiceAssistantAfter = false;
     }
 
@@ -383,8 +383,8 @@
         silenceTimer = null;
       }
       if (recognition) {
-        try { recognition.onstart = null; recognition.onresult = null; recognition.onerror = null; recognition.onend = null; } catch(e) {}
-        try { recognition.stop(); } catch(e) {}
+        try { recognition.onstart = null; recognition.onresult = null; recognition.onerror = null; recognition.onend = null; } catch (e) { }
+        try { recognition.stop(); } catch (e) { }
       }
       recognition = null;
     }
@@ -397,11 +397,11 @@
       recognition.interimResults = true;
       recognition.maxAlternatives = 1;
 
-      recognition.onstart = function() {
+      recognition.onstart = function () {
         setMicUI(true);
       };
 
-      recognition.onresult = function(event) {
+      recognition.onresult = function (event) {
         // Clear silence timer when we get speech
         if (silenceTimer) {
           clearTimeout(silenceTimer);
@@ -423,7 +423,7 @@
         }, SILENCE_DURATION);
       };
 
-      recognition.onerror = function(event) {
+      recognition.onerror = function (event) {
         const err = event && event.error ? event.error : 'unknown';
         console.warn('[GRACEX Brain Mic] Error:', err);
 
@@ -432,7 +432,7 @@
         if (shouldListen && (err === 'aborted' || err === 'no-speech' || err === 'audio-capture')) {
           setTimeout(() => {
             if (shouldListen) {
-              try { recognition && recognition.start(); } catch(e) {}
+              try { recognition && recognition.start(); } catch (e) { }
             }
           }, 250);
           return;
@@ -445,7 +445,7 @@
         stopListening();
       };
 
-      recognition.onend = function() {
+      recognition.onend = function () {
         // If we intentionally stopped, just clean up.
         if (isStopping) {
           isStopping = false;
@@ -478,7 +478,7 @@
         }
       };
     }
-    
+
     function startListening() {
       if (shouldListen) return;
       shouldListen = true;
@@ -517,7 +517,7 @@
         doStart();
       }
     }
-    
+
     function stopListening(autoSend = false) {
       shouldListen = false;
       isStopping = true;
@@ -530,7 +530,7 @@
       }
 
       if (recognition) {
-        try { recognition.stop(); } catch (e) {}
+        try { recognition.stop(); } catch (e) { }
       }
 
       // Auto-send if we got text and autoSend is true
@@ -544,10 +544,10 @@
         resumeOtherVoiceSystems();
       }, 250);
     }
-    
+
     // Store original placeholder
     input.dataset.originalPlaceholder = input.placeholder;
-    
+
     function onMicTap(e) {
       e.preventDefault();
       e.stopPropagation();
@@ -558,19 +558,20 @@
       }
     }
     micBtn.addEventListener('pointerdown', onMicTap);
-    micBtn.addEventListener('touchstart', function(e) {
+    micBtn.addEventListener('touchstart', function (e) {
       if (e.target === micBtn || micBtn.contains(e.target)) onMicTap(e);
     }, { passive: false });
-    
+
     console.info(`[GRACEX Brain Mic] Wired for module: ${moduleId}`);
     return true;
   };
-  
+
   // Common module IDs that have brain panels
   const ALL_MODULE_IDS = [
-    'core', 'builder', 'siteops', 'tradelink', 'beauty', 
-    'fit', 'yoga', 'uplift', 'chef', 'artist', 
-    'family', 'gamer', 'accounting', 'account', 'osint', 'sport', 'guardian'
+    'core', 'builder', 'siteops', 'tradelink', 'beauty',
+    'fit', 'yoga', 'uplift', 'chef', 'artist',
+    'family', 'gamer', 'accounting', 'account', 'osint', 'sport', 'guardian',
+    'callsheets', 'core2', 'dashboard', 'gallery', 'risk-safety'
   ];
 
   // Wire all available brain mics
@@ -581,12 +582,12 @@
   }
 
   // Auto-wire all brain mic buttons on DOM ready
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     wireAllBrainMics();
   });
-  
+
   // CRITICAL: Also wire mics when modules are loaded via SPA router
-  document.addEventListener('gracex:module:loaded', function(event) {
+  document.addEventListener('gracex:module:loaded', function (event) {
     const moduleId = event.detail && event.detail.module;
     if (moduleId) {
       // Small delay to ensure DOM is ready
@@ -597,7 +598,7 @@
       }, 100);
     }
   });
-  
+
   // Expose for manual wiring
   window.wireAllBrainMics = wireAllBrainMics;
 

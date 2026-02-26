@@ -10,7 +10,7 @@
  * ╚═══════════════════════════════════════════════════════════════════════╝
  */
 
-(function() {
+(function () {
   'use strict';
 
   const STORAGE_KEY = 'gracex_risk_safety';
@@ -19,7 +19,7 @@
   // ============================================================================
   // RISK & SAFETY ENGINE
   // ============================================================================
-  
+
   const RiskSafety = {
     initialized: false,
     incidents: [],
@@ -51,10 +51,10 @@
       if (this.initialized) return;
 
       console.log('[RISK & SAFETY] Initializing...');
-      
+
       // Load from storage
       this.loadFromStorage();
-      
+
       // Register with Master Control
       if (window.GraceXMaster) {
         window.GraceXMaster.registerModule('risk-safety', {
@@ -71,13 +71,19 @@
       }
 
       this.initialized = true;
+
+      // Wire Brain
+      if (window.setupModuleBrain) {
+        window.setupModuleBrain('risk-safety');
+      }
+
       console.log('[RISK & SAFETY] ✅ Ready');
     },
 
     // ============================================================================
     // INCIDENT REPORTING
     // ============================================================================
-    
+
     reportIncident(data) {
       const incident = {
         id: this.generateId(),
@@ -86,33 +92,33 @@
         siteId: data.siteId || '',
         reporter: data.reporter || '',
         reporterRole: data.reporterRole || '',
-        
+
         type: data.type || this.INCIDENT_TYPES.OTHER,
         severity: data.severity || this.SEVERITY.LOW,
-        
+
         title: data.title || '',
         description: data.description || '',
         location: data.location || '',
-        
+
         injuredParty: data.injuredParty || null,
         witnesses: data.witnesses || [],
-        
+
         immediateActions: data.immediateActions || '',
         correctiveActions: data.correctiveActions || '',
         preventiveMeasures: data.preventiveMeasures || '',
-        
+
         photos: data.photos || [],
         documents: data.documents || [],
-        
+
         status: 'open',
         investigationStatus: 'pending',
-        
+
         notifiedAuthorities: data.notifiedAuthorities || false,
         authoritiesNotified: data.authoritiesNotified || [],
-        
+
         assignedTo: data.assignedTo || null,
         dueDate: data.dueDate || null,
-        
+
         createdAt: Date.now(),
         updatedAt: Date.now(),
         createdBy: data.createdBy || 'system'
@@ -183,7 +189,7 @@
     // ============================================================================
     // SAFETY CHECKLISTS
     // ============================================================================
-    
+
     createChecklist(data) {
       const checklist = {
         id: this.generateId(),
@@ -191,18 +197,18 @@
         type: data.type || 'daily', // daily, weekly, monthly, pre-start
         site: data.site || '',
         siteId: data.siteId || '',
-        
+
         items: data.items || [],
-        
+
         inspector: data.inspector || '',
         date: data.date || Date.now(),
-        
+
         status: 'pending',
         overallPass: null,
-        
+
         notes: data.notes || '',
         signature: data.signature || null,
-        
+
         createdAt: Date.now(),
         completedAt: null
       };
@@ -296,31 +302,31 @@
     // ============================================================================
     // RISK REGISTER
     // ============================================================================
-    
+
     registerRisk(data) {
       const risk = {
         id: this.generateId(),
         title: data.title || '',
         description: data.description || '',
         category: data.category || '',
-        
+
         site: data.site || '',
         siteId: data.siteId || '',
-        
+
         likelihood: data.likelihood || 1, // 1-5
         impact: data.impact || 1, // 1-5
         riskScore: (data.likelihood || 1) * (data.impact || 1),
-        
+
         existingControls: data.existingControls || '',
         mitigationPlan: data.mitigationPlan || '',
         residualLikelihood: data.residualLikelihood || null,
         residualImpact: data.residualImpact || null,
-        
+
         owner: data.owner || '',
         reviewDate: data.reviewDate || null,
-        
+
         status: 'active',
-        
+
         createdAt: Date.now(),
         updatedAt: Date.now()
       };
@@ -356,7 +362,7 @@
       if (!risk) return null;
 
       Object.assign(risk, updates, { updatedAt: Date.now() });
-      
+
       // Recalculate risk scores
       if (updates.likelihood || updates.impact) {
         risk.riskScore = risk.likelihood * risk.impact;
@@ -379,7 +385,7 @@
 
       this.risks.forEach(risk => {
         if (risk.status !== 'active') return;
-        
+
         if (risk.riskScore > 20) matrix.critical.push(risk);
         else if (risk.riskScore >= 16) matrix.high.push(risk);
         else if (risk.riskScore >= 11) matrix.medium.push(risk);
@@ -392,29 +398,29 @@
     // ============================================================================
     // SAFETY INDUCTIONS
     // ============================================================================
-    
+
     recordInduction(data) {
       const induction = {
         id: this.generateId(),
         personName: data.personName || '',
         personCompany: data.personCompany || '',
         personRole: data.personRole || '',
-        
+
         site: data.site || '',
         siteId: data.siteId || '',
-        
+
         inductionType: data.inductionType || 'site',
         topics: data.topics || [],
-        
+
         instructor: data.instructor || '',
         date: data.date || Date.now(),
         expiryDate: data.expiryDate || null,
-        
+
         signature: data.signature || null,
         certificate: data.certificate || null,
-        
+
         status: 'valid',
-        
+
         createdAt: Date.now()
       };
 
@@ -432,8 +438,8 @@
     },
 
     checkInductionStatus(personName, siteId) {
-      const inductions = this.inductions.filter(i => 
-        i.personName === personName && 
+      const inductions = this.inductions.filter(i =>
+        i.personName === personName &&
         i.siteId === siteId &&
         i.status === 'valid'
       );
@@ -441,7 +447,7 @@
       if (inductions.length === 0) return { valid: false, reason: 'No induction found' };
 
       const latestInduction = inductions.sort((a, b) => b.date - a.date)[0];
-      
+
       if (latestInduction.expiryDate && Date.now() > latestInduction.expiryDate) {
         return { valid: false, reason: 'Induction expired', induction: latestInduction };
       }
@@ -452,7 +458,7 @@
     // ============================================================================
     // COMPLIANCE TRACKING
     // ============================================================================
-    
+
     getComplianceStatus(siteId = null) {
       const status = {
         incidents: {
@@ -479,16 +485,16 @@
 
       // Calculate overall compliance score (0-100)
       const openIncidentsScore = Math.max(0, 100 - (status.incidents.open * 5));
-      const checklistScore = status.checklists.total > 0 
-        ? (status.checklists.completed / status.checklists.total) * 100 
+      const checklistScore = status.checklists.total > 0
+        ? (status.checklists.completed / status.checklists.total) * 100
         : 100;
       const riskScore = Math.max(0, 100 - (status.risks.critical * 20) - (status.risks.high * 10));
 
       status.overallScore = Math.round((openIncidentsScore + checklistScore + riskScore) / 3);
-      status.complianceLevel = 
+      status.complianceLevel =
         status.overallScore >= 90 ? 'excellent' :
-        status.overallScore >= 75 ? 'good' :
-        status.overallScore >= 60 ? 'acceptable' : 'critical';
+          status.overallScore >= 75 ? 'good' :
+            status.overallScore >= 60 ? 'acceptable' : 'critical';
 
       return status;
     },
@@ -496,7 +502,7 @@
     // ============================================================================
     // STORAGE & SYNC
     // ============================================================================
-    
+
     saveToStorage() {
       try {
         const data = {
@@ -542,10 +548,10 @@
             incident.synced = true;
           }
         }
-        
+
         this.saveToStorage();
         console.log('[RISK & SAFETY] Sync complete');
-        
+
       } catch (error) {
         console.error('[RISK & SAFETY] Sync error:', error);
       }
@@ -554,14 +560,14 @@
     // ============================================================================
     // UTILITIES
     // ============================================================================
-    
+
     generateId() {
       return `rs-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     },
 
     log(action, details) {
       console.log(`[RISK & SAFETY] ${action}:`, details);
-      
+
       if (window.GraceXMaster) {
         window.GraceXMaster.log('RISK_SAFETY', action, { details });
       }
@@ -582,7 +588,7 @@
   // ============================================================================
   // EXPOSE API
   // ============================================================================
-  
+
   window.RiskSafety = RiskSafety;
 
   // Auto-init on DOM ready

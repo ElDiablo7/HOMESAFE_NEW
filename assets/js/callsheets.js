@@ -10,7 +10,7 @@
  * ╚═══════════════════════════════════════════════════════════════════════╝
  */
 
-(function() {
+(function () {
   'use strict';
 
   const STORAGE_KEY = 'gracex_callsheets';
@@ -19,7 +19,7 @@
   // ============================================================================
   // CALL SHEETS ENGINE
   // ============================================================================
-  
+
   const CallSheets = {
     initialized: false,
     currentSheet: null,
@@ -31,10 +31,10 @@
       if (this.initialized) return;
 
       console.log('[CALL SHEETS] Initializing...');
-      
+
       // Load from localStorage
       this.loadFromStorage();
-      
+
       // Register with Master Control
       if (window.GraceXMaster) {
         window.GraceXMaster.registerModule('callsheets', {
@@ -46,13 +46,19 @@
       }
 
       this.initialized = true;
+
+      // Wire Brain
+      if (window.setupModuleBrain) {
+        window.setupModuleBrain('callsheets');
+      }
+
       console.log('[CALL SHEETS] ✅ Ready');
     },
 
     // ============================================================================
     // CALL SHEET MANAGEMENT
     // ============================================================================
-    
+
     createCallSheet(data) {
       const sheet = {
         id: this.generateId(),
@@ -74,7 +80,7 @@
       this.sheets.push(sheet);
       this.currentSheet = sheet;
       this.saveToStorage();
-      
+
       // Publish event
       if (window.GraceXMaster) {
         window.GraceXMaster.publish('callsheet.created', { sheetId: sheet.id, sheet });
@@ -132,7 +138,7 @@
     // ============================================================================
     // CREW MANAGEMENT
     // ============================================================================
-    
+
     addCrewMember(sheetId, crewData) {
       const sheet = this.getCallSheet(sheetId);
       if (!sheet) return null;
@@ -191,15 +197,15 @@
       crew.clockOut = Date.now();
       crew.status = 'offsite';
       crew.hoursWorked = (crew.clockOut - crew.clockIn) / (1000 * 60 * 60); // Convert to hours
-      
+
       this.updateCallSheet(sheetId, { crew: sheet.crew });
 
       if (window.GraceXMaster) {
-        window.GraceXMaster.publish('crew.clockout', { 
-          sheetId, 
-          crewId, 
+        window.GraceXMaster.publish('crew.clockout', {
+          sheetId,
+          crewId,
           time: crew.clockOut,
-          hoursWorked: crew.hoursWorked 
+          hoursWorked: crew.hoursWorked
         });
       }
 
@@ -210,7 +216,7 @@
     // ============================================================================
     // TASK MANAGEMENT
     // ============================================================================
-    
+
     addTask(sheetId, taskData) {
       const sheet = this.getCallSheet(sheetId);
       if (!sheet) return null;
@@ -267,7 +273,7 @@
     // ============================================================================
     // SITE COMMUNICATION
     // ============================================================================
-    
+
     addNote(sheetId, noteText, author) {
       const sheet = this.getCallSheet(sheetId);
       if (!sheet) return null;
@@ -282,7 +288,7 @@
 
       if (!sheet.communications) sheet.communications = [];
       sheet.communications.push(note);
-      
+
       this.updateCallSheet(sheetId, { communications: sheet.communications });
 
       if (window.GraceXMaster) {
@@ -313,7 +319,7 @@
     // ============================================================================
     // REPORTS & EXPORT
     // ============================================================================
-    
+
     generateDailyReport(sheetId) {
       const sheet = this.getCallSheet(sheetId);
       if (!sheet) return null;
@@ -324,7 +330,7 @@
         site: sheet.site,
         supervisor: sheet.supervisor,
         weather: sheet.weather,
-        
+
         crew: {
           total: sheet.crew.length,
           onsite: sheet.crew.filter(c => c.status === 'onsite' || c.status === 'working').length,
@@ -337,7 +343,7 @@
             status: c.status
           }))
         },
-        
+
         tasks: {
           total: sheet.tasks.length,
           completed: sheet.tasks.filter(t => t.status === 'completed').length,
@@ -345,11 +351,11 @@
           pending: sheet.tasks.filter(t => t.status === 'pending').length,
           list: sheet.tasks
         },
-        
+
         notes: sheet.notes,
         communications: sheet.communications || [],
         photos: sheet.photos,
-        
+
         generatedAt: Date.now()
       };
 
@@ -361,12 +367,12 @@
       // For now, return the report data
       const report = this.generateDailyReport(sheetId);
       console.log('[CALL SHEETS] PDF export requested', report);
-      
+
       // Trigger PDF generation (would need pdf-lib or similar)
       if (window.GraceXMaster) {
         window.GraceXMaster.publish('callsheet.export.pdf', { sheetId, report });
       }
-      
+
       return report;
     },
 
@@ -391,7 +397,7 @@
     // ============================================================================
     // STORAGE & SYNC
     // ============================================================================
-    
+
     saveToStorage() {
       try {
         const data = {
@@ -433,14 +439,14 @@
             sheet.synced = true;
           }
         }
-        
+
         this.saveToStorage();
         console.log('[CALL SHEETS] Sync complete');
-        
+
         if (window.GraceXMaster) {
           window.GraceXMaster.publish('callsheets.synced', { count: this.sheets.length });
         }
-        
+
       } catch (error) {
         console.error('[CALL SHEETS] Sync error:', error);
       }
@@ -449,7 +455,7 @@
     // ============================================================================
     // UTILITIES
     // ============================================================================
-    
+
     generateId() {
       return `cs-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     },
@@ -469,7 +475,7 @@
 
     log(action, details) {
       console.log(`[CALL SHEETS] ${action}:`, details);
-      
+
       if (window.GraceXMaster) {
         window.GraceXMaster.log('CALLSHEETS', action, { details });
       }
@@ -488,7 +494,7 @@
   // ============================================================================
   // EXPOSE API
   // ============================================================================
-  
+
   window.CallSheets = CallSheets;
 
   // Auto-init on DOM ready
