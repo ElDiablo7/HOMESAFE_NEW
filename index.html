@@ -1,354 +1,660 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>GRACE-X AI™ ULTIMATE Edition</title>
-
-    <!-- FAVICON -->
-    <link rel="icon" type="image/svg+xml" href="assets/img/logo.svg">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 GRACE-X CORE 2.0™ - AI Command Center</title>
     <link rel="icon" type="image/png" href="assets/img/gracex_main_logo.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    <!-- MAIN CSS - Complete GRACE-X styling -->
-    <link rel="stylesheet" href="assets/css/gracex-v6.css?v=TITAN">
-    <link rel="stylesheet" href="assets/css/core.css?v=TITAN">
-    <link rel="stylesheet" href="assets/css/forge.css?v=TITAN">
-    <link rel="stylesheet" href="assets/css/laser.css?v=TITAN">
-    <link rel="stylesheet" href="assets/css/guardian-alerts.css?v=TITAN">
-    <link rel="stylesheet" href="assets/css/polish-enhancements.css?v=TITAN">
-    <link rel="stylesheet" href="assets/css/accounting.css?v=TITAN">
-    <link rel="stylesheet" href="assets/css/osint.css?v=TITAN">
-    <!-- THEME SYSTEM - Loaded last to override -->
-    <link rel="stylesheet" href="assets/css/gracex-themes.css?v=TITAN">
-    <!-- BOOT SCREEN - Enterprise Startup -->
-    <link rel="stylesheet" href="assets/css/boot-screen.css?v=TITAN">
-    <!-- MOTION LAYER - Background motion infrastructure -->
-    <link rel="stylesheet" href="assets/css/gracex-motion-layer.css?v=TITAN">
+        body {
+            background: linear-gradient(135deg, #0a0e1a 0%, #1a0a1a 100%);
+            color: #ffffff;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            overflow-x: hidden;
+            height: 100vh;
+        }
+
+        /* Particle Background */
+        #particles-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(0, 240, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 0, 255, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 40% 60%, rgba(136, 0, 255, 0.08) 0%, transparent 50%);
+            animation: pulseGlow 20s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes pulseGlow {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1) rotate(0deg);
+            }
+
+            50% {
+                opacity: 0.8;
+                transform: scale(1.05) rotate(2deg);
+            }
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            padding: 20px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-img {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+        }
+
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00f0ff, #ff00ff, #8800ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .system-status {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background: #00ff88;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            padding: 8px 16px;
+            background: rgba(136, 0, 255, 0.2);
+            border: 1px solid rgba(136, 0, 255, 0.5);
+            border-radius: 8px;
+            color: #8800ff;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .nav-btn:hover {
+            background: rgba(136, 0, 255, 0.3);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(136, 0, 255, 0.3);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 20px;
+            overflow: hidden;
+        }
+
+        /* AI Chat Panel */
+        .ai-chat-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(30px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .chat-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .chat-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chat-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .chat-btn {
+            padding: 6px 12px;
+            background: rgba(0, 240, 255, 0.2);
+            border: 1px solid rgba(0, 240, 255, 0.5);
+            border-radius: 6px;
+            color: #00f0ff;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .chat-btn:hover {
+            background: rgba(0, 240, 255, 0.3);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 12px 18px;
+            border-radius: 16px;
+            position: relative;
+            animation: fadeInUp 0.4s ease;
+            line-height: 1.5;
+        }
+
+        .message.user {
+            background: linear-gradient(135deg, #00f0ff, #0099ff);
+            color: #000;
+            align-self: flex-end;
+            margin-left: auto;
+            font-weight: 500;
+        }
+
+        .message.assistant {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            align-self: flex-start;
+        }
+
+        .message-time {
+            font-size: 0.75rem;
+            opacity: 0.5;
+            margin-top: 6px;
+        }
+
+        .chat-input-area {
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .chat-input:focus {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(0, 240, 255, 0.5);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.1);
+        }
+
+        .chat-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .send-btn,
+        .voice-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .send-btn {
+            background: linear-gradient(135deg, #00f0ff, #ff00ff);
+            color: #000;
+        }
+
+        .send-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+        }
+
+        .voice-btn {
+            background: rgba(255, 0, 255, 0.2);
+            border: 1px solid rgba(255, 0, 255, 0.5);
+            color: #ff00ff;
+        }
+
+        .voice-btn:hover {
+            background: rgba(255, 0, 255, 0.3);
+        }
+
+        .voice-btn.active {
+            background: #ff00ff;
+            color: #000;
+            animation: pulseVoice 1s infinite;
+        }
+
+        @keyframes pulseVoice {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        /* Right Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            overflow-y: auto;
+        }
+
+        .widget {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 18px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .widget-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #00f0ff;
+        }
+
+        /* System Stats */
+        .system-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+        }
+
+        .stat-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #00f0ff;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .action-btn {
+            padding: 10px;
+            background: rgba(136, 0, 255, 0.15);
+            border: 1px solid rgba(136, 0, 255, 0.4);
+            border-radius: 10px;
+            color: #bb88ff;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .action-btn:hover {
+            background: rgba(136, 0, 255, 0.25);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(136, 0, 255, 0.2);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.6;
+            }
+        }
+
+        /* Typing indicator */
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 12px 18px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            width: fit-content;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: #00f0ff;
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+
+            0%,
+            60%,
+            100% {
+                transform: translateY(0);
+                opacity: 0.4;
+            }
+
+            30% {
+                transform: translateY(-8px);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                flex-direction: row;
+                gap: 15px;
+            }
+
+            .widget {
+                min-width: 250px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .logo-text {
+                font-size: 1.4rem;
+            }
+
+            .system-status {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+
+        /* Performance optimizations */
+        .ai-chat-panel {
+            contain: layout style paint;
+        }
+
+        .chat-messages {
+            will-change: scroll-position;
+        }
+    </style>
 </head>
 
 <body>
-  <!-- File protocol check: app must run over http(s), not file:// -->
-  <script>
-    (function() {
-      var proto = window.location.protocol;
-      if (proto === 'file:') {
-        document.write(
-          '<div style="position:fixed;inset:0;background:#0f172a;color:#e2e8f0;font-family:system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;z-index:999999;">' +
-          '<h1 style="font-size:1.5rem;margin-bottom:16px;">GRACE-X must run from a web server</h1>' +
-          '<p style="margin-bottom:24px;max-width:420px;">You opened this page from a file (file://). The app needs to be served over HTTP. Use one of these:</p>' +
-          '<p style="margin-bottom:8px;"><a href="http://localhost:3000" style="color:#06b6d4;font-weight:600;">http://localhost:3000</a> (run <code style="background:#1e293b;padding:2px 8px;border-radius:4px;">npm start</code> in the project folder first)</p>' +
-          '<p style="margin-bottom:24px;"><a href="https://grace-x-homesafe.onrender.com" style="color:#06b6d4;font-weight:600;">https://grace-x-homesafe.onrender.com</a> (deployed app)</p>' +
-          '<p style="font-size:0.9rem;color:#94a3b8;">Close this tab and open one of the links above.</p>' +
-          '</div>'
-        );
-        throw new Error('GRACE-X: open from http://localhost:3000 or the deployed URL');
-      }
-    })();
-  </script>
-  <!-- MOTION LAYER — background motion infrastructure, z-index:0, pointer-events:none -->
-  <div id="gracexMotionLayer" aria-hidden="true">
-    <video id="gracexMotionVid" muted playsinline preload="auto"></video>
-    <div class="gracexMotionFx"></div>
-  </div>
+    <div class="bg-animation"></div>
 
-  <!-- ENTERPRISE BOOT SCREEN (Loads first via boot-screen.js) -->
-  <script src="assets/js/boot-screen.js?v=TITAN"></script>
-  
-  <!-- Build tag - ULTIMATE EDITION v6.6.0 -->
-  <div style="position:fixed;bottom:8px;left:8px;font-size:11px;opacity:0.7;z-index:99992;font-weight:600;color:#10b981;">🦁 GRACE-X v6.6.0 ULTIMATE</div>
+    <div class="container">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="logo-section">
+                <video src="assets/motion/motion_01.mp4" class="logo-img gracex-avatar-video" autoplay muted loop
+                    playsinline preload="auto" aria-hidden="true"></video>
+                <div>
+                    <div class="logo-text">GRACE-X CORE 2.0™</div>
+                    <div style="font-size: 0.8rem; opacity: 0.6; margin-top: 2px;">Advanced AI Command Center</div>
+                </div>
+            </div>
 
-    <!-- Boot overlay (Legacy - now handled by boot-screen.js) -->
-    <div id="boot" style="display:none;">
-        <video id="boot-video" class="boot-bg-video" src="assets/video/gracex-boot.mp4?v=1" autoplay muted loop playsinline></video>
-        <!-- MP3 boot voice disabled - video will unmute on user click to play with sound -->
-        <div class="boot-card">
-            <div class="boot-title">GRACE-X AI™</div>
-            <div class="boot-sub">Initialising Core Systems…</div>
-            <div class="progress">ENGAGE!<div></div></div>
-            <p class="small" style="margin-top:10px">Tap or press any key to start &amp; enter Core.</p>
+            <div class="system-status">
+                <div class="status-badge">
+                    <div class="status-dot"></div>
+                    <span>AI Online</span>
+                </div>
+                <div class="status-badge" style="background: rgba(255,0,255,0.1); border-color: rgba(255,0,255,0.3);">
+                    <div class="status-dot" style="background: #ff00ff;"></div>
+                    <span id="connection-status">Connected</span>
+                </div>
+            </div>
+
+            <div class="nav-buttons">
+                <a href="index.html" class="nav-btn">🏠 Home</a>
+                <button class="nav-btn" onclick="openSystemTest()">🧪 System Test</button>
+                <button class="nav-btn" onclick="toggleFullscreen()">⛶ Fullscreen</button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- AI Chat Panel -->
+            <div class="ai-chat-panel">
+                <div class="chat-header">
+                    <h2 class="chat-title">🧠 GRACE AI Assistant</h2>
+                    <div class="chat-controls">
+                        <button class="chat-btn" onclick="clearChat()">Clear</button>
+                        <button class="chat-btn" onclick="exportChat()">Export</button>
+                        <button class="chat-btn" onclick="toggleAdvanced()">⚙️</button>
+                    </div>
+                </div>
+
+                <div class="chat-messages" id="chat-messages">
+                    <div class="message assistant">
+                        <div>🚀 Welcome to GRACE-X CORE 2.0™! I'm your advanced AI assistant, engineered by Zac
+                            Crockett. I have real-time access to Claude AI and can help you with anything from system
+                            management to creative projects. What would you like to explore today?</div>
+                        <div class="message-time" id="welcome-time"></div>
+                    </div>
+                </div>
+
+                <div class="chat-input-area">
+                    <input type="text" class="chat-input" id="chat-input"
+                        placeholder="Ask me anything... Press Enter or click 🚀 to send">
+                    <button class="voice-btn" id="voice-btn" onclick="toggleVoiceInput()">🎙️</button>
+                    <button class="send-btn" onclick="sendMessage()">🚀</button>
+                </div>
+            </div>
+
+            <!-- Right Sidebar -->
+            <div class="sidebar">
+                <!-- System Performance -->
+                <div class="widget">
+                    <h3 class="widget-title">⚡ System Performance</h3>
+                    <div class="system-stats">
+                        <div class="stat-item">
+                            <div class="stat-value" id="uptime">0:00</div>
+                            <div class="stat-label">Session</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="message-count">0</div>
+                            <div class="stat-label">Messages</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="response-time">--ms</div>
+                            <div class="stat-label">Response</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="tokens-used">0</div>
+                            <div class="stat-label">Tokens</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Commands -->
+                <div class="widget">
+                    <h3 class="widget-title">⚡ Quick Commands</h3>
+                    <div class="quick-actions">
+                        <button class="action-btn" onclick="quickCommand('weather')">🌤️ Weather</button>
+                        <button class="action-btn" onclick="quickCommand('time')">🕐 Time</button>
+                        <button class="action-btn" onclick="quickCommand('news')">📰 News</button>
+                        <button class="action-btn" onclick="quickCommand('system')">💻 System</button>
+                        <button class="action-btn" onclick="quickCommand('crypto')">₿ Crypto</button>
+                        <button class="action-btn" onclick="quickCommand('code')">💻 Code</button>
+                        <button class="action-btn" onclick="quickCommand('help')">❓ Help</button>
+                        <button class="action-btn" onclick="quickCommand('creative')">🎨 Create</button>
+                    </div>
+                </div>
+
+                <!-- Active Modules -->
+                <div class="widget">
+                    <h3 class="widget-title">🧩 Active Modules</h3>
+                    <div id="active-modules">
+                        <div
+                            style="padding: 10px; background: rgba(0,255,136,0.1); border-radius: 8px; margin-bottom: 8px; font-size: 0.9rem;">
+                            <div style="font-weight: 600;">GRACE-X CORE 2.0™</div>
+                            <div style="opacity: 0.7; font-size: 0.8rem;">Status: Online & Ready</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="widget">
+                    <h3 class="widget-title">📊 Recent Activity</h3>
+                    <div id="recent-activity" style="font-size: 0.85rem;">
+                        <div style="padding: 6px 0; opacity: 0.7; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                            System initialized
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Main App Shell -->
-    <div id="app" style="display:none;">
-
-        <!-- Left Sidebar -->
-        <aside class="aside">
-            <div class="brand">
-                <video class="gracex-avatar-video" src="assets/motion/motion_01.mp4" autoplay muted loop playsinline preload="auto" poster="assets/img/avatar_executive.jpeg" aria-hidden="true" onerror="this.style.display='none'"></video>
-                <div>
-                    <h1>GRACE-X AI™</h1>
-                    <div class="small">Anchored Workflow Build</div>
-                </div>
-            </div>
-
-            <!-- Help & Account – TOP -->
-            <div class="section-title">Help &amp; Account</div>
-            <nav class="module-nav nav-group-help">
-              <button id="gracex-help-btn" type="button" class="module-btn" style="background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%); box-shadow: 0 2px 12px rgba(6,182,212,0.3);">❓ Help</button>
-              <button id="gracex-auth-btn" type="button" class="module-btn" style="background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%); box-shadow: 0 2px 12px rgba(14,165,233,0.3);">🔐 Login</button>
-            </nav>
-
-            <!-- Core -->
-            <div class="section-title">Core</div>
-            <nav class="module-nav nav-group-core">
-              <button class="module-btn" data-module="core" style="background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%); box-shadow: 0 2px 12px rgba(6,182,212,0.3);">🏠 GRACE-X Core™</button>
-            </nav>
-
-            <!-- Family & Life – pink/rose family -->
-            <div class="section-title">Family &amp; Life</div>
-            <nav class="module-nav nav-group-family">
-              <button class="module-btn" data-module="family" style="background: linear-gradient(135deg, #f472b6 0%, #db2777 100%); box-shadow: 0 2px 12px rgba(244,114,182,0.3);">👨‍👩‍👧 GRACE-X Family™</button>
-              <button class="module-btn" data-module="uplift" style="background: linear-gradient(135deg, #f472b6 0%, #be185d 100%); box-shadow: 0 2px 12px rgba(244,114,182,0.3);">🌟 GRACE-X Uplift™</button>
-              <button class="module-btn" data-module="beauty" style="background: linear-gradient(135deg, #ec4899 0%, #be185d 100%); box-shadow: 0 2px 12px rgba(236,72,153,0.3);">💄 GRACE-X Beauty™</button>
-              <button class="module-btn" data-module="yoga" style="background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%); box-shadow: 0 2px 12px rgba(217,70,239,0.3);">🧘 GRACE-X Yoga™</button>
-              <button class="module-btn" data-module="fit" style="background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%); box-shadow: 0 2px 12px rgba(168,85,247,0.3);">💪 GRACE-X Fit™</button>
-              <button class="module-btn" data-module="chef" style="background: linear-gradient(135deg, #f472b6 0%, #ec4899 100%); box-shadow: 0 2px 12px rgba(244,114,182,0.3);">👨‍🍳 GRACE-X Chef™</button>
-              <button class="module-btn" data-module="artist" style="background: linear-gradient(135deg, #c084fc 0%, #8b5cf6 100%); box-shadow: 0 2px 12px rgba(192,132,252,0.3);">🎨 GRACE-X Artist™</button>
-              <button class="module-btn" data-module="gamer" style="background: linear-gradient(135deg, #a78bfa 0%, #6366f1 100%); box-shadow: 0 2px 12px rgba(167,139,250,0.3);">🎮 GRACE-X Gamer Mode™</button>
-            </nav>
-
-            <!-- Work – amber/teal professional family -->
-            <div class="section-title">Work</div>
-            <nav class="module-nav nav-group-work">
-              <button class="module-btn" data-module="builder" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); box-shadow: 0 2px 12px rgba(245,158,11,0.3);">🏗️ GRACE-X Builder™</button>
-              <button class="module-btn" data-module="siteops" style="background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%); box-shadow: 0 2px 12px rgba(234,179,8,0.3);">📋 GRACE-X SiteOps™</button>
-              <button class="module-btn" data-module="tradelink" style="background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%); box-shadow: 0 2px 12px rgba(20,184,166,0.3);">🔗 GRACE-X TradeLink™</button>
-              <button class="module-btn" data-module="accounting" style="background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%); box-shadow: 0 2px 12px rgba(13,148,136,0.3);">📊 GRACE-X Accounting™</button>
-              <a href="/callassist/prep.html" class="module-btn" style="display:block; text-align:center; text-decoration:none; background: linear-gradient(135deg, #2dd4bf 0%, #14b8a6 100%); box-shadow: 0 2px 12px rgba(45,212,191,0.3);">📞 CallAssist</a>
-            </nav>
-
-            <!-- Sport & Creative -->
-            <div class="section-title">Sport &amp; Creative</div>
-            <nav class="module-nav nav-group-creative">
-              <button class="module-btn" data-module="sport" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 2px 12px rgba(16,185,129,0.3);">⚽ GRACE-X Sport™</button>
-              <button class="module-btn" data-module="forge" style="background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); box-shadow: 0 2px 12px rgba(6,182,212,0.3);">⚒️ GRACE-X Forge™</button>
-              <button class="module-btn" data-module="gallery" style="background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%); box-shadow: 0 2px 12px rgba(168,85,247,0.3);">🖼️ GRACE-X Gallery™</button>
-            </nav>
-
-            <!-- Security & Intel – BOTTOM, red family -->
-            <div class="section-title">Security &amp; Intel</div>
-            <nav class="module-nav nav-group-security">
-              <button class="module-btn" data-module="osint" style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); box-shadow: 0 2px 12px rgba(220,38,38,0.3);">🔍 GRACE-X OSINT™</button>
-              <button class="module-btn" data-module="guardian" style="background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%); box-shadow: 0 2px 12px rgba(239,68,68,0.3);">🛡️ GRACE-X Guardian™</button>
-              <button class="module-btn" data-module="risk-safety" style="background: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%); box-shadow: 0 2px 12px rgba(185,28,28,0.3);">⚠️ GRACE-X Risk-Safety™</button>
-            </nav>
-
-            <!-- Auth Modal -->
-            <div id="gracex-auth-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:99995; align-items:center; justify-content:center;">
-              <div style="background:var(--panel, #1e293b); border:1px solid rgba(148,163,184,0.2); border-radius:16px; padding:24px; max-width:360px; width:90%;">
-                <h3 style="margin:0 0 16px;">Login / Register</h3>
-                <input id="gracex-auth-email" type="email" placeholder="Email" style="width:100%; padding:10px; margin-bottom:8px; border-radius:8px; border:1px solid #334155; background:#0f172a; color:#f1f5f9; box-sizing:border-box;">
-                <input id="gracex-auth-password" type="password" placeholder="Password" style="width:100%; padding:10px; margin-bottom:8px; border-radius:8px; border:1px solid #334155; background:#0f172a; color:#f1f5f9; box-sizing:border-box;">
-                <input id="gracex-auth-name" type="text" placeholder="Name (optional, for register)" style="width:100%; padding:10px; margin-bottom:12px; border-radius:8px; border:1px solid #334155; background:#0f172a; color:#f1f5f9; box-sizing:border-box;">
-                <div id="gracex-auth-message" style="font-size:0.85em; color:#94a3b8; margin-bottom:12px;"></div>
-                <div style="display:flex; gap:8px;">
-                  <button id="gracex-auth-login" type="button" class="builder-btn" style="flex:1;">Login</button>
-                  <button id="gracex-auth-register" type="button" class="builder-btn" style="flex:1;">Register</button>
-                  <button id="gracex-auth-close" type="button" class="builder-btn">Close</button>
-                </div>
-              </div>
-            </div>
-            <script>
-              (function() {
-                var modal = document.getElementById('gracex-auth-modal');
-                var btn = document.getElementById('gracex-auth-btn');
-                var closeBtn = document.getElementById('gracex-auth-close');
-                var loginBtn = document.getElementById('gracex-auth-login');
-                var regBtn = document.getElementById('gracex-auth-register');
-                var emailEl = document.getElementById('gracex-auth-email');
-                var passEl = document.getElementById('gracex-auth-password');
-                var nameEl = document.getElementById('gracex-auth-name');
-                var msgEl = document.getElementById('gracex-auth-message');
-                function showModal() { if (modal) { modal.style.display = 'flex'; } }
-                function hideModal() { if (modal) modal.style.display = 'none'; }
-                function setMsg(t) { if (msgEl) msgEl.textContent = t || ''; }
-                function updateAuthBtn() {
-                  if (btn && window.GRACEX_Auth) {
-                    btn.textContent = GRACEX_Auth.isLoggedIn() ? 'Logout' : 'Login';
-                  }
-                }
-                if (btn) btn.addEventListener('click', function() {
-                  if (window.GRACEX_Auth && GRACEX_Auth.isLoggedIn()) {
-                    GRACEX_Auth.logout();
-                    setMsg('Logged out.');
-                    updateAuthBtn();
-                    if (window.GRACEX_Utils) GRACEX_Utils.showToast('Logged out', 'info');
-                  } else showModal();
-                });
-                if (closeBtn) closeBtn.addEventListener('click', hideModal);
-                if (modal) modal.addEventListener('click', function(e) { if (e.target === modal) hideModal(); });
-                if (loginBtn) loginBtn.addEventListener('click', function() {
-                  var email = emailEl && emailEl.value.trim();
-                  var pass = passEl && passEl.value;
-                  if (!email || !pass) { setMsg('Email and password required'); return; }
-                  setMsg('Logging in...');
-                  window.GRACEX_Auth.login(email, pass).then(function() {
-                    setMsg('Logged in.');
-                    updateAuthBtn();
-                    hideModal();
-                    if (window.GRACEX_Utils) GRACEX_Utils.showToast('Logged in', 'success');
-                  }).catch(function(e) { setMsg(e.message || 'Login failed'); });
-                });
-                if (regBtn) regBtn.addEventListener('click', function() {
-                  var email = emailEl && emailEl.value.trim();
-                  var pass = passEl && passEl.value;
-                  var name = nameEl && nameEl.value.trim();
-                  if (!email || !pass) { setMsg('Email and password required'); return; }
-                  setMsg('Registering...');
-                  window.GRACEX_Auth.register(email, pass, name).then(function() {
-                    setMsg('Registered and logged in.');
-                    updateAuthBtn();
-                    hideModal();
-                    if (window.GRACEX_Utils) GRACEX_Utils.showToast('Registered', 'success');
-                  }).catch(function(e) { setMsg(e.message || 'Register failed'); });
-                });
-                document.addEventListener('DOMContentLoaded', updateAuthBtn);
-              })();
-            </script>
-
-            <!-- Voice Settings Button -->
-            <button id="gracex-voice-toggle" style="position: fixed; bottom: 20px; right: 20px; width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; color: white; font-size: 24px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 9998; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Click: Toggle Voice | Right-click: Settings">🔊</button>
-            
-            <script>
-              // Wire up voice settings button
-              document.addEventListener('DOMContentLoaded', () => {
-                const voiceBtn = document.getElementById('gracex-voice-toggle');
-                if (voiceBtn) {
-                  // Update button based on TTS state
-                  function updateVoiceBtn() {
-                    if (window.GRACEX_TTS) {
-                      const enabled = GRACEX_TTS.isEnabled();
-                      voiceBtn.textContent = enabled ? '🔊' : '🔇';
-                      voiceBtn.style.background = enabled 
-                        ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-                        : 'linear-gradient(135deg, #4b5563 0%, #374151 100%)';
-                      voiceBtn.title = enabled 
-                        ? 'Voice ON - Click to toggle, Right-click for settings'
-                        : 'Voice OFF - Click to enable';
-                    }
-                  }
-                  
-                  // Left click: Toggle TTS on/off
-                  voiceBtn.addEventListener('click', () => {
-                    if (window.GRACEX_TTS) {
-                      GRACEX_TTS.toggle();
-                      updateVoiceBtn();
-                      // Speak confirmation if just enabled
-                      if (GRACEX_TTS.isEnabled()) {
-                        GRACEX_TTS.preview('Voice enabled.');
-                      }
-                    }
-                  });
-                  
-                  // Right click: Open settings
-                  voiceBtn.addEventListener('contextmenu', (e) => {
-                    e.preventDefault();
-                    if (window.GRACEX_TTS) {
-                      GRACEX_TTS.showSettings();
-                    }
-                  });
-                  
-                  // Update button state after TTS loads
-                  setTimeout(updateVoiceBtn, 1000);
-                  setTimeout(updateVoiceBtn, 3000);
-                }
-              });
-            </script>
-        </aside>
-
-        <!-- Main Content Window -->
-        <main id="content">
-  <div id="view" class="module-view"></div>
-</main>
-
-    </div>
-
-    <!-- Main JS -->
-    <!-- GALVANIZED RECOVERY LAYER - Ultimate Error Handling -->
-    <script src="assets/js/galvanized-recovery.js?v=GALVANIZED"></script>
-    <!-- Level 5 API Configuration - ENABLED -->
-    <script>
-      // API base: same origin when served from Render/local server; file:// or unknown → production URL
-      (function() {
-        var o = window.location.origin;
-        var isHttp = o && (o.indexOf('http://localhost') === 0 || o.indexOf('https://') === 0);
-        var base = isHttp ? o : 'https://grace-x-homesafe.onrender.com';
-        window.GRACEX_API_BASE = base;
-        window.GRACEX_BRAIN_API = base + '/api/brain';
-        window.GRACEX_SPORT_API = base + '/api/sport';
-      })();
-      // Version tracking for cache-busting
-      window.GRACEX_VERSION = 'ULTIMATE_v6.6.0';
-      // Enable dev tools on localhost
-      window.GRACEX_DEV_MODE = window.location.hostname === 'localhost';
-      
-      // Log configuration for debugging
-      console.log('%c═══════════════════════════════════════════════════════════', 'color: #10b981');
-      console.log('%c🦁 GRACE-X ULTIMATE EDITION v6.6.0', 'color: #10b981; font-weight: bold; font-size: 18px');
-      console.log('%c   AI PRO FILM PRODUCTION SUITE', 'color: #00d4ff; font-weight: bold;');
-      console.log('%c   £47M MOD/Cabinet Office Tender Ready', 'color: #10b981; font-weight: bold;');
-      console.log('%c═══════════════════════════════════════════════════════════', 'color: #10b981');
-      console.log('   Backend API:', window.GRACEX_BRAIN_API);
-      console.log('   Sport API:', window.GRACEX_SPORT_API);
-      console.log('   Version:', window.GRACEX_VERSION);
-      console.log('   🦁 ULTIMATE PACK ACTIVE');
-    </script>
-    <!-- CORE NETWORK MANAGER - Internet access through Core -->
-    <script src="assets/js/core-network.js?v=TITAN"></script>
-    <!-- UI CONTROLS - Sidebar & Theme System -->
-    <script src="assets/js/gracex-ui-controls.js?v=TITAN"></script>
-    <!-- HELP OVERLAY - System-wide help for new users -->
-    <script src="assets/js/help-overlay.js?v=TITAN"></script>
-    <!-- TITAN EDITION - Production-grade enhancements -->
-    <script src="assets/js/utils-enhanced.js?v=TITAN"></script>
-    <!-- PATCH: Performance.js now conditionally loaded via dev-tools.js -->
-    <script src="assets/js/dev-tools.js?v=TITAN"></script>
-    <!-- PATCH: Removed laser.js redundancy - using laser-ultra.js only -->
-    <!-- Core System -->
+    <!-- GRACE-X Core System Integration -->
     <script src="assets/js/utils.js?v=TITAN"></script>
-    <script src="assets/js/gracex-v6-utils.js?v=TITAN"></script>
-    <script src="assets/js/exports.js?v=TITAN"></script>
     <script src="assets/js/auth.js?v=TITAN"></script>
-    <script src="assets/js/speechQueue.js?v=TITAN"></script>
-    <script src="assets/js/audioManager.js?v=TITAN"></script>
     <script src="assets/js/voiceTTS.js?v=TITAN"></script>
-    <script src="assets/js/voiceAssistant.js?v=TITAN"></script>
-    <script src="assets/js/firewall.js?v=TITAN"></script>
-    <!-- Brain System - PATCHED: Added RAM + Analytics -->
-    <script src="assets/js/brain/gracex.state.js?v=TITAN"></script>
-    <script src="assets/js/brain/gracex.router.js?v=TITAN"></script>
-    <script src="assets/js/brain/gracex.ram.js?v=TITAN"></script>
-    <script src="assets/js/brain/gracex.analytics.js?v=TITAN"></script>
-    <script src="assets/js/brain/gracex.brain.js?v=TITAN"></script>
-    <!-- MASTER CONTROL - Enterprise Orchestration -->
-    <script src="assets/js/gracex-master-control.js?v=TITAN"></script>
-    <!-- Enterprise Systems -->
-    <script src="assets/js/callsheets.js?v=TITAN"></script>
-    <script src="assets/js/risk-safety.js?v=TITAN"></script>
-    <!-- Module Scripts -->
-    <script src="assets/js/core.js?v=TITAN"></script>
     <script src="assets/js/brainLevel5.js?v=TITAN"></script>
     <script src="assets/js/brainV5Helper.js?v=TITAN"></script>
-    <script src="assets/js/GRACEX_LIVE_DATA_INTEGRATION_v1.js?v=TITAN"></script>
-    <script src="assets/js/sport.js?v=TITAN"></script>
-    <script src="assets/js/guardian-alert-system.js?v=TITAN"></script>
-    <script src="assets/js/guardian.js?v=TITAN"></script>
-    <script src="assets/js/osint_engine.js?v=TITAN"></script>
-    <script src="assets/js/osint_sources.js?v=TITAN"></script>
-    <script src="assets/js/osint_report.js?v=TITAN"></script>
-    <script src="assets/js/osint.js?v=TITAN"></script>
-    <script src="assets/js/accounting_engine.js?v=TITAN"></script>
-    <script src="assets/js/accounting_reports.js?v=TITAN"></script>
-    <script src="assets/js/accounting.js?v=TITAN"></script>
-    <script src="assets/js/coreDashboard.js?v=TITAN"></script>
-    <script src="assets/js/forge.js?v=TITAN"></script>
-    <!-- LASER Inspector - Ultra version only -->
-    <script src="assets/js/laser-ultra.js?v=TITAN"></script>
-    <!-- App Entry Point -->
-    <script type="module" src="assets/js/app.js?v=TITAN"></script>
-    <!-- MOTION LAYER CONTROLLER — must load after DOM -->
-    <script src="assets/js/gracex-motion-layer.js?v=TITAN"></script>
+    <script src="assets/js/core2.js?v=TITAN"></script>
+
+    <script>
+        // Version tracking for cache-busting
+        window.GRACEX_VERSION = 'CORE2_v2.1.0';
+        window.GRACEX_API_BASE = window.location.origin.includes('localhost') ? 'http://localhost:3000' : 'https://grace-x-homesafe.onrender.com';
+        window.GRACEX_BRAIN_API = window.GRACEX_API_BASE + '/api/brain';
+
+        console.log('🚀 GRACE-X CORE 2.0™ Entry Point Ready');
+    </script>
 </body>
+
 </html>

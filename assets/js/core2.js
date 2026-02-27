@@ -216,10 +216,16 @@
         try {
             let aiResponse = '';
 
+            // Log activity
+            if (typeof addActivityLog === 'function') addActivityLog(`User: ${message.substring(0, 20)}...`);
+
             // Use runModuleBrain if available (connects to backend API via brainLevel5.js)
             if (typeof window.runModuleBrain === 'function') {
                 const result = await window.runModuleBrain('core2', message);
                 aiResponse = typeof result === 'string' ? result : (result.reply || result.message || '');
+            } else if (typeof window.GraceX !== 'undefined' && typeof window.GraceX.think === 'function') {
+                // Alternative brain interface
+                aiResponse = await window.GraceX.think(message);
             } else {
                 // Fallback: try backend API directly
                 const apiBase = window.GRACEX_BRAIN_API || window.GRACEX_API_BASE || 'http://localhost:3000';
@@ -250,6 +256,10 @@
             const endTime = performance.now();
             const responseTime = Math.round(endTime - startTime);
 
+            // Update UI response time
+            const respTimeEl = document.getElementById('response-time');
+            if (respTimeEl) respTimeEl.textContent = `${responseTime}ms`;
+
             removeTypingIndicator();
 
             if (aiResponse) {
@@ -257,12 +267,10 @@
 
                 // Speak response if TTS is enabled
                 if (window.GRACEX_TTS && GRACEX_TTS.isEnabled()) {
-                    // Speak first sentence only for brevity
-                    const firstSentence = aiResponse.split('.')[0] + '.';
-                    GRACEX_TTS.speak(firstSentence);
+                    GRACEX_TTS.speak(aiResponse);
                 }
 
-                console.log(`🤖 AI Response received in ${responseTime}ms`);
+                if (typeof addActivityLog === 'function') addActivityLog(`AI response in ${responseTime}ms`);
             } else {
                 throw new Error('No response received');
             }
@@ -278,14 +286,15 @@
             } else if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
                 errorMessage += 'Cannot reach the backend API. Make sure the server is running on port 3000.';
             } else if (error.message.includes('401')) {
-                errorMessage += 'API authentication failed. Please configure your API key in server/.env.';
+                errorMessage += 'API authentication failed. Please check your authorization.';
             } else if (error.message.includes('429')) {
-                errorMessage += 'Rate limit exceeded. Please wait a moment and try again.';
+                errorMessage += 'Rate limit exceeded. Please wait a moment.';
             } else {
                 errorMessage += 'Please try again in a moment.';
             }
 
             addMessageToChat(errorMessage, 'assistant');
+            if (typeof addActivityLog === 'function') addActivityLog(`Error: ${error.message}`);
         }
 
         messageCount++;
@@ -302,13 +311,19 @@
 
         const timestamp = new Date().toLocaleTimeString();
 
+        // Convert markdown-style code blocks if present
+        let formattedContent = content;
+        if (content.includes('```')) {
+            formattedContent = content.replace(/```([\s\S]*?)```/g, '<pre class="code-block">$1</pre>');
+        }
+
         messageDiv.innerHTML = `
-            <div>${content}</div>
+            <div>${formattedContent}</div>
             <div class="message-time">${timestamp}</div>
         `;
 
         messagesContainer.appendChild(messageDiv);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        messagesContainer.scrollTo({ top: messagesContainer.scrollHeight, behavior: 'smooth' });
 
         // Store conversation
         conversations.push({
@@ -328,7 +343,7 @@
         if (!messagesContainer) return;
 
         const indicator = document.createElement('div');
-        indicator.className = 'typing-indicator';
+        indicator.className = 'typing-indicator assistant';
         indicator.id = 'typing-indicator';
         indicator.innerHTML = `
             <div class="typing-dot"></div>
@@ -337,7 +352,7 @@
         `;
 
         messagesContainer.appendChild(indicator);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        messagesContainer.scrollTo({ top: messagesContainer.scrollHeight, behavior: 'smooth' });
     }
 
     function removeTypingIndicator() {
@@ -405,9 +420,7 @@
                 await fetch(url, { method: 'HEAD', mode: 'no-cors', cache: 'no-cache' });
                 connected = true;
                 break;
-            } catch (e) {
-                // Try next URL
-            }
+            } catch (e) { }
         }
 
         if (connected) {
@@ -445,7 +458,24 @@
             const elapsed = Date.now() - sessionStart;
             const hours = Math.floor(elapsed / (1000 * 60 * 60));
             const minutes = Math.floor((elapsed % (1000 * 60 * 60)) / (1000 * 60));
-            uptimeElement.textContent = `${hours}:${minutes.toString().padStart(2, '0')}`;
+            const seconds = Math.floor((elapsed % (1000 * 60)) / 1000);
+            uptimeElement.textContent = `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+    }
+
+    function addActivityLog(activity) {
+        const container = document.getElementById('recent-activity');
+        if (!container) return;
+
+        const item = document.createElement('div');
+        item.style.cssText = 'padding: 6px 0; opacity: 0.7; border-bottom: 1px solid rgba(255,255,255,0.1); animation: fadeInUp 0.3s ease;';
+        item.innerHTML = `${new Date().toLocaleTimeString()} - ${activity}`;
+
+        container.insertBefore(item, container.firstChild);
+
+        // Keep only last 5 items
+        while (container.children.length > 5) {
+            container.removeChild(container.lastChild);
         }
     }
 
@@ -457,6 +487,7 @@
         // Core functions
         init: initCore2,
         sendMessage: sendMessage,
+        addActivityLog: addActivityLog,
         clearChat: function () {
             const messagesContainer = document.getElementById('chat-messages');
             if (messagesContainer) {
@@ -470,6 +501,7 @@
             conversations = [];
             messageCount = 0;
             updateMessageCount();
+            addActivityLog('Chat history cleared');
         },
 
         // Voice functions
@@ -479,7 +511,7 @@
                 return;
             }
 
-            if (voiceRecognition.recognition && voiceRecognition.recognition.recognizing) {
+            if (isVoiceActive()) {
                 voiceRecognition.stop();
             } else {
                 voiceRecognition.start();
@@ -505,9 +537,10 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `gracex-core2-${Date.now()}.json`;
+            a.download = `gracex-core2-export-${Date.now()}.json`;
             a.click();
             URL.revokeObjectURL(url);
+            addActivityLog('Chat exported');
         },
 
         // Status functions
@@ -521,6 +554,10 @@
             };
         }
     };
+
+    function isVoiceActive() {
+        return document.getElementById('voice-btn')?.classList.contains('active');
+    }
 
     // ============================================
     // AUTO-INITIALIZE ON MODULE LOAD
@@ -566,27 +603,47 @@ function toggleVoiceInput() {
     }
 }
 
-function quickAction(action) {
-    const actions = {
+function quickCommand(type) {
+    const commands = {
         weather: 'What\'s the current weather?',
         time: 'What time is it right now?',
         news: 'What are the latest news headlines?',
         system: 'Show me system information and performance',
         crypto: 'What are current Bitcoin and Ethereum prices?',
-        maps: 'Show me nearby places or directions',
-        help: 'Give me a quick tour of Core 2.0 and how to use it'
+        code: 'Help me write some code for a new project',
+        help: 'Give me a quick tour of Core 2.0 and how to use it',
+        creative: 'Let\'s brainstorm some creative ideas'
     };
 
-    if (actions[action]) {
+    if (commands[type]) {
         const input = document.getElementById('chat-input');
         if (input) {
-            input.value = actions[action];
+            input.value = commands[type];
             sendMessage();
+            if (window.GRACEX_CORE2) window.GRACEX_CORE2.addActivityLog(`Quick Command: ${type}`);
         }
-    } else if (action === 'refresh-weather') {
-        if (typeof window.loadWeather === 'function') window.loadWeather();
-    } else if (action === 'refresh-news') {
-        if (typeof window.loadNews === 'function') window.loadNews();
+    }
+}
+
+function openSystemTest() {
+    window.open('SYSTEM_TEST.html', '_blank');
+}
+
+function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+    } else {
+        document.exitFullscreen();
+    }
+}
+
+function toggleAdvanced() {
+    // Custom logic for advanced settings or hidden forge/core access
+    const pin = prompt('Enter System PIN for advanced access:');
+    if (pin === '1234') { // Example PIN
+        window.location.href = 'index_backup.html';
+    } else {
+        alert('Access Denied. Advanced settings coming soon!');
     }
 }
 
@@ -594,11 +651,5 @@ function focusChat() {
     const input = document.getElementById('chat-input');
     if (input) {
         input.focus();
-        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
-}
-
-function openModule(moduleId) {
-    if (!moduleId) return;
-    window.location.hash = '#/' + moduleId;
 }
