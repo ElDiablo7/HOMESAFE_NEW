@@ -20,7 +20,7 @@
   let currentUtterance = null;
   let currentModule = 'core';
   let crisisMode = false;
-  
+
   // ============================================
   // GRACE VOICE SPEC (OFFICIAL - LOCKED)
   // ============================================
@@ -33,12 +33,12 @@
   // Pitch: mid-range | Speed: medium-fast
   // Presence: confident, centred, composed
   // Think: calm authority, NOT friendly assistant
-  
+
   // LOCKED GRACE DEFAULTS - do not drift (user requirement)
   const GRACE_LOCKED_RATE = 1.10;
   const GRACE_LOCKED_PITCH = 1.15;
   const GRACE_LOCKED_VOICE_NAME = 'Google UK English Female';
-  
+
   let voiceSettings = {
     rate: GRACE_LOCKED_RATE,
     pitch: GRACE_LOCKED_PITCH,
@@ -51,14 +51,14 @@
   // ============================================
   // VOICE PRESETS - CHARACTER SPEC COMPLIANT
   // ============================================
-  
+
   // ============================================
   // VOICE PRESETS - GRACE VOICE SPEC COMPLIANT
   // ============================================
   // Reference: "Confident UK female. Calm authority. 
   // Slight cinematic feel. Systems commander, not helper.
   // Speak as if the system already trusts you."
-  
+
   const VOICE_PRESETS = {
     // ═══════════════════════════════════════════
     // DEFAULT VOICE (SPEC BASELINE)
@@ -70,11 +70,11 @@
       name: '✨ GRACE (Default)',
       description: 'Calm authority. Google UK English Female. Rate 1.10, Pitch 1.15 (locked).'
     },
-    
+
     // ═══════════════════════════════════════════
     // SPEC MODES (Official Voice Spec)
     // ═══════════════════════════════════════════
-    
+
     // SUPPORTIVE MODE - per spec: "steady, grounded, slower by ~10%"
     grace_supportive: {
       rate: 0.90,       // 10% slower than default
@@ -83,7 +83,7 @@
       name: '🤝 Supportive',
       description: 'Steady, grounded, 10% slower. For guidance moments.'
     },
-    
+
     // SYSTEM/STATUS MODE - per spec: "neutral, precise, slightly clipped"
     grace_system: {
       rate: 1.05,       // Slightly faster, clipped
@@ -92,7 +92,7 @@
       name: '⚙️ System',
       description: 'Neutral, precise, slightly clipped. Status updates.'
     },
-    
+
     // FIRM MODE - per spec: "lower pitch by ~5%, slower, decisive"
     grace_firm: {
       rate: 0.92,       // Slower, deliberate
@@ -101,11 +101,11 @@
       name: '🎯 Firm',
       description: 'Lower pitch, slower, decisive. Commands and boundaries.'
     },
-    
+
     // ═══════════════════════════════════════════
     // MODULE-SPECIFIC (All use spec baseline + mode)
     // ═══════════════════════════════════════════
-    
+
     // CORE™ - Default voice, systems commander
     grace_core: {
       rate: 1.0,
@@ -114,7 +114,7 @@
       name: '🏠 Core',
       description: 'Default GRACE. Control room presence.'
     },
-    
+
     // FAMILY™ - Supportive mode
     grace_family: {
       rate: 0.92,
@@ -123,7 +123,7 @@
       name: '👨‍👩‍👧 Family',
       description: 'Supportive mode. Steady, grounded.'
     },
-    
+
     // UPLIFT™ - Supportive mode (no therapy-voice per spec)
     grace_uplift: {
       rate: 0.90,
@@ -132,7 +132,7 @@
       name: '🌟 Uplift',
       description: 'Supportive mode. Steady, grounded, NOT therapy-voice.'
     },
-    
+
     // CRISIS MODE - Firm + Supportive hybrid
     grace_crisis: {
       rate: 0.85,       // Slower for clarity
@@ -141,7 +141,7 @@
       name: '🆘 Crisis',
       description: 'Firm and steady. No fluff. Present and decisive.'
     },
-    
+
     // GUARDIAN™ - Firm mode
     grace_guardian: {
       rate: 0.92,
@@ -150,7 +150,7 @@
       name: '🛡️ Guardian',
       description: 'Firm mode. Decisive, clear boundaries.'
     },
-    
+
     // SPORT™ - System mode (neutral, precise, data-focused)
     grace_sport: {
       rate: 1.02,
@@ -159,7 +159,7 @@
       name: '⚽ Sport',
       description: 'System mode. Neutral, precise, no hype.'
     },
-    
+
     // BUILDER™ / SITEOPS™ - System mode
     grace_professional: {
       rate: 1.0,
@@ -168,7 +168,7 @@
       name: '🏗️ Professional',
       description: 'Default GRACE. Clear, technical when needed.'
     },
-    
+
     // FIT™ - Default (confident, not cheerleader)
     grace_fit: {
       rate: 1.0,
@@ -177,7 +177,7 @@
       name: '💪 Fit',
       description: 'Default GRACE. Confident, not performative.'
     },
-    
+
     // YOGA™ - Supportive mode, slower
     grace_yoga: {
       rate: 0.85,
@@ -186,7 +186,7 @@
       name: '🧘 Yoga',
       description: 'Supportive mode. Slower, grounded.'
     },
-    
+
     // CHEF™ - Supportive mode
     grace_chef: {
       rate: 0.95,
@@ -195,7 +195,7 @@
       name: '👨‍🍳 Chef',
       description: 'Supportive mode. Clear instructions.'
     },
-    
+
     // BEAUTY™ / ARTIST™ - Default
     grace_creative: {
       rate: 0.98,
@@ -204,7 +204,7 @@
       name: '🎨 Creative',
       description: 'Default GRACE. Assured, not over-friendly.'
     },
-    
+
     // ACCOUNTING™ - System mode
     grace_accounting: {
       rate: 1.0,
@@ -213,7 +213,7 @@
       name: '📊 Accounting',
       description: 'System mode. Precise, clear numbers.'
     },
-    
+
     // OSINT™ - Firm mode
     grace_osint: {
       rate: 0.95,
@@ -222,7 +222,7 @@
       name: '🔍 OSINT',
       description: 'Firm mode. Authoritative, serious.'
     },
-    
+
     // GAMER™ - Default (NOT hyper per spec)
     grace_gamer: {
       rate: 1.0,
@@ -231,11 +231,11 @@
       name: '🎮 Gamer',
       description: 'Default GRACE. Focused, NOT hyper.'
     },
-    
+
     // ═══════════════════════════════════════════
     // ACCESSIBILITY PRESETS
     // ═══════════════════════════════════════════
-    
+
     grace_clear: {
       rate: 0.85,
       pitch: 1.0,
@@ -243,7 +243,7 @@
       name: '🔊 Clear',
       description: 'Slower, louder for accessibility.'
     },
-    
+
     grace_slow: {
       rate: 0.75,
       pitch: 1.0,
@@ -258,7 +258,7 @@
   // ============================================
   // Single GRACE voice, mode changes per module context
   // Most modules use grace_default (spec baseline)
-  
+
   const MODULE_VOICE_MAP = {
     core: 'grace_core',           // Default - systems commander
     builder: 'grace_professional', // Default - technical
@@ -290,7 +290,7 @@
   function getVoices() {
     if (!isSupported) return [];
     const voices = window.speechSynthesis.getVoices();
-    
+
     // Sort: UK first, then US, then other English, then others
     return voices.sort((a, b) => {
       if (a.lang.startsWith('en-GB') && !b.lang.startsWith('en-GB')) return -1;
@@ -315,7 +315,7 @@
    */
   function findPreferredVoice() {
     if (!isSupported) return null;
-    
+
     const voices = getVoices();
     if (voices.length === 0) return null;
 
@@ -332,12 +332,12 @@
       'Moira',                    // Irish - backup
       'Samantha'                  // Apple fallback
     ];
-    
+
     // First pass: exact UK match
     for (const name of premiumUKVoices) {
       if (name === 'Daniel') continue; // Skip male voices
-      const found = voices.find(v => 
-        v.name.includes(name) && 
+      const found = voices.find(v =>
+        v.name.includes(name) &&
         v.lang.startsWith('en-GB') &&
         !v.name.toLowerCase().includes('male')
       );
@@ -348,8 +348,8 @@
     }
 
     // Priority 2: Any local UK female voice
-    const ukLocal = voices.find(v => 
-      v.lang.startsWith('en-GB') && 
+    const ukLocal = voices.find(v =>
+      v.lang.startsWith('en-GB') &&
       v.localService &&
       !v.name.toLowerCase().includes('male')
     );
@@ -359,7 +359,7 @@
     }
 
     // Priority 3: Any UK voice (network)
-    const ukNetwork = voices.find(v => 
+    const ukNetwork = voices.find(v =>
       v.lang.startsWith('en-GB') &&
       !v.name.toLowerCase().includes('male')
     );
@@ -369,8 +369,8 @@
     }
 
     // Priority 4: Premium US female (fallback only)
-    const usPremium = voices.find(v => 
-      v.lang.startsWith('en-US') && 
+    const usPremium = voices.find(v =>
+      v.lang.startsWith('en-US') &&
       (v.name.includes('Microsoft Zira') || v.name.includes('Samantha')) &&
       !v.name.toLowerCase().includes('male')
     );
@@ -380,7 +380,7 @@
     }
 
     // Priority 5: Any English female voice
-    const enVoice = voices.find(v => 
+    const enVoice = voices.find(v =>
       v.lang.startsWith('en-') &&
       !v.name.toLowerCase().includes('male')
     );
@@ -474,8 +474,8 @@
       // ALWAYS wait for any intro to finish first
       if (typeof GRACEX_AudioManager.isIntroActive === 'function') {
         while (GRACEX_AudioManager.isIntroActive()) {
-          const remaining = GRACEX_AudioManager.getBlockTimeRemaining 
-            ? GRACEX_AudioManager.getBlockTimeRemaining() 
+          const remaining = GRACEX_AudioManager.getBlockTimeRemaining
+            ? GRACEX_AudioManager.getBlockTimeRemaining()
             : 500;
           console.log('[GRACEX TTS] Intro active, waiting', remaining, 'ms...');
           await new Promise(r => setTimeout(r, Math.min(remaining + 100, 500)));
@@ -483,7 +483,7 @@
         // Extra safety gap after intro
         await new Promise(r => setTimeout(r, 500));
       }
-      
+
       if (typeof GRACEX_AudioManager.safeSpeakTTS === 'function') {
         return GRACEX_AudioManager.safeSpeakTTS(text, options);
       } else if (typeof GRACEX_AudioManager.speakTTS === 'function') {
@@ -525,12 +525,12 @@
         utterance.voice = voiceSettings.voice;
       }
       utterance.lang = 'en-GB';
-      
+
       utterance.rate = Math.max(0.1, Math.min(10, options.rate || voiceSettings.rate));
       utterance.pitch = Math.max(0, Math.min(2, options.pitch || voiceSettings.pitch));
       utterance.volume = Math.max(0, Math.min(1, options.volume || voiceSettings.volume));
       utterance.lang = options.lang || voiceSettings.lang;
-      
+
       if (options.voice) {
         utterance.voice = options.voice;
       } else if (voiceSettings.voice) {
@@ -625,7 +625,7 @@
     }
     saveSettings();
   }
-  
+
   /**
    * Save settings to localStorage (rate/pitch/voice always saved as locked defaults)
    */
@@ -648,7 +648,7 @@
       console.warn('[GRACEX TTS] Failed to save settings:', e);
     }
   }
-  
+
   /**
    * Load settings from localStorage (rate/pitch/voice are LOCKED - never restored from saved, no drift)
    */
@@ -748,15 +748,15 @@
       "Confirmed. Proceeding now.",
       "Awaiting your next command."
     ];
-    
+
     // Pick a random test line or use provided text
     const defaultText = crisisMode
       ? "I'm here. Let's proceed one step at a time."
       : text || testLines[Math.floor(Math.random() * testLines.length)];
-    
+
     return speakDirect(defaultText);
   }
-  
+
   /**
    * Run all test lines (for voice validation)
    */
@@ -767,7 +767,7 @@
       "Confirmed. Proceeding now.",
       "Awaiting your next command."
     ];
-    
+
     for (const line of testLines) {
       await speakDirect(line);
       await new Promise(r => setTimeout(r, 500));
@@ -987,14 +987,14 @@
     if (!panel) {
       panel = createSettingsPanel();
     }
-    
+
     // Sync panel values with current settings
     const presetSelect = document.getElementById('gracex-tts-preset');
     const rateSlider = document.getElementById('gracex-tts-rate');
     const pitchSlider = document.getElementById('gracex-tts-pitch');
     const volumeSlider = document.getElementById('gracex-tts-volume');
     const voiceSelect = document.getElementById('gracex-tts-voice');
-    
+
     if (presetSelect) presetSelect.value = voiceSettings.preset || 'grace_default';
     if (rateSlider) {
       rateSlider.value = voiceSettings.rate;
@@ -1016,13 +1016,13 @@
       const voiceIndex = voices.findIndex(v => v.name === voiceSettings.voice.name);
       if (voiceIndex >= 0) voiceSelect.value = voiceIndex;
     }
-    
+
     // Update preset description
     const presetDesc = document.getElementById('gracex-tts-preset-desc');
     if (presetDesc && VOICE_PRESETS[voiceSettings.preset]) {
       presetDesc.textContent = VOICE_PRESETS[voiceSettings.preset].description;
     }
-    
+
     panel.style.display = 'block';
   }
 
@@ -1039,10 +1039,10 @@
   // ============================================
   // ENHANCED INITIALIZATION - FIXES VOICE RESET
   // ============================================
-  
+
   let settingsLocked = false;  // Prevents module switches from overriding user settings
   let userHasCustomized = false; // Track if user manually changed settings
-  
+
   /**
    * Lock settings to prevent automatic resets
    */
@@ -1050,7 +1050,7 @@
     settingsLocked = true;
     localStorage.setItem('gracex_voice_locked', 'true');
   }
-  
+
   /**
    * Unlock settings (allows module voice switching)
    */
@@ -1058,7 +1058,7 @@
     settingsLocked = false;
     localStorage.setItem('gracex_voice_locked', 'false');
   }
-  
+
   /**
    * Check if settings are locked
    */
@@ -1066,12 +1066,12 @@
     if (settingsLocked) return true;
     return localStorage.getItem('gracex_voice_locked') === 'true';
   }
-  
+
   /**
    * Override applyModuleVoice to respect locked settings
    */
   const originalApplyModuleVoice = applyModuleVoice;
-  applyModuleVoice = function(moduleId) {
+  applyModuleVoice = function (moduleId) {
     // Don't change voice if user has locked their settings
     if (isSettingsLocked()) {
       console.log('[GRACEX TTS] Settings locked, keeping user voice');
@@ -1079,7 +1079,7 @@
     }
     return originalApplyModuleVoice(moduleId);
   };
-  
+
   /**
    * Enhanced initialization with better voice persistence
    */
@@ -1091,33 +1091,34 @@
         resolve(voices);
         return;
       }
-      
+
       // Wait for voices to load (Chrome is async)
       if (window.speechSynthesis) {
         window.speechSynthesis.onvoiceschanged = () => {
           resolve(getVoices());
         };
       }
-      
+
       // Timeout fallback
       setTimeout(() => resolve(getVoices()), 1000);
     });
-    
+
     await waitForVoices();
-    
+
     loadSettings(); // Applies locked defaults (Google UK English Female, rate 1.10, pitch 1.10)
     if (!voiceSettings.voice) {
       voiceSettings.voice = findPreferredVoice();
     }
+    // Force 0 drift logic: ensure we are locked immediately
     settingsLocked = true;
-    try { localStorage.setItem('gracex_voice_locked', 'true'); } catch (e) {}
-    console.log('[GRACEX TTS] ✓ Voice initialized:', voiceSettings.voice?.name || 'default', '| Rate:', voiceSettings.rate, '| Pitch:', voiceSettings.pitch, '(locked)');
+    try { localStorage.setItem('gracex_voice_locked', 'true'); } catch (e) { }
+    console.log('[GRACEX TTS] ✓ Voice initialized (0 DRIFT MODE):', voiceSettings.voice?.name || 'default', '| Rate:', voiceSettings.rate, '| Pitch:', voiceSettings.pitch, '(locked)');
   }
-  
+
   // Run enhanced initialization
   initializeVoice();
   window.speechSynthesis?.getVoices?.(); // kick Chrome to load voices
-  
+
   // ENSURE TTS IS ENABLED ON STARTUP
   // Check if user explicitly disabled it, otherwise enable
   const savedEnabled = localStorage.getItem('gracex_tts_enabled');
@@ -1127,60 +1128,60 @@
   } else {
     console.log('[GRACEX TTS] Voice disabled by user preference');
   }
-  
+
   // Also expose lock functions
 
   // ============================================
   // GRACE-X TTS PUBLIC API
   // ============================================
-  
+
   window.GRACEX_TTS = {
     // Core speech functions
     speak,
     speakDirect,
     stop,
-    
+
     // Enable/disable
     enable,
     disable,
     toggle,
     isEnabled: () => isEnabled,
     isSpeaking: isCurrentlySpeaking,
-    
+
     // Settings management
     updateSettings,
     getSettings,
     saveSettings,
     loadSettings,
-    
+
     // Locking (prevents module overrides)
     lockSettings,
     unlockSettings,
     isSettingsLocked,
-    
+
     // Voice presets (GRACE VOICE SPEC)
     applyPreset,
     applyModuleVoice,
     getModuleVoice,
     getPresets,
     getVoices,
-    
+
     // Module context
     setModule,
     getCurrentModule: () => currentModule,
-    
+
     // Crisis mode
     enterCrisisMode,
     exitCrisisMode,
     isCrisisMode,
-    
+
     // UI
     preview,
     runTestLines,  // NEW: Run all spec test lines
     showSettings,
     hideSettings,
     isSupported: () => isSupported,
-    
+
     // Constants
     MODULE_VOICE_MAP,
     VOICE_PRESETS

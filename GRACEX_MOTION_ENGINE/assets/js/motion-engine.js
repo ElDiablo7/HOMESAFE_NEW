@@ -3,7 +3,7 @@
  * Single <video> controller. Src swapping only. Random clip per bucket.
  */
 
-(function(global) {
+(function (global) {
   'use strict';
 
   var manifest = { drift: 0, pulse: 0, sweep: 0, depth: 0 };
@@ -28,14 +28,14 @@
     video.load();
     video.playbackRate = 1;
     if (container) container.setAttribute('data-state', bucket);
-    video.play().catch(function() {});
+    video.play().catch(function () { });
     return true;
   }
 
   function loadManifest(done) {
     var xhr = new XMLHttpRequest();
     xhr.open('GET', 'assets/motion/manifest.json', true);
-    xhr.onload = function() {
+    xhr.onload = function () {
       if (xhr.status === 200) {
         try {
           var m = JSON.parse(xhr.responseText);
@@ -43,11 +43,11 @@
           manifest.pulse = m.pulse | 0;
           manifest.sweep = m.sweep | 0;
           manifest.depth = m.depth | 0;
-        } catch (e) {}
+        } catch (e) { }
       }
       done();
     };
-    xhr.onerror = function() { done(); };
+    xhr.onerror = function () { done(); };
     xhr.send();
   }
 
@@ -63,22 +63,22 @@
     video.setAttribute('aria-hidden', 'true');
     container.appendChild(video);
 
-    video.addEventListener('loadedmetadata', function() {
+    video.addEventListener('loadedmetadata', function () {
       if (video.duration && isFinite(video.duration)) {
         video.currentTime = Math.random() * video.duration;
       }
     });
 
-    loadManifest(function() {
+    loadManifest(function () {
       container.setAttribute('data-state', 'idle');
       if (!play('drift')) play('pulse');
     });
   }
 
-  function setIdle()      { if (!play('drift')) play('pulse'); }
-  function acknowledge()  { play('pulse'); }
-  function transition()   { if (!play('sweep')) play('pulse'); }
-  function focus()        { if (!play('depth')) play('pulse'); }
+  function setIdle() { if (!play('drift')) play('pulse'); }
+  function acknowledge() { play('pulse'); }
+  function transition() { if (!play('sweep')) play('pulse'); }
+  function focus() { if (!play('depth')) play('pulse'); }
 
   global.GRACEX_MOTION_ENGINE = {
     setIdle: setIdle,
