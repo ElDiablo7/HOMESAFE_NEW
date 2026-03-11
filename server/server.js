@@ -37,6 +37,9 @@ const siteopsRoutes = require('./routes/siteops');
 const sportsAPI = require('./sports-api');
 const storage = require('./utils/storage');
 
+// GRACE-X Brain Router (feature-flagged)
+const brainRouter = require('./router/brain_router');
+
 // ============================================
 // GRACE-X AI™ VOICE & CHARACTER MASTER SPEC
 // Engineered and copyrighted by Zac Crockett
@@ -814,6 +817,73 @@ function selectOllamaModel(message) {
   return process.env.OLLAMA_MODEL || 'llama3.2';
 }
 
+// ============================================
+// BRAIN ROUTER TEST ENDPOINT (independent)
+// Always uses the new router — does NOT affect /api/brain
+// ============================================
+app.post('/api/brain-router-test', rateLimitMiddleware, async (req, res) => {
+  const { module, messages, temperature = 0.7, max_tokens = 500 } = req.body;
+
+  // Validate messages
+  const validation = validateMessages(messages);
+  if (!validation.valid) {
+    return res.status(400).json({
+      error: validation.error,
+      code: 'INVALID_REQUEST',
+      requestId: req.requestId
+    });
+  }
+
+  // Build the same system prompt structure as legacy
+  const moduleContext = MODULE_CONTEXTS[module] || MODULE_CONTEXTS.core;
+  const fullSystemPrompt = `${GRACEX_SYSTEM_PROMPT}\n\n## Current Module Context\n${moduleContext}`;
+
+  const sanitizedMessages = [{ role: 'system', content: fullSystemPrompt }];
+  messages.filter(m => m.role !== 'system').forEach(m => {
+    sanitizedMessages.push({ role: m.role, content: sanitizeInput(m.content) });
+  });
+
+  const validTemp = Math.min(2, Math.max(0, parseFloat(temperature) || 0.7));
+  const validMaxTokens = Math.min(4000, Math.max(50, parseInt(max_tokens) || 500));
+
+  try {
+    const result = await brainRouter.route({
+      module: module || 'core',
+      messages: sanitizedMessages,
+      temperature: validTemp,
+      max_tokens: validMaxTokens,
+      requestId: req.requestId
+    });
+
+    res.json({
+      response: result.reply,
+      request_id: result.request_id,
+      brain_used: result.brain_used,
+      provider_used: result.provider_used,
+      latency_ms: result.latency_ms,
+      error_state: result.error_state,
+      failover: result.failover
+    });
+  } catch (err) {
+    res.status(500).json({
+      error: err.message,
+      code: 'ROUTER_TEST_ERROR',
+      requestId: req.requestId
+    });
+  }
+});
+
+// Brain router status endpoint
+app.get('/api/brain-router/status', (req, res) => {
+  const featureFlag = (process.env.USE_BRAIN_ROUTER || 'false').toLowerCase() === 'true';
+  res.json({
+    use_brain_router: featureFlag,
+    router_status: brainRouter.getStatus(),
+    legacy_available: true,
+    rollback: 'Set USE_BRAIN_ROUTER=false in .env and restart'
+  });
+});
+
 // Main brain API endpoint
 app.post('/api/brain', rateLimitMiddleware, async (req, res) => {
   const { module, messages, temperature = 0.7, max_tokens = 500, provider: requestProvider } = req.body;
@@ -868,6 +938,43 @@ app.post('/api/brain', rateLimitMiddleware, async (req, res) => {
   // Validate parameters
   const validTemp = Math.min(2, Math.max(0, parseFloat(temperature) || 0.7));
   const validMaxTokens = Math.min(4000, Math.max(50, parseInt(max_tokens) || 500));
+
+  // ============================================
+  // FEATURE FLAG: USE_BRAIN_ROUTER
+  // false (default) = legacy Level 5 path
+  // true = new brain router path
+  // ============================================
+  const useBrainRouter = (process.env.USE_BRAIN_ROUTER || 'false').toLowerCase() === 'true';
+
+  if (useBrainRouter) {
+    // ── NEW BRAIN ROUTER PATH ──
+    log('info', `Brain request via ROUTER from module: ${module || 'unknown'}`, { requestId: req.requestId });
+    try {
+      const result = await brainRouter.route({
+        module: module || 'core',
+        messages: sanitizedMessages,
+        temperature: validTemp,
+        max_tokens: validMaxTokens,
+        requestId: req.requestId
+      });
+
+      return res.json({
+        reply: result.reply,
+        module: module || 'unknown',
+        provider: result.provider_used,
+        requestId: result.request_id,
+        processingTime: result.latency_ms,
+        failover: result.failover,
+        brain: result.brain_used,
+        routerMode: true
+      });
+    } catch (err) {
+      log('error', `Brain Router error, falling back to legacy: ${err.message}`, { requestId: req.requestId });
+      // Fall through to legacy path on router failure (safe fallback)
+    }
+  }
+
+  // ── LEGACY LEVEL 5 PATH (original code preserved exactly) ──
 
   // Get API provider
   const primaryProvider = requestProvider || process.env.LLM_PROVIDER || 'openai';
