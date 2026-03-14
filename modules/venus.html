@@ -1,0 +1,454 @@
+<section class="module-section venus-container" id="venus-root">
+  <!-- 
+    GRACE-X VENUS™ v1.0
+    Anti-Hacking Cyber Security · Honeypot System · Predator Trapping
+    "It's OK – Make yourself at Home!"
+    
+    ⚠️ CRITICAL: This module handles sensitive security operations.
+    All evidence gathering must be lawful and reportable.
+  -->
+
+  <!-- VENUS LOGIN OVERLAY -->
+  <div id="venus-login-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--venus-dark); z-index: 100; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px);">
+    <div class="venus-card" style="width: 100%; max-width: 400px; text-align: center; border-color: var(--venus-primary); box-shadow: 0 0 50px rgba(255, 0, 255, 0.2);">
+      <div class="venus-logo" style="width: 60px; height: 60px; margin: 0 auto 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: bold; color: white;">V</div>
+      <h2 style="color: var(--venus-primary); margin-bottom: 10px; font-size: 24px; text-shadow: 0 0 10px var(--venus-glow);">VENUS ACCESS</h2>
+      <p style="color: rgba(255, 255, 255, 0.6); margin-bottom: 25px; font-size: 14px;">Restricted Security Subsystem</p>
+      
+      <div style="text-align: left; margin-bottom: 20px;">
+        <label style="display: block; color: var(--venus-tertiary); font-size: 12px; margin-bottom: 5px; text-transform: uppercase;">Operator ID</label>
+        <input type="text" id="venus-login-id" placeholder="Enter ID..." style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 0, 255, 0.3); border-radius: 8px; color: white; font-family: monospace; font-size: 16px; box-sizing: border-box;">
+      </div>
+      
+      <div style="text-align: left; margin-bottom: 25px;">
+        <label style="display: block; color: var(--venus-tertiary); font-size: 12px; margin-bottom: 5px; text-transform: uppercase;">Passphrase</label>
+        <input type="password" id="venus-login-pass" placeholder="••••••••" style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 0, 255, 0.3); border-radius: 8px; color: white; font-size: 16px; box-sizing: border-box;">
+      </div>
+      
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px;">
+        <label class="venus-toggle" style="margin: 0;">
+          <input type="checkbox" id="venus-login-save">
+          <span class="toggle-slider"></span>
+          <span class="toggle-label" style="font-size: 12px;">Save Credentials</span>
+        </label>
+      </div>
+
+      <button id="venus-login-btn" class="venus-btn" style="width: 100%; padding: 15px; font-size: 16px; letter-spacing: 2px;">AUTHORIZE</button>
+      <div id="venus-login-error" style="color: var(--venus-danger); font-size: 12px; margin-top: 15px; display: none;">Access Denied. Invalid credentials.</div>
+    </div>
+  </div>
+
+  <!-- MAIN VENUS CONTENT (Hidden until login) -->
+  <div id="venus-main-content" style="display: none;">
+    <!-- Module Header -->
+  <div class="module-header venus-header" id="venus-header">
+    <div class="module-logo-slot venus-logo">
+      <span class="module-logo-text">V</span>
+    </div>
+    <div class="module-header-text">
+      <h1 class="module-title venus-title">GRACE-X Venus™</h1>
+      <p class="module-subtitle" id="venus-subtitle">
+        Anti-Hacking Cyber Security · "Make yourself at Home"
+      </p>
+    </div>
+    <div class="venus-status-badge" id="venus-status-badge">
+      <span class="status-dot"></span>
+      <span class="status-text">ARMED</span>
+    </div>
+  </div>
+
+  <!-- THREAT LEVEL INDICATOR -->
+  <div class="venus-threat-bar" id="venus-threat-bar">
+    <div class="threat-level-container">
+      <span class="threat-label">THREAT LEVEL:</span>
+      <div class="threat-segments">
+        <div class="threat-segment" data-level="1"></div>
+        <div class="threat-segment" data-level="2"></div>
+        <div class="threat-segment" data-level="3"></div>
+        <div class="threat-segment" data-level="4"></div>
+        <div class="threat-segment" data-level="5"></div>
+      </div>
+      <span class="threat-status" id="venus-threat-status">MONITORING</span>
+    </div>
+    <div class="venus-stats-row">
+      <div class="venus-stat">
+        <span class="stat-value" id="venus-active-traps">3</span>
+        <span class="stat-label">Active Traps</span>
+      </div>
+      <div class="venus-stat">
+        <span class="stat-value" id="venus-intruders">0</span>
+        <span class="stat-label">Current Intruders</span>
+      </div>
+      <div class="venus-stat">
+        <span class="stat-value" id="venus-evidence-count">47</span>
+        <span class="stat-label">Evidence Files</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN DASHBOARD GRID -->
+  <div class="venus-dashboard-grid">
+    
+    <!-- HONEYPOT STATUS PANEL -->
+    <div class="venus-card venus-honeypot-panel" id="venus-panel-honeypot">
+      <div class="venus-card-header">
+        <h2>🪤 Honeypot Systems</h2>
+        <button class="venus-btn venus-btn-arm" id="venus-arm-all">ARM ALL</button>
+      </div>
+      
+      <div class="honeypot-list" id="venus-honeypot-list">
+        <div class="honeypot-item active" data-honeypot="fakeos">
+          <div class="honeypot-icon">💻</div>
+          <div class="honeypot-info">
+            <span class="honeypot-name">Fake OS Environment</span>
+            <span class="honeypot-desc">Windows 11 simulation with fake filesystem</span>
+          </div>
+          <div class="honeypot-status armed">ARMED</div>
+        </div>
+        
+        <div class="honeypot-item active" data-honeypot="fakebank">
+          <div class="honeypot-icon">🏦</div>
+          <div class="honeypot-info">
+            <span class="honeypot-name">Banking Portal Decoy</span>
+            <span class="honeypot-desc">Fake login with credential capture</span>
+          </div>
+          <div class="honeypot-status armed">ARMED</div>
+        </div>
+        
+        <div class="honeypot-item active" data-honeypot="fakecode">
+          <div class="honeypot-icon">📁</div>
+          <div class="honeypot-info">
+            <span class="honeypot-name">Code Repository Trap</span>
+            <span class="honeypot-desc">Fake API keys, credentials, source code</span>
+          </div>
+          <div class="honeypot-status armed">ARMED</div>
+        </div>
+        
+        <div class="honeypot-item" data-honeypot="guardian">
+          <div class="honeypot-icon">🛡️</div>
+          <div class="honeypot-info">
+            <span class="honeypot-name">Guardian Child Protection Trap</span>
+            <span class="honeypot-desc">Predator engagement & evidence gathering</span>
+          </div>
+          <div class="honeypot-status standby">STANDBY</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LIVE INTRUSION MONITOR -->
+    <div class="venus-card venus-intrusion-panel" id="venus-panel-intrusion">
+      <div class="venus-card-header">
+        <h2>👁️ Live Intrusion Monitor</h2>
+        <span class="live-indicator">● LIVE</span>
+      </div>
+      
+      <div class="intrusion-feed" id="venus-intrusion-feed">
+        <div class="intrusion-empty">
+          <span class="empty-icon">🎯</span>
+          <p>No active intrusions detected</p>
+          <p class="empty-sub">Honeypots armed and waiting...</p>
+        </div>
+        
+        <!-- Active intrusion template (hidden, JS will populate) -->
+        <div class="intrusion-item template" style="display: none;">
+          <div class="intrusion-header">
+            <span class="intruder-ip">192.168.1.xxx</span>
+            <span class="intrusion-time">00:00:00</span>
+          </div>
+          <div class="intrusion-details">
+            <div class="detail-row">
+              <span class="detail-label">Location:</span>
+              <span class="detail-value location">Unknown</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Trap:</span>
+              <span class="detail-value trap">Fake OS</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Duration:</span>
+              <span class="detail-value duration">0m 0s</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Actions Logged:</span>
+              <span class="detail-value actions">0</span>
+            </div>
+          </div>
+          <div class="intrusion-actions">
+            <button class="venus-btn-sm">View Activity</button>
+            <button class="venus-btn-sm venus-btn-danger">Generate Report</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GUARDIAN INTEGRATION -->
+    <div class="venus-card venus-guardian-panel" id="venus-panel-guardian">
+      <div class="venus-card-header">
+        <h2>🛡️ Guardian Integration</h2>
+        <span class="guardian-link-status" id="venus-guardian-status">LINKED</span>
+      </div>
+      
+      <div class="guardian-integration-content">
+        <div class="guardian-alert-box" id="venus-guardian-alert" style="display: none;">
+          <div class="alert-header">
+            <span class="alert-icon">⚠️</span>
+            <span class="alert-title">PREDATOR DETECTED</span>
+          </div>
+          <div class="alert-body">
+            <p>Guardian has flagged suspicious contact with a minor.</p>
+            <div class="alert-actions">
+              <button class="venus-btn venus-btn-engage" id="venus-engage-predator">
+                🪤 DEPLOY HONEYPOT
+              </button>
+              <button class="venus-btn venus-btn-secondary" id="venus-view-threat">
+                View Threat
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="guardian-stats">
+          <div class="guardian-stat-item">
+            <span class="guardian-stat-value" id="venus-predators-trapped">12</span>
+            <span class="guardian-stat-label">Predators Trapped (All Time)</span>
+          </div>
+          <div class="guardian-stat-item">
+            <span class="guardian-stat-value" id="venus-reports-filed">8</span>
+            <span class="guardian-stat-label">Reports Filed to Authorities</span>
+          </div>
+          <div class="guardian-stat-item">
+            <span class="guardian-stat-value" id="venus-active-engagements">0</span>
+            <span class="guardian-stat-label">Active Engagements</span>
+          </div>
+        </div>
+        
+        <div class="guardian-honeypot-controls">
+          <h3>Predator Engagement Mode</h3>
+          <p class="guardian-desc">When activated, Venus will impersonate the target child and engage the predator to gather maximum evidence.</p>
+          <div class="engagement-settings">
+            <label class="venus-toggle">
+              <input type="checkbox" id="venus-auto-engage">
+              <span class="toggle-slider"></span>
+              <span class="toggle-label">Auto-engage on Guardian alert</span>
+            </label>
+            <label class="venus-toggle">
+              <input type="checkbox" id="venus-notify-authorities" checked>
+              <span class="toggle-slider"></span>
+              <span class="toggle-label">Auto-notify authorities threshold</span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EVIDENCE VAULT -->
+    <div class="venus-card venus-evidence-panel" id="venus-panel-evidence">
+      <div class="venus-card-header">
+        <h2>📁 Evidence Vault</h2>
+        <button class="venus-btn venus-btn-export" id="venus-export-all">Export All</button>
+      </div>
+      
+      <div class="evidence-categories">
+        <div class="evidence-category" data-category="intrusion">
+          <div class="category-icon">🔓</div>
+          <div class="category-info">
+            <span class="category-name">Intrusion Logs</span>
+            <span class="category-count">23 files</span>
+          </div>
+        </div>
+        <div class="evidence-category" data-category="keystrokes">
+          <div class="category-icon">⌨️</div>
+          <div class="category-info">
+            <span class="category-name">Keystroke Captures</span>
+            <span class="category-count">156 sessions</span>
+          </div>
+        </div>
+        <div class="evidence-category" data-category="screenshots">
+          <div class="category-icon">📸</div>
+          <div class="category-info">
+            <span class="category-name">Screen Captures</span>
+            <span class="category-count">89 images</span>
+          </div>
+        </div>
+        <div class="evidence-category" data-category="conversations">
+          <div class="category-icon">💬</div>
+          <div class="category-info">
+            <span class="category-name">Predator Conversations</span>
+            <span class="category-count">12 transcripts</span>
+          </div>
+        </div>
+        <div class="evidence-category" data-category="network">
+          <div class="category-icon">🌐</div>
+          <div class="category-info">
+            <span class="category-name">Network Traces</span>
+            <span class="category-count">34 captures</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="evidence-recent">
+        <h3>Recent Evidence</h3>
+        <div class="evidence-list" id="venus-evidence-list">
+          <div class="evidence-item">
+            <span class="evidence-time">Today 14:32</span>
+            <span class="evidence-type intrusion">Intrusion</span>
+            <span class="evidence-desc">IP 45.33.xx.xx accessed fake banking portal</span>
+          </div>
+          <div class="evidence-item">
+            <span class="evidence-time">Today 11:15</span>
+            <span class="evidence-type predator">Predator</span>
+            <span class="evidence-desc">Conversation transcript - 47 minutes captured</span>
+          </div>
+          <div class="evidence-item">
+            <span class="evidence-time">Yesterday 23:44</span>
+            <span class="evidence-type intrusion">Intrusion</span>
+            <span class="evidence-desc">Credential harvesting attempt logged</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- THREAT TIMELINE -->
+    <div class="venus-card venus-timeline-panel" id="venus-panel-timeline">
+      <div class="venus-card-header">
+        <h2>📊 Threat Timeline</h2>
+        <select id="venus-timeline-range" class="venus-select">
+          <option value="24h">Last 24 Hours</option>
+          <option value="7d">Last 7 Days</option>
+          <option value="30d">Last 30 Days</option>
+          <option value="all">All Time</option>
+        </select>
+      </div>
+      
+      <div class="timeline-chart" id="venus-timeline-chart">
+        <div class="timeline-bars">
+          <div class="timeline-bar" style="height: 20%;" data-hour="00"></div>
+          <div class="timeline-bar" style="height: 15%;" data-hour="04"></div>
+          <div class="timeline-bar" style="height: 45%;" data-hour="08"></div>
+          <div class="timeline-bar" style="height: 80%;" data-hour="12"></div>
+          <div class="timeline-bar active" style="height: 65%;" data-hour="16"></div>
+          <div class="timeline-bar" style="height: 35%;" data-hour="20"></div>
+        </div>
+        <div class="timeline-labels">
+          <span>00:00</span>
+          <span>04:00</span>
+          <span>08:00</span>
+          <span>12:00</span>
+          <span>16:00</span>
+          <span>20:00</span>
+        </div>
+      </div>
+      
+      <div class="timeline-summary">
+        <div class="summary-item">
+          <span class="summary-value">23</span>
+          <span class="summary-label">Total Attempts</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-value">4.2h</span>
+          <span class="summary-label">Avg. Trap Time</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-value">89%</span>
+          <span class="summary-label">Evidence Rate</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- REPORT GENERATOR -->
+    <div class="venus-card venus-report-panel" id="venus-panel-report">
+      <div class="venus-card-header">
+        <h2>📋 Report Generator</h2>
+      </div>
+      
+      <div class="report-types">
+        <button class="report-type-btn" data-type="police">
+          <span class="report-icon">👮</span>
+          <span class="report-name">Police Report</span>
+          <span class="report-desc">UK Action Fraud / Local Police</span>
+        </button>
+        <button class="report-type-btn" data-type="ceop">
+          <span class="report-icon">🛡️</span>
+          <span class="report-name">CEOP Report</span>
+          <span class="report-desc">Child Exploitation & Online Protection</span>
+        </button>
+        <button class="report-type-btn" data-type="ncsc">
+          <span class="report-icon">🔒</span>
+          <span class="report-name">NCSC Report</span>
+          <span class="report-desc">National Cyber Security Centre</span>
+        </button>
+        <button class="report-type-btn" data-type="internal">
+          <span class="report-icon">📊</span>
+          <span class="report-name">Internal Report</span>
+          <span class="report-desc">Full evidence package</span>
+        </button>
+      </div>
+      
+      <div class="report-status" id="venus-report-status">
+        <p>Select evidence items and report type to generate</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- VENUS AI BRAIN -->
+  <div class="venus-card venus-brain-panel" id="venus-panel-brain">
+    <div class="venus-card-header">
+      <h2>🧠 Venus Intelligence</h2>
+      <span class="brain-status">ACTIVE</span>
+    </div>
+    
+    <div class="module-brain" id="venus-brain-panel-inner">
+      <div id="venus-brain-output" class="brain-output venus-chat-thread">
+        <div class="brain-message brain-message-system venus-message">
+          Venus online. All honeypots armed and monitoring. I'm ready to trap anyone stupid enough to try attacking this system. What do you need?
+        </div>
+      </div>
+
+      <div class="brain-input-row">
+        <button type="button" class="brain-mic-btn" id="venus-brain-mic" title="Voice input">
+          🎙️
+        </button>
+        <input
+          id="venus-brain-input"
+          type="text"
+          placeholder="Ask Venus about threats, evidence, or security..."
+        />
+        <button id="venus-brain-send">Send</button>
+      </div>
+
+      <div class="brain-actions">
+        <button class="venus-btn" id="venus-brain-clear">Clear</button>
+        <button class="venus-btn" id="venus-threat-analysis">Run Threat Analysis</button>
+        <button class="venus-btn venus-btn-danger" id="venus-lockdown">LOCKDOWN MODE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAKE LOGIN OVERLAY -->
+  <div class="venus-login-overlay" id="venus-login-overlay">
+    <div class="venus-login-card">
+      <img src="assets/venus-logo.png" alt="Venus Logo" class="login-logo">
+      <h2>System Access Required</h2>
+      <p>Please enter your credentials to continue.</p>
+      <form id="venus-login-form">
+        <div class="login-input-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" required>
+        </div>
+        <div class="login-input-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit" class="venus-btn venus-btn-primary">Login</button>
+      </form>
+      <p class="login-footer">Unauthorized access is strictly prohibited.</p>
+    </div>
+  </div>
+
+  <!-- VENUS WARNING FOOTER -->
+  <div class="venus-warning-footer">
+    <p>⚠️ <strong>LEGAL NOTICE:</strong> Venus operates within UK law. All evidence gathering is for defensive purposes and lawful reporting to authorities. Honeypot data is encrypted and stored securely.</p>
+  </div>
+
+</section>

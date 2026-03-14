@@ -539,8 +539,23 @@ function initCoreChat() {
       t.includes("street safe") ||
       t.includes("streetsafe")
     ) {
-      openModule("modules/osint.html");
-      return "Loading OSINT / Guardian tools – strictly white-hat checks only.";
+      if (!t.includes("venus") && !t.includes("cyber")) {
+        openModule("modules/osint.html");
+        return "Loading OSINT / Guardian tools – strictly white-hat checks only.";
+      }
+    }
+
+    // Venus
+    if (
+      t.includes("venus") ||
+      t.includes("cyber") ||
+      t.includes("security") ||
+      t.includes("threat") ||
+      t.includes("hack") ||
+      t.includes("honeypot")
+    ) {
+      openModule("modules/venus.html");
+      return "Opening Venus – Anti-Hacking Cyber Security and Honeypots armed.";
     }
 
     if (
