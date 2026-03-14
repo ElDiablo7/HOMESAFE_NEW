@@ -1,0 +1,80 @@
+{
+  "version": "3.1",
+  "spec": "GRACE Voice Spec (Official)",
+  
+  "voice": {
+    "preferredVoiceName": "Microsoft Hazel Desktop",
+    "fallbackVoices": [
+      "Microsoft Hazel",
+      "Google UK English Female", 
+      "Serena",
+      "Kate"
+    ],
+    "language": "en-GB",
+    "forceUKEnglish": true
+  },
+  
+  "settings": {
+    "rate": 1.0,
+    "pitch": 1.0,
+    "volume": 0.92,
+    "preset": "grace_default"
+  },
+  
+  "spec_summary": {
+    "gender": "Female",
+    "age_impression": "late-20s to late-30s",
+    "accent": "UK English (neutral London)",
+    "pitch": "mid-range",
+    "texture": "clean, smooth, lightly warm",
+    "presence": "confident, centred, composed",
+    "speed": "medium-fast",
+    "cadence": "deliberate, rhythmic",
+    "projection": "forward, controlled"
+  },
+  
+  "modes": {
+    "default": {
+      "description": "calm, assured, focused",
+      "rate": 1.0,
+      "pitch": 1.0
+    },
+    "supportive": {
+      "description": "steady, grounded, slower by ~10%",
+      "rate": 0.90,
+      "pitch": 1.0
+    },
+    "system": {
+      "description": "neutral, precise, slightly clipped",
+      "rate": 1.05,
+      "pitch": 1.0
+    },
+    "firm": {
+      "description": "lower pitch by ~5%, slower, decisive",
+      "rate": 0.92,
+      "pitch": 0.95
+    }
+  },
+  
+  "forbidden": [
+    "cute",
+    "robotic monotone", 
+    "therapy-voice",
+    "Apple/Siri vibes",
+    "over-friendly customer-service tone",
+    "giggling",
+    "sarcasm",
+    "over-empathy",
+    "vocal fry",
+    "filler sounds (um, uh, like)"
+  ],
+  
+  "test_lines": [
+    "GRACE-X Core online.",
+    "All systems stable.",
+    "Confirmed. Proceeding now.",
+    "Awaiting your next command."
+  ],
+  
+  "tts_prompt": "Calm, confident UK-English female voice. Mid pitch. Clean tone. Controlled pace. Authoritative but warm. Clear diction. No fluff."
+}

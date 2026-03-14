@@ -1,0 +1,309 @@
+<section class="module-section gamer-container">
+  <!-- Module Header -->
+        <div class="module-header">
+        <div class="module-logo-slot">
+          <span class="module-logo-text">GM</span>
+        </div>
+        <div class="module-header-text">
+          <h1 class="module-title">GRACE-X Gamer Mode™</h1>
+          <p class="module-subtitle">
+        Screen-time balance, game tracking & healthy gaming habits.
+          </p>
+        </div>
+      </div>
+
+  <!-- GRACE-X Gamer Assistant (RIGHT AFTER HEADER) -->
+      <div class="builder-card" id="gamer-brain-card">
+    <h2>🧠 GRACE-X Gamer Assistant</h2>
+        <p class="hint">
+      Ask about games, get recommendations, or chat about gaming habits and balance.
+        </p>
+
+        <div class="module-brain" id="gamer-brain-panel">
+      <div id="gamer-brain-output" class="brain-output">
+        <div class="brain-message brain-message-system">
+          Hey! I'm here to help with gaming recommendations, balance tips, and tracking your playtime. What are you playing?
+        </div>
+      </div>
+
+          <div class="brain-input-row">
+        <button type="button" class="brain-mic-btn" id="gamer-brain-mic" title="Voice input">
+          🎙️
+        </button>
+            <input
+              id="gamer-brain-input"
+              type="text"
+          placeholder="Ask about games, get recommendations…"
+            />
+            <button id="gamer-brain-send">Ask</button>
+          </div>
+
+      <div class="brain-actions">
+        <button class="builder-btn" id="gamer-brain-clear">
+          Clear conversation
+        </button>
+      </div>
+    </div>
+          </div>
+
+  <!-- Gaming Stats Dashboard -->
+  <div class="builder-card" id="gamer-stats-card">
+    <h2>📊 Gaming Dashboard</h2>
+    <div class="gx-stats-grid">
+      <div class="gx-stat-card">
+        <div class="gx-stat-value" id="gamer-stat-today">0:00</div>
+        <div class="gx-stat-label">Today's Playtime</div>
+      </div>
+      <div class="gx-stat-card">
+        <div class="gx-stat-value" id="gamer-stat-week">0:00</div>
+        <div class="gx-stat-label">This Week</div>
+      </div>
+      <div class="gx-stat-card">
+        <div class="gx-stat-value" id="gamer-stat-games">0</div>
+        <div class="gx-stat-label">Games Tracked</div>
+      </div>
+      <div class="gx-stat-card">
+        <div class="gx-stat-value" id="gamer-stat-completed">0</div>
+        <div class="gx-stat-label">Completed</div>
+      </div>
+          </div>
+
+    <!-- Weekly Goal Progress -->
+    <div style="margin-top: 16px;">
+      <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+        <span class="hint">Weekly Limit (14 hours)</span>
+        <span class="hint" id="gamer-limit-percent">0%</span>
+      </div>
+      <div id="gamer-limit-progress" class="gx-progress">
+        <div class="gx-progress-bar" style="width: 0%"></div>
+      </div>
+    </div>
+        </div>
+
+  <!-- Session Timer -->
+        <div class="builder-card" id="gamer-session-card">
+          <h2>⏱️ Session Timer</h2>
+          <p class="hint">
+      Track your gaming sessions. Set alerts to remind you to take breaks.
+    </p>
+
+    <div id="gamer-timer-display" style="text-align: center; padding: 20px;">
+      <div style="font-size: 3.5rem; font-weight: 700; font-family: ui-monospace, monospace; background: linear-gradient(135deg, var(--gx-accent-violet), var(--gx-accent-pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;" id="gamer-timer-value">00:00:00</div>
+      <div class="hint" id="gamer-timer-status">Not started</div>
+    </div>
+
+    <div class="builder-controls" style="justify-content: center;">
+      <button class="builder-btn gx-btn-primary" id="gamer-timer-start" style="min-width: 100px;">
+        ▶️ Start
+            </button>
+      <button class="builder-btn" id="gamer-timer-pause" style="min-width: 100px;" disabled>
+        ⏸️ Pause
+            </button>
+      <button class="builder-btn" id="gamer-timer-stop" style="min-width: 100px;">
+        ⏹️ Stop & Log
+            </button>
+          </div>
+
+    <div class="summary-grid" style="margin-top: 16px;">
+      <label>
+        Currently playing
+        <select id="gamer-current-game">
+          <option value="">Select game…</option>
+          <!-- Games from backlog will be added here -->
+        </select>
+      </label>
+      <label>
+        Break reminder (minutes)
+        <select id="gamer-break-interval">
+          <option value="0">No reminder</option>
+          <option value="30">Every 30 min</option>
+          <option value="45">Every 45 min</option>
+          <option value="60" selected>Every hour</option>
+          <option value="90">Every 90 min</option>
+        </select>
+      </label>
+          </div>
+        </div>
+
+  <!-- Game Backlog -->
+  <div class="builder-card" id="gamer-backlog-card">
+    <h2>🎮 Game Backlog</h2>
+    <p class="hint">
+      Track games you want to play, are playing, or have completed.
+    </p>
+
+    <div class="summary-grid">
+      <label>
+        Game title
+        <input type="text" id="gamer-game-input" placeholder="Enter game name…" />
+      </label>
+      <label>
+        Platform
+        <select id="gamer-platform">
+          <option value="PC">PC</option>
+          <option value="PlayStation">PlayStation</option>
+          <option value="Xbox">Xbox</option>
+          <option value="Switch">Nintendo Switch</option>
+          <option value="Mobile">Mobile</option>
+          <option value="Other">Other</option>
+        </select>
+      </label>
+      <label>
+        Status
+        <select id="gamer-game-status">
+          <option value="backlog">📋 Backlog</option>
+          <option value="playing">🎮 Playing</option>
+          <option value="completed">✅ Completed</option>
+          <option value="dropped">❌ Dropped</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="builder-controls">
+      <button class="builder-btn gx-btn-primary" id="gamer-game-add">Add Game</button>
+      <button class="builder-btn" id="gamer-random-pick">🎲 Random Pick</button>
+    </div>
+
+    <div class="gx-tabs" id="gamer-backlog-tabs" style="margin-top: 16px;">
+      <button class="gx-tab active" data-tab="all">All</button>
+      <button class="gx-tab" data-tab="playing">Playing</button>
+      <button class="gx-tab" data-tab="backlog">Backlog</button>
+      <button class="gx-tab" data-tab="completed">Completed</button>
+    </div>
+
+    <ul id="gamer-game-list" class="gx-list" style="margin-top: 12px; max-height: 300px; overflow-y: auto;">
+      <!-- Games will be added here -->
+    </ul>
+  </div>
+
+  <!-- Mood Check-in -->
+        <div class="builder-card" id="gamer-mood-card">
+          <h2>🧠 Post-Session Check-in</h2>
+          <p class="hint">
+      After gaming, check in with yourself. Track how gaming affects your mood.
+          </p>
+
+    <div class="summary-grid">
+            <label>
+              How do you feel?
+              <select id="gamer-mood-select">
+          <option value="">Select mood…</option>
+          <option value="energized">⚡ Energized / Pumped</option>
+          <option value="relaxed">😌 Relaxed / Chill</option>
+          <option value="focused">🎯 Focused / Sharp</option>
+          <option value="neutral">😐 Neutral</option>
+          <option value="tired">😴 Tired / Drained</option>
+          <option value="stressed">😤 Frustrated / Tilted</option>
+        </select>
+      </label>
+      <label>
+        Session quality
+        <select id="gamer-quality-select">
+          <option value="">Rate session…</option>
+          <option value="5">⭐⭐⭐⭐⭐ Amazing</option>
+          <option value="4">⭐⭐⭐⭐ Great</option>
+          <option value="3">⭐⭐⭐ Good</option>
+          <option value="2">⭐⭐ Okay</option>
+          <option value="1">⭐ Poor</option>
+              </select>
+            </label>
+          </div>
+
+    <div style="margin-top: 12px;">
+            <label>
+              Notes (optional)
+        <textarea id="gamer-mood-notes" rows="3" placeholder="Won a ranked match, took breaks every hour, tried a new game…"></textarea>
+            </label>
+          </div>
+
+    <div class="builder-controls">
+      <button class="builder-btn gx-btn-primary" id="gamer-mood-save">Log Check-in</button>
+    </div>
+  </div>
+
+  <!-- Session History -->
+  <div class="builder-card" id="gamer-history-card">
+    <h2>📅 Session History</h2>
+    <p class="hint">
+      View your recent gaming sessions and patterns.
+    </p>
+
+    <div id="gamer-history-list" class="builder-results" style="max-height: 300px; overflow-y: auto;">
+      <div class="gx-empty-state" style="padding: 20px;">
+        <div class="gx-empty-state-icon">🎮</div>
+        <div class="gx-empty-state-title">No sessions logged</div>
+        <div class="gx-empty-state-message">Start the timer to track your gaming</div>
+      </div>
+    </div>
+
+    <div class="builder-controls" style="margin-top: 12px;">
+      <button class="builder-btn" id="gamer-export-history">📥 Export</button>
+      <button class="builder-btn" id="gamer-clear-history">🗑️ Clear History</button>
+    </div>
+  </div>
+
+  <!-- Gaming Tips -->
+  <div class="builder-card" id="gamer-tips-card">
+    <h2>💡 Healthy Gaming Tips</h2>
+    
+    <div class="builder-results">
+      <div class="result-row">
+        <span>👀 20-20-20 Rule</span>
+        <div class="hint">Every 20 mins, look at something 20 feet away for 20 seconds</div>
+      </div>
+      <div class="result-row">
+        <span>💧 Stay Hydrated</span>
+        <div class="hint">Keep water nearby, avoid too much caffeine</div>
+      </div>
+      <div class="result-row">
+        <span>🧘 Stretch Often</span>
+        <div class="hint">Stretch wrists, neck, and shoulders every hour</div>
+      </div>
+      <div class="result-row">
+        <span>🌙 Set a Cutoff</span>
+        <div class="hint">Stop gaming 1-2 hours before bed for better sleep</div>
+      </div>
+      <div class="result-row">
+        <span>🚶 Move Around</span>
+        <div class="hint">Take a short walk between sessions</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="builder-card" id="gamer-actions-card">
+    <h2>⚡ Quick Actions</h2>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px;">
+      <button class="builder-btn" id="gamer-quick-stretch" style="flex-direction: column; padding: 16px;">
+        <span style="font-size: 1.5rem;">🧘</span>
+        <span>Quick Stretch</span>
+      </button>
+      <button class="builder-btn" id="gamer-quick-water" style="flex-direction: column; padding: 16px;">
+        <span style="font-size: 1.5rem;">💧</span>
+        <span>Drink Water</span>
+      </button>
+      <button class="builder-btn" id="gamer-quick-break" style="flex-direction: column; padding: 16px;">
+        <span style="font-size: 1.5rem;">☕</span>
+        <span>5 Min Break</span>
+            </button>
+      <button class="builder-btn" id="gamer-quick-done" style="flex-direction: column; padding: 16px;">
+        <span style="font-size: 1.5rem;">🛑</span>
+        <span>Done for Today</span>
+            </button>
+          </div>
+  </div>
+
+  <!-- Voice Panel (MOVED LOWER) -->
+  <div class="builder-card">
+    <h2>🎙️ Voice Dictation</h2>
+    <p class="hint">Use this for continuous voice input and transcript viewing.</p>
+    
+    <div class="module-voice-panel" data-module="gamer" style="background: transparent; padding: 0; margin: 0;">
+      <button type="button" class="module-voice-btn">🎙 Talk to GRACE-X Gamer</button>
+      <span class="module-voice-status">Mic off</span>
+      <textarea class="module-voice-text" placeholder="Voice transcript appears here…" rows="3"></textarea>
+      <div class="module-voice-reply"></div>
+    </div>
+        </div>
+      </section>

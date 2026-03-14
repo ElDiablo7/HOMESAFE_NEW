@@ -1,0 +1,719 @@
+<section class="module-section core-container">
+  <!-- Module Header -->
+        <div class="module-header">
+        <div class="module-logo-slot">
+          <span class="module-logo-text">GX</span>
+        </div>
+        <div class="module-header-text">
+          <h1 class="module-title">GRACE-X Core™</h1>
+          <p class="module-subtitle">
+        Central command hub – system status, module control, and AI assistant.
+          </p>
+        </div>
+      </div>
+
+  <!-- GRACE-X Core AI Assistant (TOP PRIORITY) -->
+  <div class="builder-card" id="core-brain-card">
+    <h2>🧠 GRACE-X Core Assistant</h2>
+    <p class="hint">
+      Ask GRACE anything – general questions, ecosystem help, or just chat.
+    </p>
+
+    <div class="module-brain" id="core-brain-panel">
+      <div id="core-brain-output" class="brain-output">
+        <div class="brain-message brain-message-system">
+          I'm GRACE, the AI interface for GRACE-X AI™. Engineered and copyrighted by Zac Crockett. How can I help you today?
+        </div>
+      </div>
+
+      <div class="brain-input-row">
+        <button type="button" class="brain-mic-btn" id="core-brain-mic" title="Voice input">
+          🎙️
+        </button>
+        <input
+          id="core-brain-input"
+          type="text"
+          placeholder="Ask me anything…"
+        />
+        <button id="core-brain-btn">Ask</button>
+        </div>
+
+      <div class="brain-actions">
+        <button class="builder-btn" id="core-brain-clear">
+          Clear conversation
+        </button>
+        <button class="builder-btn" id="core-brain-export">
+          Export chat
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- CORE STATUS DASHBOARD -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  
+  <div class="builder-card" id="core-status-dashboard">
+    <div class="dashboard-header">
+      <h2>📊 Core Status & System Overview</h2>
+      <div class="dashboard-controls">
+        <button class="builder-btn dashboard-btn" id="dashboard-refresh" title="Refresh Now">
+          🔄 Refresh
+          </button>
+        <span class="dashboard-auto-refresh">
+          <input type="checkbox" id="dashboard-auto-refresh" checked>
+          <label for="dashboard-auto-refresh">Auto (30s)</label>
+          </span>
+        <span class="dashboard-last-update" id="dashboard-last-update">Updated: --:--:--</span>
+      </div>
+    </div>
+
+    <!-- SECTION 1: System Overview -->
+    <div class="dashboard-section" id="section-system-overview">
+      <div class="section-header" data-toggle="section-system-content">
+        <h3>⚡ System Overview</h3>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-content" id="section-system-content">
+        <div class="system-overview-grid">
+          <div class="system-stat">
+            <div class="stat-icon">⏱️</div>
+            <div class="stat-info">
+              <span class="stat-label">Uptime</span>
+              <span class="stat-value" id="sys-uptime">00:00:00</span>
+            </div>
+          </div>
+          <div class="system-stat">
+            <div class="stat-icon">🎮</div>
+            <div class="stat-info">
+              <span class="stat-label">Current Mode</span>
+              <span class="stat-value" id="sys-mode">Standard</span>
+            </div>
+          </div>
+          <div class="system-stat">
+            <div class="stat-icon">📍</div>
+            <div class="stat-info">
+              <span class="stat-label">Active Module</span>
+              <span class="stat-value" id="sys-active-module">Core</span>
+            </div>
+          </div>
+          <div class="system-stat">
+            <div class="stat-icon">🎤</div>
+            <div class="stat-info">
+              <span class="stat-label">Last Voice Command</span>
+              <span class="stat-value stat-truncate" id="sys-last-voice" title="No recent command">—</span>
+            </div>
+          </div>
+          <div class="system-stat">
+            <div class="stat-icon">🧠</div>
+            <div class="stat-info">
+              <span class="stat-label">Brain Status</span>
+              <span class="stat-value stat-status-good" id="sys-brain-status">Level 5 API</span>
+            </div>
+          </div>
+          <div class="system-stat">
+            <div class="stat-icon">🔊</div>
+            <div class="stat-info">
+              <span class="stat-label">Voice TTS</span>
+              <span class="stat-value stat-status-good" id="sys-tts-status">Enabled</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 2: Module Status Grid -->
+    <div class="dashboard-section" id="section-modules">
+      <div class="section-header" data-toggle="section-modules-content">
+        <h3>🧩 Module Status</h3>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-content" id="section-modules-content">
+        <div class="module-status-grid" id="module-status-grid">
+          <!-- Generated by JS -->
+        </div>
+          </div>
+        </div>
+    
+    <!-- SECTION 3: Graphs & Charts -->
+    <div class="dashboard-section" id="section-charts">
+      <div class="section-header" data-toggle="section-charts-content">
+        <h3>📈 Activity & Analytics</h3>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-content" id="section-charts-content">
+        <div class="charts-grid">
+          <!-- Activity Timeline -->
+          <div class="chart-container">
+            <h4>System Activity (Last Hour)</h4>
+            <canvas id="chart-activity" width="400" height="150"></canvas>
+            <div class="chart-legend">
+              <span class="legend-item"><span class="legend-color" style="background:#10b981"></span> Messages</span>
+              <span class="legend-item"><span class="legend-color" style="background:#6366f1"></span> Voice Commands</span>
+            </div>
+          </div>
+          
+          <!-- Module Usage Pie -->
+          <div class="chart-container">
+            <h4>Module Usage Distribution</h4>
+            <canvas id="chart-modules" width="200" height="200"></canvas>
+            <div class="module-usage-list" id="module-usage-list">
+              <!-- Generated by JS -->
+            </div>
+          </div>
+          
+          <!-- Safeguarding Events -->
+          <div class="chart-container chart-wide">
+            <h4>Activity by Module (Today)</h4>
+            <canvas id="chart-safeguard" width="600" height="120"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 4: Live Data Feeds -->
+    <div class="dashboard-section" id="section-feeds">
+      <div class="section-header" data-toggle="section-feeds-content">
+        <h3>📡 Live Data Feeds</h3>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-content" id="section-feeds-content">
+        <div class="feeds-grid">
+          <div class="feed-item">
+            <span class="feed-indicator feed-green" id="feed-brain"></span>
+            <span class="feed-name">Level 5 Brain API</span>
+            <span class="feed-status" id="feed-brain-status">Connected</span>
+          </div>
+          <div class="feed-item">
+            <span class="feed-indicator feed-green" id="feed-sport"></span>
+            <span class="feed-name">Sport Live Data</span>
+            <span class="feed-status" id="feed-sport-status">Ready</span>
+          </div>
+          <div class="feed-item">
+            <span class="feed-indicator feed-yellow" id="feed-racing"></span>
+            <span class="feed-name">Racing Feeds</span>
+            <span class="feed-status" id="feed-racing-status">Standby</span>
+          </div>
+          <div class="feed-item">
+            <span class="feed-indicator feed-green" id="feed-tts"></span>
+            <span class="feed-name">Voice TTS Engine</span>
+            <span class="feed-status" id="feed-tts-status">Active</span>
+          </div>
+          <div class="feed-item">
+            <span class="feed-indicator feed-green" id="feed-speech"></span>
+            <span class="feed-name">Speech Recognition</span>
+            <span class="feed-status" id="feed-speech-status">Ready</span>
+          </div>
+          <div class="feed-item">
+            <span class="feed-indicator feed-green" id="feed-storage"></span>
+            <span class="feed-name">Local Storage</span>
+            <span class="feed-status" id="feed-storage-status">Available</span>
+          </div>
+        </div>
+        <div class="feed-sync-info">
+          <span>Last Data Sync: <strong id="feed-last-sync">--:--:--</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 5: Logs & Diagnostics -->
+    <div class="dashboard-section" id="section-logs">
+      <div class="section-header" data-toggle="section-logs-content">
+        <h3>🔧 Logs & Diagnostics</h3>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-content" id="section-logs-content">
+        <div class="logs-panel" id="logs-panel">
+          <div class="log-entry log-info">
+            <span class="log-time">--:--:--</span>
+            <span class="log-type">INFO</span>
+            <span class="log-msg">Waiting for system data...</span>
+          </div>
+        </div>
+        <div class="logs-controls">
+          <button class="builder-btn" id="logs-clear">Clear Logs</button>
+          <button class="builder-btn" id="logs-export">Export Logs</button>
+          <button class="builder-btn gx-btn-primary" id="logs-diagnostics">Run Diagnostics</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- END DASHBOARD -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+
+  <!-- Quick Module Switcher -->
+  <div class="builder-card">
+    <h2 class="builder-card-title">🚀 Quick Module Switcher</h2>
+    <div class="quick-module-grid" id="quick-module-grid">
+      <button class="quick-module-btn" data-module="builder" style="--module-color: #f59e0b;">🏗️ Builder</button>
+      <button class="quick-module-btn" data-module="siteops" style="--module-color: #ef4444;">🎬 SiteOps</button>
+      <button class="quick-module-btn" data-module="tradelink" style="--module-color: #3b82f6;">🔗 TradeLink</button>
+      <button class="quick-module-btn" data-module="beauty" style="--module-color: #ec4899;">💄 Beauty</button>
+      <button class="quick-module-btn" data-module="fit" style="--module-color: #10b981;">💪 Fit</button>
+      <button class="quick-module-btn" data-module="yoga" style="--module-color: #8b5cf6;">🧘 Yoga</button>
+      <button class="quick-module-btn" data-module="uplift" style="--module-color: #f97316;">🌟 Uplift</button>
+      <button class="quick-module-btn" data-module="chef" style="--module-color: #84cc16;">👨‍🍳 Chef</button>
+      <button class="quick-module-btn" data-module="artist" style="--module-color: #06b6d4;">🎨 Artist</button>
+      <button class="quick-module-btn" data-module="family" style="--module-color: #a855f7;">👨‍👩‍👧 Family</button>
+      <button class="quick-module-btn" data-module="gamer" style="--module-color: #6366f1;">🎮 Gamer</button>
+      <button class="quick-module-btn" data-module="accounting" style="--module-color: #14b8a6;">📊 Accounting</button>
+      <button class="quick-module-btn" data-module="osint" style="--module-color: #64748b;">🔍 OSINT</button>
+      <button class="quick-module-btn" data-module="sport" style="--module-color: #22c55e;">⚽ Sport</button>
+      <button class="quick-module-btn" data-module="guardian" style="--module-color: #dc2626;">🛡️ Guardian</button>
+    </div>
+  </div>
+
+  <!-- OVERVIEW CARD -->
+  <div class="builder-card core-overview-card">
+    <h2 class="builder-card-title">About GRACE-X AI™</h2>
+    <p>
+      GRACE-X AI™ is a modular AI assistant ecosystem engineered and copyrighted by <strong>Zac Crockett</strong>.
+      The platform runs on OpenAI model technology, configured and packaged into specialized modules for different use cases.
+    </p>
+    <ul>
+      <li><strong>AI-Powered:</strong> Level 5 Brain API connects to OpenAI, Anthropic, and other LLM providers.</li>
+      <li><strong>Modular Design:</strong> 15+ specialized modules including Sport, Fit, Chef, Gamer, Builder, and more.</li>
+      <li><strong>Voice Enabled:</strong> Talk to GRACE via microphone in any module.</li>
+      <li><strong>Local + Cloud:</strong> Level 1 local brain fallback when API is unavailable.</li>
+    </ul>
+  </div>
+
+  <!-- CREATOR INFO -->
+  <div class="builder-card">
+    <h2 class="builder-card-title">👨‍💻 Created By</h2>
+    <p>
+      <strong>GRACE-X AI™</strong> was engineered, configured, and copyrighted by <strong>Zac Crockett</strong>.
+    </p>
+    <p class="hint">
+      The underlying AI runs on OpenAI model technology (e.g., GPT-4o), but GRACE-X AI™ is not ChatGPT – 
+      it's a custom-built ecosystem with its own identity, voice, and specialized modules.
+    </p>
+    <p class="hint" style="margin-top: 8px;">
+      <strong>GRACE-X Sport™</strong> © Zac Crockett (51%) & Jason Treadaway (49%)
+    </p>
+  </div>
+
+  <!-- TECH STACK -->
+  <div class="builder-card">
+    <h2 class="builder-card-title">🛠️ Technology Stack</h2>
+    <div class="builder-results">
+      <div class="result-row">
+        <span>Frontend</span>
+        <strong>HTML5 / CSS3 / Vanilla JS</strong>
+      </div>
+      <div class="result-row">
+        <span>Backend</span>
+        <strong>Node.js / Express</strong>
+      </div>
+      <div class="result-row">
+        <span>AI Providers</span>
+        <strong>OpenAI, Anthropic, OpenRouter, Ollama</strong>
+      </div>
+      <div class="result-row">
+        <span>Voice</span>
+        <strong>Web Speech API + Custom TTS</strong>
+      </div>
+      <div class="result-row">
+        <span>Storage</span>
+        <strong>LocalStorage (browser-based)</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- CONNECTIVITY HUB - Full Device Integration -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <div class="builder-card" id="core-connectivity-card">
+    <h2 class="builder-card-title">📡 Connectivity Hub</h2>
+    <p class="hint">Connect external devices, monitor system capabilities, and manage hardware integrations.</p>
+
+    <!-- API Support Status -->
+    <div class="connectivity-api-support" id="connectivity-api-support">
+      <h4>🔌 Browser Capabilities</h4>
+      <div class="api-support-grid" id="api-support-grid">
+        <!-- Generated by JS -->
+      </div>
+    </div>
+
+    <!-- Primary Connection Status Grid -->
+    <div class="connectivity-status-grid">
+      <div class="connectivity-status-item" id="conn-network-status">
+        <span class="conn-icon">🌐</span>
+        <div class="conn-info">
+          <span class="conn-label">Network</span>
+          <span class="conn-value" id="conn-network-value">Checking...</span>
+        </div>
+        <span class="conn-indicator conn-green" id="conn-network-indicator"></span>
+      </div>
+      <div class="connectivity-status-item" id="conn-bluetooth-status">
+        <span class="conn-icon">📶</span>
+        <div class="conn-info">
+          <span class="conn-label">Bluetooth</span>
+          <span class="conn-value" id="conn-bluetooth-value">Not Connected</span>
+        </div>
+        <span class="conn-indicator conn-grey" id="conn-bluetooth-indicator"></span>
+      </div>
+      <div class="connectivity-status-item" id="conn-api-status">
+        <span class="conn-icon">🧠</span>
+        <div class="conn-info">
+          <span class="conn-label">AI Backend</span>
+          <span class="conn-value" id="conn-api-value">Checking...</span>
+        </div>
+        <span class="conn-indicator conn-yellow" id="conn-api-indicator"></span>
+      </div>
+      <div class="connectivity-status-item" id="conn-serial-status">
+        <span class="conn-icon">🔌</span>
+        <div class="conn-info">
+          <span class="conn-label">Serial Port</span>
+          <span class="conn-value" id="conn-serial-value">Not Connected</span>
+        </div>
+        <span class="conn-indicator conn-grey" id="conn-serial-indicator"></span>
+      </div>
+      <div class="connectivity-status-item" id="conn-usb-status">
+        <span class="conn-icon">🔗</span>
+        <div class="conn-info">
+          <span class="conn-label">USB Device</span>
+          <span class="conn-value" id="conn-usb-value">Not Connected</span>
+        </div>
+        <span class="conn-indicator conn-grey" id="conn-usb-indicator"></span>
+      </div>
+      <div class="connectivity-status-item" id="conn-gamepad-status">
+        <span class="conn-icon">🎮</span>
+        <div class="conn-info">
+          <span class="conn-label">Gamepad</span>
+          <span class="conn-value" id="conn-gamepad-value">Not Connected</span>
+        </div>
+        <span class="conn-indicator conn-grey" id="conn-gamepad-indicator"></span>
+      </div>
+    </div>
+
+    <!-- Connection Tabs -->
+    <div class="connectivity-tabs">
+      <button class="conn-tab active" data-tab="bluetooth">🔵 Bluetooth</button>
+      <button class="conn-tab" data-tab="serial">🔌 Serial</button>
+      <button class="conn-tab" data-tab="usb">🔗 USB</button>
+      <button class="conn-tab" data-tab="gamepad">🎮 Gamepad</button>
+      <button class="conn-tab" data-tab="midi">🎹 MIDI</button>
+      <button class="conn-tab" data-tab="location">📍 Location</button>
+      <button class="conn-tab" data-tab="sensors">📐 Sensors</button>
+      <button class="conn-tab" data-tab="network">🌐 Network</button>
+    </div>
+
+    <!-- Tab Content: Bluetooth -->
+    <div class="connectivity-section conn-tab-content active" id="tab-bluetooth">
+      <div class="bluetooth-controls">
+        <button class="builder-btn gx-btn-primary" id="bluetooth-scan-btn">
+          🔍 Scan for Devices
+        </button>
+        <button class="builder-btn" id="bluetooth-disconnect-btn" style="display: none;">
+          ❌ Disconnect
+        </button>
+      </div>
+      <div class="bluetooth-devices" id="bluetooth-devices-list">
+        <div class="bluetooth-empty">
+          <span>📵</span>
+          <p>No Bluetooth devices connected</p>
+          <p class="hint">Click "Scan for Devices" to discover nearby devices</p>
+        </div>
+      </div>
+      <div class="bluetooth-supported">
+        <h5>Supported: Heart Rate, Wearables, Scales, Sensors, Audio, Generic BLE</h5>
+          </div>
+        </div>
+
+    <!-- Tab Content: Serial Port -->
+    <div class="connectivity-section conn-tab-content" id="tab-serial">
+      <p class="hint">Connect to Arduino, microcontrollers, and serial devices.</p>
+      <div class="serial-controls">
+        <button class="builder-btn gx-btn-primary" id="serial-connect-btn">
+          🔌 Connect Serial Device
+        </button>
+        <button class="builder-btn" id="serial-disconnect-btn" style="display: none;">
+          ❌ Disconnect
+        </button>
+      </div>
+      <div class="serial-config" id="serial-config" style="display: none;">
+        <div class="serial-config-row">
+          <label>Baud Rate</label>
+          <select id="serial-baud">
+            <option value="9600">9600</option>
+            <option value="19200">19200</option>
+            <option value="38400">38400</option>
+            <option value="57600">57600</option>
+            <option value="115200" selected>115200</option>
+          </select>
+        </div>
+      </div>
+      <div class="serial-terminal" id="serial-terminal" style="display: none;">
+        <h5>Serial Monitor</h5>
+        <div class="serial-output" id="serial-output"></div>
+        <div class="serial-input-row">
+          <input type="text" id="serial-input" placeholder="Send command..." />
+          <button class="builder-btn" id="serial-send-btn">Send</button>
+        </div>
+      </div>
+      <div class="conn-empty" id="serial-empty">
+        <span>🔌</span>
+        <p>No serial device connected</p>
+        <p class="hint">Connect Arduino, ESP32, or other microcontrollers</p>
+      </div>
+        </div>
+
+    <!-- Tab Content: USB -->
+    <div class="connectivity-section conn-tab-content" id="tab-usb">
+      <p class="hint">Connect USB devices via WebUSB API.</p>
+      <div class="usb-controls">
+        <button class="builder-btn gx-btn-primary" id="usb-connect-btn">
+          🔗 Connect USB Device
+        </button>
+        <button class="builder-btn" id="usb-disconnect-btn" style="display: none;">
+          ❌ Disconnect
+        </button>
+      </div>
+      <div class="usb-device-info" id="usb-device-info" style="display: none;">
+        <!-- USB device info appears here -->
+      </div>
+      <div class="conn-empty" id="usb-empty">
+        <span>🔗</span>
+        <p>No USB device connected</p>
+        <p class="hint">Connect compatible USB devices (requires HTTPS)</p>
+      </div>
+    </div>
+
+    <!-- Tab Content: Gamepad -->
+    <div class="connectivity-section conn-tab-content" id="tab-gamepad">
+      <p class="hint">Connect game controllers (auto-detected).</p>
+      <div class="gamepad-list" id="gamepad-list">
+        <div class="conn-empty">
+          <span>🎮</span>
+          <p>No gamepads detected</p>
+          <p class="hint">Connect a controller and press any button</p>
+        </div>
+      </div>
+      <div class="gamepad-visualizer" id="gamepad-visualizer" style="display: none;">
+        <h5>Controller Input</h5>
+        <div class="gamepad-axes" id="gamepad-axes"></div>
+        <div class="gamepad-buttons" id="gamepad-buttons"></div>
+      </div>
+      </div>   
+
+    <!-- Tab Content: MIDI -->
+    <div class="connectivity-section conn-tab-content" id="tab-midi">
+      <p class="hint">Connect MIDI instruments and controllers.</p>
+      <div class="midi-controls">
+        <button class="builder-btn gx-btn-primary" id="midi-access-btn">
+          🎹 Enable MIDI Access
+        </button>
+      </div>
+      <div class="midi-devices" id="midi-devices">
+        <div class="conn-empty">
+          <span>🎹</span>
+          <p>MIDI not initialized</p>
+          <p class="hint">Click "Enable MIDI Access" to detect instruments</p>
+        </div>
+      </div>
+      <div class="midi-monitor" id="midi-monitor" style="display: none;">
+        <h5>MIDI Input Monitor</h5>
+        <div class="midi-messages" id="midi-messages"></div>
+      </div>
+    </div>
+
+    <!-- Tab Content: Location -->
+    <div class="connectivity-section conn-tab-content" id="tab-location">
+      <p class="hint">Access GPS and location services.</p>
+      <div class="location-controls">
+        <button class="builder-btn gx-btn-primary" id="location-get-btn">
+          📍 Get Current Location
+        </button>
+        <button class="builder-btn" id="location-watch-btn">
+          🔄 Watch Location
+        </button>
+        <button class="builder-btn" id="location-stop-btn" style="display: none;">
+          ⏹️ Stop Watching
+        </button>
+      </div>
+      <div class="location-data" id="location-data">
+        <div class="conn-empty">
+          <span>📍</span>
+          <p>Location not acquired</p>
+          <p class="hint">Click to get your current position</p>
+        </div>
+      </div>
+        </div>
+
+    <!-- Tab Content: Sensors -->
+    <div class="connectivity-section conn-tab-content" id="tab-sensors">
+      <p class="hint">Access device sensors (accelerometer, gyroscope, etc.)</p>
+      <div class="sensors-controls">
+        <button class="builder-btn gx-btn-primary" id="sensors-enable-btn">
+          📐 Enable Sensors
+        </button>
+        <button class="builder-btn" id="sensors-disable-btn" style="display: none;">
+          ⏹️ Disable
+        </button>
+      </div>
+      <div class="sensors-data" id="sensors-data">
+        <div class="sensor-group">
+          <h5>📱 Device Orientation</h5>
+          <div class="sensor-values">
+            <div class="sensor-value">
+              <span>Alpha (Z)</span>
+              <strong id="sensor-alpha">--</strong>
+            </div>
+            <div class="sensor-value">
+              <span>Beta (X)</span>
+              <strong id="sensor-beta">--</strong>
+            </div>
+            <div class="sensor-value">
+              <span>Gamma (Y)</span>
+              <strong id="sensor-gamma">--</strong>
+            </div>
+          </div>
+        </div>
+        <div class="sensor-group">
+          <h5>🏃 Motion / Acceleration</h5>
+          <div class="sensor-values">
+            <div class="sensor-value">
+              <span>X</span>
+              <strong id="sensor-accel-x">--</strong>
+            </div>
+            <div class="sensor-value">
+              <span>Y</span>
+              <strong id="sensor-accel-y">--</strong>
+            </div>
+            <div class="sensor-value">
+              <span>Z</span>
+              <strong id="sensor-accel-z">--</strong>
+            </div>
+          </div>
+        </div>
+        <div class="sensor-group">
+          <h5>🔋 Battery Status</h5>
+          <div class="sensor-values">
+            <div class="sensor-value">
+              <span>Level</span>
+              <strong id="sensor-battery-level">--</strong>
+            </div>
+            <div class="sensor-value">
+              <span>Charging</span>
+              <strong id="sensor-battery-charging">--</strong>
+            </div>
+            <div class="sensor-value">
+              <span>Time to Full</span>
+              <strong id="sensor-battery-time">--</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+        </div>
+
+    <!-- Tab Content: Network -->
+    <div class="connectivity-section conn-tab-content" id="tab-network">
+      <div class="network-details">
+        <div class="network-row">
+          <span>Status</span>
+          <strong id="network-status-text">--</strong>
+        </div>
+        <div class="network-row">
+          <span>Connection Type</span>
+          <strong id="network-type">--</strong>
+        </div>
+        <div class="network-row">
+          <span>Effective Type</span>
+          <strong id="network-effective">--</strong>
+        </div>
+        <div class="network-row">
+          <span>Downlink Speed</span>
+          <strong id="network-downlink">--</strong>
+        </div>
+        <div class="network-row">
+          <span>Round Trip Time</span>
+          <strong id="network-rtt">--</strong>
+        </div>
+        <div class="network-row">
+          <span>Data Saver</span>
+          <strong id="network-saver">--</strong>
+        </div>
+      </div>
+      <div class="network-test">
+        <button class="builder-btn" id="network-speed-test-btn">
+          ⚡ Run Speed Test
+        </button>
+        <div class="speed-test-results" id="speed-test-results" style="display: none;">
+          <div class="speed-result">
+            <span>Download</span>
+            <strong id="speed-download">--</strong>
+          </div>
+          <div class="speed-result">
+            <span>Latency</span>
+            <strong id="speed-latency">--</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Permissions Notice -->
+    <div class="bluetooth-notice" id="connectivity-notice">
+      <strong>📋 Note:</strong> Most device APIs require HTTPS or localhost. Your browser will ask for permission before accessing hardware.
+    </div>
+  </div>
+
+  <div class="builder-card" id="core-network-settings-card">
+    <h2 class="builder-card-title">🌐 Network Settings <span id="net-settings-badge" style="font-size:0.9em; margin-left:8px;">🟡 Checking…</span></h2>
+    <p class="hint">Configure app network preferences and test connectivity.</p>
+    <div class="network-settings-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div>
+        <label for="net-ssid">Wi‑Fi SSID</label>
+        <input type="text" id="net-ssid" placeholder="e.g. HomeNetwork">
+      </div>
+      <div>
+        <label for="net-password">Wi‑Fi Password</label>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <input type="password" id="net-password" placeholder="Enter password" style="flex:1;">
+          <label style="display:flex;align-items:center;gap:6px;">
+            <input type="checkbox" id="net-password-show"> Show
+          </label>
+        </div>
+      </div>
+      <div>
+        <label for="net-proxy">Proxy (optional)</label>
+        <input type="text" id="net-proxy" placeholder="http://proxy:8080">
+      </div>
+      <div>
+        <label for="net-api-endpoint">Brain API Endpoint</label>
+        <input type="text" id="net-api-endpoint" placeholder="http://localhost:3000/api/brain">
+      </div>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:8px;">
+      <button class="builder-btn" id="net-open-settings-btn">Open System Network Settings</button>
+      <button class="builder-btn gx-btn-primary" id="net-test-btn">Test Connection</button>
+      <button class="builder-btn" id="net-save-btn">Save Preferences</button>
+    </div>
+    <div style="margin-top:8px;">
+      <span id="net-settings-status">Ready</span>
+    </div>
+  </div>
+
+  <!-- VOICE PANEL (MOVED LOWER) -->
+  <div class="builder-card">
+    <h2 class="builder-card-title">🎙️ Alternative Voice Input</h2>
+    <p class="hint">Use this panel for continuous voice dictation and transcript viewing.</p>
+    
+    <div class="module-voice-panel" data-module="core" style="background: transparent; padding: 0; margin: 0;">
+      <button type="button" class="module-voice-btn">🎙 Talk to GRACE-X Core</button>
+      <span class="module-voice-status">Mic off</span>
+      <textarea class="module-voice-text" placeholder="Voice transcript appears here…" rows="3"></textarea>
+      <div class="module-voice-reply"></div>
+    </div>
+  </div>
+
+  <!-- DEBUG PANEL -->
+  <div id="core-debug-panel" style="position:fixed; bottom:10px; right:80px; background:rgba(0,0,0,0.8); color: #fff; padding:12px; font-size:12px; z-index:1000; border-radius:8px; display:none; max-width: 300px;">
+    <div style="margin-bottom: 8px; font-weight: bold; color: #10b981;">🔧 Debug Panel</div>
+        <div>Last Heard: <span id="debug-last-heard">-</span></div>
+        <div>Last Reply: <span id="debug-last-reply">-</span></div>
+        <div>Last Intent: <span id="debug-last-intent">-</span></div>
+      </div>
+      </section>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GRACE-X Forge — Structure Map</title>
+  <style>
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#050812;color:#e5e7eb}
+    header{padding:18px 20px;border-bottom:1px solid rgba(148,163,184,.2);background:rgba(10,16,32,.75);backdrop-filter:blur(10px)}
+    h1{margin:0;font-size:18px;letter-spacing:.6px}
+    main{max-width:960px;margin:0 auto;padding:20px}
+    .card{background:rgba(15,23,42,.65);border:1px solid rgba(148,163,184,.22);border-radius:16px;padding:16px;margin:12px 0}
+    pre{background:rgba(2,6,23,.75);border:1px solid rgba(148,163,184,.18);border-radius:16px;padding:14px;overflow:auto}
+    .muted{color:#94a3b8}
+    a{color:#93c5fd}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🌳 GRACE-X Forge — Structure Map</h1>
+  </header>
+  <main>
+    <div class="card">
+      <p class="muted">This page was missing in your build, so the Forge “Structure Map” link opened a dead page. This is a lightweight placeholder that still gives you something useful.</p>
+      <p><strong>Tip:</strong> If you want this to auto-generate from the real folder, we can wire a small script later (but this keeps it offline + fast).</p>
+    </div>
+
+    <div class="card">
+      <h3 style="margin:0 0 10px">Current expected project structure</h3>
+      <pre>
+GRACE-X/
+  index.html
+  modules/
+    core.html
+    forge.html
+    builder.html
+    siteops.html
+    uplift.html
+    ...
+  assets/
+    css/
+    js/
+      core.js
+      forge.js
+      brainV5Helper.js
+      voiceAssistant.js
+    images/
+    audio/
+  server/
+  config/
+      </pre>
+      <p class="muted">If anything here doesn’t match your local build, shout and I’ll align it.</p>
+    </div>
+
+    <div class="card">
+      <h3 style="margin:0 0 10px">Next upgrade (optional)</h3>
+      <ul>
+        <li>Auto-scan module IDs + render a clickable map of routes.</li>
+        <li>Highlight missing files / broken links (like this one was).</li>
+        <li>“Open file” buttons for desktop server mode.</li>
+      </ul>
+    </div>
+
+    <p class="muted">Back to Forge: <a href="../index.html">Open GRACE-X</a></p>
+  </main>
+</body>
+</html>

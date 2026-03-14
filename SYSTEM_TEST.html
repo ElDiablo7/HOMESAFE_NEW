@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRACE-X System Test Console</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0e1a;
+            color: #00f0ff;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-align: center;
+            background: linear-gradient(135deg, #00f0ff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .test-section {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .test-section h2 {
+            color: #ff00ff;
+            margin-bottom: 15px;
+            font-size: 1.25rem;
+        }
+        button {
+            background: linear-gradient(135deg, #00f0ff, #ff00ff);
+            color: #0a0e1a;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+            margin: 5px;
+            transition: all 0.3s;
+        }
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0,240,255,0.5);
+        }
+        .result {
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #00f0ff;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+        }
+        .pass { color: #00ff88; }
+        .fail { color: #ff4444; }
+        .warning { color: #ffaa00; }
+        .info { color: #00f0ff; }
+        pre {
+            background: rgba(0,0,0,0.5);
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .status-item {
+            background: rgba(0,0,0,0.3);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .status-item .label {
+            font-size: 0.85rem;
+            opacity: 0.7;
+            margin-bottom: 5px;
+        }
+        .status-item .value {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 GRACE-X SYSTEM TEST CONSOLE</h1>
+        <p style="text-align: center; margin-bottom: 30px; opacity: 0.8;">
+            v6.5.0 TITAN Edition - Full System Verification
+        </p>
+
+        <!-- CSS Test -->
+        <div class="test-section">
+            <h2>1. CSS Loading Test</h2>
+            <p>Verifies all stylesheets are loaded correctly</p>
+            <button onclick="testCSS()">Run CSS Test</button>
+            <div id="cssResult" class="result" style="display:none;"></div>
+        </div>
+
+        <!-- Brain System Test -->
+        <div class="test-section">
+            <h2>2. Brain System Test</h2>
+            <p>Checks all 5 brain modules are loaded and functional</p>
+            <button onclick="testBrains()">Run Brain Test</button>
+            <div id="brainResult" class="result" style="display:none;"></div>
+        </div>
+
+        <!-- Network Test -->
+        <div class="test-section">
+            <h2>3. Network Manager Test</h2>
+            <p>Verifies Core network access and API connectivity</p>
+            <button onclick="testNetwork()">Run Network Test</button>
+            <div id="networkResult" class="result" style="display:none;"></div>
+        </div>
+
+        <!-- Module System Test -->
+        <div class="test-section">
+            <h2>4. Module System Test</h2>
+            <p>Tests module loading and router functionality</p>
+            <button onclick="testModules()">Run Module Test</button>
+            <div id="moduleResult" class="result" style="display:none;"></div>
+        </div>
+
+        <!-- Full System Status -->
+        <div class="test-section">
+            <h2>5. Full System Status</h2>
+            <button onclick="fullSystemCheck()">Run Complete System Check</button>
+            <div id="fullResult" class="result" style="display:none;"></div>
+        </div>
+
+        <!-- Quick Commands -->
+        <div class="test-section">
+            <h2>Quick Commands</h2>
+            <p>Copy these commands to run in your browser console (F12)</p>
+            <pre>// Check all systems
+console.log('Network:', typeof window.GRACEX_NETWORK);
+console.log('Brain:', typeof window.GraceX?.Brain);
+console.log('TTS:', typeof window.GRACEX_TTS);
+
+// Get network status
+window.GRACEX_NETWORK?.getStatus()
+
+// Test theme change
+window.GRACEX_UI?.setTheme('forge')
+
+// Toggle sidebar
+window.GRACEX_UI?.toggleSidebar()</pre>
+        </div>
+    </div>
+
+    <script>
+        function testCSS() {
+            const result = document.getElementById('cssResult');
+            result.style.display = 'block';
+            result.innerHTML = '<span class="info">Testing CSS...</span>';
+            
+            const cssFiles = [
+                'gracex-v6.css',
+                'core.css',
+                'forge.css',
+                'laser.css',
+                'guardian-alerts.css',
+                'polish-enhancements.css',
+                'accounting.css',
+                'osint.css',
+                'gracex-themes.css'
+            ];
+            
+            let output = '=== CSS LOADING TEST ===\n\n';
+            let passed = 0;
+            let failed = 0;
+            
+            // Check if stylesheets are loaded
+            const loadedSheets = Array.from(document.styleSheets);
+            
+            cssFiles.forEach(file => {
+                const loaded = loadedSheets.some(sheet => 
+                    sheet.href && sheet.href.includes(file)
+                );
+                if (loaded) {
+                    output += `✅ ${file}\n`;
+                    passed++;
+                } else {
+                    output += `❌ ${file} - NOT LOADED\n`;
+                    failed++;
+                }
+            });
+            
+            output += `\n📊 Results: ${passed} passed, ${failed} failed\n\n`;
+            
+            // Check computed styles
+            const testEl = document.body;
+            const styles = window.getComputedStyle(testEl);
+            output += `Background: ${styles.backgroundColor}\n`;
+            output += `Color: ${styles.color}\n`;
+            output += `Font: ${styles.fontFamily}\n`;
+            
+            if (failed === 0) {
+                output += '\n<span class="pass">✅ ALL CSS FILES LOADED SUCCESSFULLY</span>';
+            } else {
+                output += '\n<span class="fail">❌ SOME CSS FILES FAILED TO LOAD</span>';
+            }
+            
+            result.innerHTML = output;
+        }
+        
+        function testBrains() {
+            const result = document.getElementById('brainResult');
+            result.style.display = 'block';
+            result.innerHTML = '<span class="info">Testing Brain System...</span>';
+            
+            let output = '=== BRAIN SYSTEM TEST ===\n\n';
+            let passed = 0;
+            let failed = 0;
+            
+            const brains = [
+                { name: 'State', obj: window.GraceX?.State },
+                { name: 'Router', obj: window.GraceX?.Router },
+                { name: 'RAM', obj: window.GraceX?.RAM },
+                { name: 'Analytics', obj: window.GraceX?.Analytics },
+                { name: 'Brain', obj: window.GraceX?.Brain }
+            ];
+            
+            brains.forEach(brain => {
+                if (typeof brain.obj === 'object' && brain.obj !== null) {
+                    output += `✅ ${brain.name} Brain: LOADED\n`;
+                    passed++;
+                } else {
+                    output += `❌ ${brain.name} Brain: NOT LOADED (type: ${typeof brain.obj})\n`;
+                    failed++;
+                }
+            });
+            
+            output += `\n📊 Results: ${passed}/5 brains loaded\n`;
+            
+            // Test RAM functionality
+            if (window.GraceX?.RAM) {
+                try {
+                    window.GraceX.RAM.setBuffer('test', { value: 'hello' });
+                    const testData = window.GraceX.RAM.getBuffer('test');
+                    if (testData && testData.value === 'hello') {
+                        output += '\n✅ RAM Buffer: FUNCTIONAL\n';
+                    } else {
+                        output += '\n⚠️ RAM Buffer: NOT WORKING\n';
+                    }
+                } catch (e) {
+                    output += `\n❌ RAM Buffer Error: ${e.message}\n`;
+                }
+            }
+            
+            if (failed === 0) {
+                output += '\n<span class="pass">✅ ALL BRAIN SYSTEMS OPERATIONAL</span>';
+            } else {
+                output += '\n<span class="fail">❌ BRAIN SYSTEM INCOMPLETE</span>';
+            }
+            
+            result.innerHTML = output;
+        }
+        
+        function testNetwork() {
+            const result = document.getElementById('networkResult');
+            result.style.display = 'block';
+            result.innerHTML = '<span class="info">Testing Network...</span>';
+            
+            let output = '=== NETWORK MANAGER TEST ===\n\n';
+            
+            if (typeof window.GRACEX_NETWORK === 'object') {
+                output += '✅ Network Manager: LOADED\n';
+                
+                const status = window.GRACEX_NETWORK.getStatus();
+                output += '\n📊 Network Status:\n';
+                output += `  Online: ${status.online ? '✅ YES' : '❌ NO'}\n`;
+                output += `  Core Ready: ${status.coreReady ? '✅ YES' : '❌ NO'}\n`;
+                output += `  Active Requests: ${status.activeRequests}\n`;
+                output += `  Queued Requests: ${status.queuedRequests}\n`;
+                output += `  Cache Size: ${status.cacheSize}\n`;
+                
+                // Test module proxy
+                output += '\n🔧 Testing Module Proxy...\n';
+                try {
+                    const proxy = window.GRACEX_GetModuleProxy('test');
+                    if (proxy) {
+                        output += '✅ Module Proxy: FUNCTIONAL\n';
+                    } else {
+                        output += '❌ Module Proxy: FAILED\n';
+                    }
+                } catch (e) {
+                    output += `❌ Module Proxy Error: ${e.message}\n`;
+                }
+                
+                output += '\n<span class="pass">✅ NETWORK SYSTEM OPERATIONAL</span>';
+            } else {
+                output += '❌ Network Manager: NOT LOADED\n';
+                output += `   Type: ${typeof window.GRACEX_NETWORK}\n`;
+                output += '\n<span class="fail">❌ NETWORK SYSTEM NOT AVAILABLE</span>';
+            }
+            
+            result.innerHTML = output;
+        }
+        
+        function testModules() {
+            const result = document.getElementById('moduleResult');
+            result.style.display = 'block';
+            result.innerHTML = '<span class="info">Testing Modules...</span>';
+            
+            let output = '=== MODULE SYSTEM TEST ===\n\n';
+            
+            // Check router
+            if (typeof window.GraceX?.Router === 'object') {
+                output += '✅ Router: LOADED\n';
+            } else {
+                output += '❌ Router: NOT LOADED\n';
+            }
+            
+            // Check app
+            if (typeof window.GRACEX_APP === 'object') {
+                output += '✅ App System: LOADED\n';
+                output += `   Version: ${window.GRACEX_APP.version}\n`;
+                output += `   Initialized: ${window.GRACEX_APP.isInitialized() ? 'YES' : 'NO'}\n`;
+            } else {
+                output += '❌ App System: NOT LOADED\n';
+            }
+            
+            // Check module buttons
+            const moduleButtons = document.querySelectorAll('.module-btn');
+            output += `\n📋 Module Buttons Found: ${moduleButtons.length}\n`;
+            
+            if (moduleButtons.length > 0) {
+                output += '\n<span class="pass">✅ MODULE SYSTEM READY</span>';
+            } else {
+                output += '\n<span class="fail">❌ MODULE BUTTONS NOT FOUND</span>';
+            }
+            
+            result.innerHTML = output;
+        }
+        
+        function fullSystemCheck() {
+            const result = document.getElementById('fullResult');
+            result.style.display = 'block';
+            result.innerHTML = '<span class="info">Running full system check...</span>';
+            
+            let output = '=== FULL SYSTEM STATUS ===\n\n';
+            let totalTests = 0;
+            let passedTests = 0;
+            
+            // Core Systems
+            output += '🔧 CORE SYSTEMS:\n';
+            const systems = [
+                { name: 'Version', obj: window.GRACEX_VERSION },
+                { name: 'Network', obj: window.GRACEX_NETWORK },
+                { name: 'UI Controls', obj: window.GRACEX_UI },
+                { name: 'TTS', obj: window.GRACEX_TTS },
+                { name: 'App', obj: window.GRACEX_APP }
+            ];
+            
+            systems.forEach(sys => {
+                totalTests++;
+                if (typeof sys.obj !== 'undefined') {
+                    output += `  ✅ ${sys.name}\n`;
+                    passedTests++;
+                } else {
+                    output += `  ❌ ${sys.name}\n`;
+                }
+            });
+            
+            // Brains
+            output += '\n🧠 BRAIN MODULES:\n';
+            const brains = ['State', 'Router', 'RAM', 'Analytics', 'Brain'];
+            brains.forEach(brain => {
+                totalTests++;
+                if (typeof window.GraceX?.[brain] === 'object') {
+                    output += `  ✅ ${brain}\n`;
+                    passedTests++;
+                } else {
+                    output += `  ❌ ${brain}\n`;
+                }
+            });
+            
+            // Environment
+            output += '\n🌐 ENVIRONMENT:\n';
+            output += `  Browser: ${navigator.userAgent.split(' ').pop()}\n`;
+            output += `  Online: ${navigator.onLine ? 'YES' : 'NO'}\n`;
+            output += `  Location: ${window.location.href}\n`;
+            
+            // Score
+            const score = Math.round((passedTests / totalTests) * 100);
+            output += `\n📊 SYSTEM HEALTH: ${score}% (${passedTests}/${totalTests})\n\n`;
+            
+            if (score === 100) {
+                output += '<span class="pass">✅ SYSTEM FULLY OPERATIONAL</span>\n';
+                output += '<span class="pass">🚀 READY FOR DEPLOYMENT</span>';
+            } else if (score >= 80) {
+                output += '<span class="warning">⚠️ SYSTEM MOSTLY OPERATIONAL</span>\n';
+                output += '<span class="warning">⚙️ SOME COMPONENTS NEED ATTENTION</span>';
+            } else {
+                output += '<span class="fail">❌ SYSTEM NOT OPERATIONAL</span>\n';
+                output += '<span class="fail">🔧 CRITICAL COMPONENTS MISSING</span>';
+            }
+            
+            result.innerHTML = output;
+        }
+    </script>
+</body>
+</html>

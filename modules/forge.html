@@ -1,0 +1,471 @@
+<section class="module-section forge-container">
+  <!-- ═══════════════════════════════════════════════════════════════════════════
+       GRACE-X FORGE™ — Engineering Bay / Command Deck UI
+       Mini-App Builder, Template Assembler, Package Exporter
+       ═══════════════════════════════════════════════════════════════════════════ -->
+
+  <!-- Module Header -->
+  <div class="module-header forge-header">
+    <div class="module-logo-slot forge-logo">
+      <span class="forge-logo-icon">⚒️</span>
+    </div>
+    <div class="module-header-text">
+      <h1 class="module-title forge-title">GRACE-X Forge™</h1>
+      <p class="module-subtitle forge-subtitle">
+        Engineering Bay · Mini-App Builder · Template Assembler
+      </p>
+    </div>
+    <div class="forge-status-indicators">
+      <span class="forge-indicator forge-indicator-ready" id="forge-status-indicator">
+        <span class="indicator-dot"></span>
+        <span>READY</span>
+      </span>
+      <label class="forge-desktop-save-label" style="margin-left: 20px; font-size: 14px; cursor: pointer; color: #00d4ff;">
+        <input type="checkbox" id="forge-desktop-save-toggle" checked style="margin-right: 5px; cursor: pointer;" />
+        💾 Save to Desktop
+      </label>
+    </div>
+  </div>
+
+  <!-- Scanline overlay (subtle) -->
+  <div class="forge-scanline-overlay"></div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════════
+       MAIN WORKSPACE (3-PANEL + BOTTOM)
+       ═══════════════════════════════════════════════════════════════════════════ -->
+  <div class="forge-workspace">
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         LEFT PANEL: Project Tree
+         ═══════════════════════════════════════════════════════════════════════ -->
+    <div class="forge-panel forge-panel-left" id="forge-panel-left">
+      <div class="forge-panel-header">
+        <h3>📁 Project Tree</h3>
+        <div class="forge-panel-controls">
+          <button class="forge-icon-btn" id="forge-tree-refresh" title="Refresh">🔄</button>
+          <button class="forge-icon-btn" id="forge-tree-collapse" title="Collapse All">📂</button>
+        </div>
+      </div>
+      
+      <!-- Search Box -->
+      <div class="forge-search-box">
+        <input type="text" id="forge-tree-search" placeholder="🔍 Filter files..." />
+      </div>
+
+      <!-- Project Tree Container -->
+      <div class="forge-tree-container" id="forge-tree-container">
+        <div class="forge-tree-empty">
+          <span>📭</span>
+          <p>No project loaded</p>
+          <button class="forge-btn forge-btn-primary" id="forge-new-project-btn">
+            + New Project
+          </button>
+        </div>
+      </div>
+
+      <!-- Tree Actions -->
+      <div class="forge-tree-actions">
+        <button class="forge-btn" id="forge-add-file-btn" title="Add File">📄 New File</button>
+        <button class="forge-btn" id="forge-add-folder-btn" title="Add Folder">📁 New Folder</button>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         CENTER PANEL: Editor + Preview
+         ═══════════════════════════════════════════════════════════════════════ -->
+    <div class="forge-panel forge-panel-center" id="forge-panel-center">
+      <div class="forge-panel-header">
+        <h3 class="forge-panel-title">📝 Editor</h3>
+        <div class="forge-panel-controls">
+          <span class="forge-file-indicator" id="forge-current-file">No file open</span>
+          <button class="forge-icon-btn" id="forge-save-btn" title="Save (Ctrl+S)">💾</button>
+          <button class="forge-icon-btn" id="forge-preview-toggle-btn" title="Toggle Preview">👁️</button>
+          <button class="forge-icon-btn" id="forge-run-btn" title="Run/Test">▶️</button>
+        </div>
+      </div>
+
+      <!-- Editor Tab Content -->
+      <div class="forge-tab-content active" id="forge-tab-editor">
+        <div class="forge-editor-wrapper">
+          <div class="forge-editor-toolbar">
+            <select id="forge-syntax-select">
+              <option value="html">HTML</option>
+              <option value="css">CSS</option>
+              <option value="javascript">JavaScript</option>
+              <option value="json">JSON</option>
+              <option value="markdown">Markdown</option>
+            </select>
+            <button class="forge-icon-btn" id="forge-format-btn" title="Format">✨</button>
+            <button class="forge-icon-btn" id="forge-wrap-btn" title="Word Wrap">↩️</button>
+          </div>
+          <textarea id="forge-editor" class="forge-code-editor" placeholder="// Select a file or create a new one to start editing...
+// 
+// Keyboard shortcuts:
+//   Ctrl+S = Save
+//   Ctrl+Enter = Run/Preview
+//   Ctrl+B = Build Package"></textarea>
+          <div class="forge-editor-footer">
+            <span id="forge-editor-line">Ln 1</span>
+            <span id="forge-editor-col">Col 1</span>
+            <span id="forge-editor-lang">HTML</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preview Tab Content -->
+      <div class="forge-tab-content" id="forge-tab-preview">
+        <div class="forge-preview-controls">
+          <button class="forge-btn" id="forge-preview-refresh">🔄 Refresh</button>
+          <button class="forge-btn" id="forge-preview-mobile">📱 Mobile</button>
+          <button class="forge-btn" id="forge-preview-tablet">📱 Tablet</button>
+          <button class="forge-btn" id="forge-preview-desktop">🖥️ Desktop</button>
+        </div>
+        <div class="forge-preview-frame-container" id="forge-preview-container">
+          <details class="forge-details" id="forge-preview-details"><summary>👁️ Preview</summary>
+<div class="forge-details-body">
+<iframe id="forge-preview-frame" sandbox="allow-scripts allow-same-origin" srcdoc="<html><body style='background:#111;color:#888;display:flex;align-items:center;justify-content:center;height:100vh;font-family:system-ui;'><div style='text-align:center'>🔨<br>Build something to preview</div>
+  <div id="gxVersionBadge" class="gx-version-badge">ZGV6 19.12.25.6</div>
+
+</body></html>"></iframe>
+</div></details>
+        </div>
+      </div>
+
+      <!-- Diff Tab Content -->
+      <div class="forge-tab-content" id="forge-tab-diff">
+        <div class="forge-diff-container" id="forge-diff-container">
+          <div class="forge-diff-header">
+            <span class="forge-diff-old">📄 Original</span>
+            <span class="forge-diff-new">📝 Modified</span>
+          </div>
+          <pre id="forge-diff-output" class="forge-diff-output">No changes to display</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         RIGHT PANEL: Capability Console
+         ═══════════════════════════════════════════════════════════════════════ -->
+    <div class="forge-panel forge-panel-right" id="forge-panel-right">
+      <div class="forge-panel-header">
+        <h3>⚡ Capabilities</h3>
+        <button class="forge-icon-btn" id="forge-console-minimize" title="Minimize">➖</button>
+      </div>
+
+      <!-- Tools Section -->
+      <div class="forge-console-section">
+        <h4>🛠️ Tools</h4>
+        <div class="forge-tool-grid">
+          <button class="forge-tool-btn" id="forge-tool-new-app" title="Create new mini-app from template">
+            <span class="forge-tool-icon">🚀</span>
+            <span>New Mini-App</span>
+          </button>
+          <button class="forge-tool-btn" id="forge-tool-new-module" title="Generate module tab entry">
+            <span class="forge-tool-icon">🧩</span>
+            <span>New Module</span>
+          </button>
+          <button class="forge-tool-btn" id="forge-tool-patch" title="Apply patch to file">
+            <span class="forge-tool-icon">🩹</span>
+            <span>Patch File</span>
+          </button>
+          <button class="forge-tool-btn" id="forge-tool-verify" title="Verify all paths exist">
+            <span class="forge-tool-icon">✅</span>
+            <span>Verify Paths</span>
+          </button>
+          <button class="forge-tool-btn" id="forge-tool-build" title="Build package with manifest">
+            <span class="forge-tool-icon">📦</span>
+            <span>Build Package</span>
+          </button>
+          <button class="forge-tool-btn" id="forge-tool-test" title="Run smoke test checklist">
+            <span class="forge-tool-icon">🧪</span>
+            <span>Smoke Test</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="forge-console-section">
+        <h4>⚡ Quick Actions</h4>
+        <div class="forge-quick-actions">
+          <button class="forge-btn" id="forge-run-btn">▶️ Run (Ctrl+Enter)</button>
+          <button class="forge-btn" id="forge-build-btn">🔨 Build (Ctrl+B)</button>
+          <button class="forge-btn" id="forge-export-btn">📤 Export Prompt</button>
+        </div>
+      </div>
+
+      <!-- Quick-Calls (Voice-Builder / Laser / Android) -->
+      <div class="forge-console-section forge-quickcalls-section">
+        <h4>🚀 Quick-Calls</h4>
+        <div class="forge-quickcall-grid">
+          <button class="forge-quickcall-btn" id="forge-quickcall-voice" title="Describe app in plain English → Build plan">
+            <span class="forge-quickcall-icon">🎙️</span>
+            <span class="forge-quickcall-label">Voice Builder</span>
+            <span class="forge-quickcall-hint">NLP → Build</span>
+          </button>
+          <button class="forge-quickcall-btn" id="forge-quickcall-laser" title="Find single highest-impact change">
+            <span class="forge-quickcall-icon">🎯</span>
+            <span class="forge-quickcall-label">Laser Pointer</span>
+            <span class="forge-quickcall-hint">1 Target</span>
+          </button>
+          <button class="forge-quickcall-btn" id="forge-quickcall-android" title="Export as offline Android HTML">
+            <span class="forge-quickcall-icon">📱</span>
+            <span class="forge-quickcall-label">Android Export</span>
+            <span class="forge-quickcall-hint">Offline Demo</span>
+          </button>
+        
+      <!-- Chat → Core (Copy/Paste) + Laser Mode -->
+      <div class="forge-console-section forge-chat2core-section" id="forge-chat2core-section">
+        <h4>🧠 Chat → Core</h4>
+        <div class="forge-chat2core-controls">
+          <button class="forge-btn" id="forge-laser-toggle" title="Toggle Laser Mode (focus all brains on one target)">🎯 Laser: <span id="forge-laser-state">OFF</span></button>
+          <input id="forge-laser-target" class="forge-input" type="text" placeholder="Laser target (e.g. 'Horses: Cheltenham 2:30' or click a file/module)" />
+        </div>
+        <textarea id="forge-chat2core-input" class="forge-textarea" rows="5" placeholder="Ask Core for a plan, prompt, patch, checklist, or analysis..."></textarea>
+        <div class="forge-chat2core-actions">
+          <button class="forge-btn forge-btn-primary" id="forge-chat2core-generate">⚡ Generate Output</button>
+          <button class="forge-btn" id="forge-chat2core-copy">📋 Copy Output</button>
+          <button class="forge-btn" id="forge-chat2core-clear">🧽 Clear</button>
+        </div>
+
+        <div class="forge-talkback-row">
+          <button class="forge-btn" id="forge-talkback-toggle" title="Optional: Mic talkback (browser SpeechRecognition)">🎙️ Talkback: <span id="forge-talkback-state">OFF</span></button>
+          <span class="forge-hint-small">Laser ON + target set = strongest results</span>
+        </div>
+
+        <textarea id="forge-chat2core-output" class="forge-textarea forge-output" rows="9" readonly placeholder="Output appears here (copy/paste)..."></textarea>
+
+        <div class="forge-hint-small">
+          <strong>Note:</strong> This panel generates structured prompts/output for copy-paste. It does not place bets or make guarantees.
+        </div>
+      </div>
+
+</div>
+      </div>
+
+      <!-- Forge Resources -->
+      <div class="forge-console-section">
+        <h4>📚 Forge Resources</h4>
+        <div class="forge-resource-grid">
+          <a href="modules/forge_map.html" target="_blank" class="forge-resource-btn" title="Visual module control center">
+            <span>🗺️</span> Forge Map
+          </a>
+          <a href="modules/forge_docs.html" target="_blank" class="forge-resource-btn" title="Developer documentation">
+            <span>📋</span> Documentation
+          </a>
+          <a href="modules/forge_structure.html" target="_blank" class="forge-resource-btn" title="File tree + dependencies">
+            <span>🌳</span> Structure Map
+          </a>
+          <a href="modules/forge_api.html" target="_blank" class="forge-resource-btn" title="Copy-paste API reference">
+            <span>🔧</span> API Reference
+          </a>
+        </div>
+      </div>
+
+      <!-- Safety Checks -->
+      <div class="forge-console-section forge-safety-section">
+        <h4>🔒 Safety Checks</h4>
+        <div class="forge-safety-grid" id="forge-safety-grid">
+          <div class="forge-safety-item">
+            <span class="safety-icon">✅</span>
+            <span>No path traversal</span>
+          </div>
+          <div class="forge-safety-item">
+            <span class="safety-icon">✅</span>
+            <span>Sandbox enabled</span>
+          </div>
+          <div class="forge-safety-item">
+            <span class="safety-icon">✅</span>
+            <span>Backup ready</span>
+          </div>
+          <div class="forge-safety-item">
+            <span class="safety-icon">✅</span>
+            <span>No remote scripts</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Project Info -->
+      <div class="forge-console-section">
+        <h4>📋 Project Info</h4>
+        <div class="forge-project-info" id="forge-project-info">
+          <div class="forge-info-row">
+            <span>Name:</span>
+            <strong id="forge-info-name">—</strong>
+          </div>
+          <div class="forge-info-row">
+            <span>Template:</span>
+            <strong id="forge-info-template">—</strong>
+          </div>
+          <div class="forge-info-row">
+            <span>Files:</span>
+            <strong id="forge-info-files">0</strong>
+          </div>
+          <div class="forge-info-row">
+            <span>Last Modified:</span>
+            <strong id="forge-info-modified">—</strong>
+          </div>
+        </div>
+        <button class="forge-btn forge-btn-danger" id="forge-delete-project-btn" style="width:100%;margin-top:10px;">🗑️ Delete Project</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════════
+       BOTTOM PANEL: Build Output / Logs
+       ═══════════════════════════════════════════════════════════════════════════ -->
+  <div class="forge-panel forge-panel-bottom" id="forge-panel-bottom">
+    <div class="forge-panel-header">
+      <h3 class="forge-panel-title">🧾 Output</h3>
+      <div class="forge-panel-controls">
+        <button class="forge-icon-btn" id="forge-output-clear" title="Clear">🗑️</button>
+        <button class="forge-icon-btn" id="forge-output-copy" title="Copy Logs">📋</button>
+        <button class="forge-icon-btn" id="forge-output-toggle" title="Toggle Panel">📐</button>
+      </div>
+    </div>
+    <div class="forge-output-container" id="forge-output-container">
+      <div class="forge-output-stack">
+  <details class="forge-details" open>
+    <summary>🖥️ Console</summary>
+    <pre id="forge-console-output" class="forge-output-pre"></pre>
+  </details>
+  <details class="forge-details">
+    <summary>📜 Logs</summary>
+    <pre id="forge-logs-output" class="forge-output-pre"></pre>
+  </details>
+  <details class="forge-details">
+    <summary>❌ Errors</summary>
+    <pre id="forge-errors-output" class="forge-output-pre"></pre>
+  </details>
+</div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════════
+       MODALS
+       ═══════════════════════════════════════════════════════════════════════════ -->
+
+  <!-- New Project Modal -->
+  <div class="forge-modal" id="forge-modal-new-project" style="display: none;">
+    <div class="forge-modal-content">
+      <div class="forge-modal-header">
+        <h3>🚀 Create New Project</h3>
+        <button class="forge-modal-close">&times;</button>
+      </div>
+      <div class="forge-modal-body">
+        <div class="forge-form-group">
+          <label>Project Name</label>
+          <input type="text" id="forge-new-name" placeholder="my-mini-app" />
+        </div>
+        <div class="forge-form-group">
+          <label>Template</label>
+          <div class="forge-template-grid">
+            <button class="forge-template-btn active" data-template="html-only">
+              <span>📄</span>
+              <span>HTML Only</span>
+            </button>
+            <button class="forge-template-btn" data-template="html-js">
+              <span>📜</span>
+              <span>HTML + JS</span>
+            </button>
+            <button class="forge-template-btn" data-template="module-tab">
+              <span>🧩</span>
+              <span>Module Tab</span>
+            </button>
+            <button class="forge-template-btn" data-template="landing-page">
+              <span>🌐</span>
+              <span>Landing Page</span>
+            </button>
+          </div>
+        </div>
+        <div class="forge-form-group">
+          <label>Target Folder</label>
+          <input type="text" id="forge-new-folder" value="/forge-projects/" />
+        </div>
+      </div>
+      <div class="forge-modal-footer">
+        <button class="forge-btn" id="forge-modal-cancel">Cancel</button>
+        <button class="forge-btn forge-btn-primary" id="forge-modal-create">⚡ Create Project</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- New File Modal -->
+  <div class="forge-modal" id="forge-modal-new-file" style="display: none;">
+    <div class="forge-modal-content forge-modal-sm">
+      <div class="forge-modal-header">
+        <h3>📄 New File</h3>
+        <button class="forge-modal-close">&times;</button>
+      </div>
+      <div class="forge-modal-body">
+        <div class="forge-form-group">
+          <label>File Name</label>
+          <input type="text" id="forge-file-name" placeholder="filename.html" />
+        </div>
+      </div>
+      <div class="forge-modal-footer">
+        <button class="forge-btn" id="forge-file-cancel">Cancel</button>
+        <button class="forge-btn forge-btn-primary" id="forge-file-create">Create</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm Delete Modal -->
+  <div class="forge-modal" id="forge-modal-confirm" style="display: none;">
+    <div class="forge-modal-content forge-modal-sm">
+      <div class="forge-modal-header forge-modal-warning">
+        <h3>⚠️ Confirm Delete</h3>
+        <button class="forge-modal-close">&times;</button>
+      </div>
+      <div class="forge-modal-body">
+        <p id="forge-confirm-message">Are you sure you want to delete this item?</p>
+      </div>
+      <div class="forge-modal-footer">
+        <button class="forge-btn" id="forge-confirm-cancel">Cancel</button>
+        <button class="forge-btn forge-btn-danger" id="forge-confirm-delete">🗑️ Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Smoke Test Modal -->
+  <div class="forge-modal" id="forge-modal-smoke-test" style="display: none;">
+    <div class="forge-modal-content">
+      <div class="forge-modal-header">
+        <h3>🧪 Smoke Test Checklist</h3>
+        <button class="forge-modal-close">&times;</button>
+      </div>
+      <div class="forge-modal-body">
+        <div class="forge-checklist" id="forge-smoke-checklist">
+          <!-- Generated by JS -->
+        </div>
+      </div>
+      <div class="forge-modal-footer">
+        <button class="forge-btn" id="forge-smoke-cancel">Close</button>
+        <button class="forge-btn forge-btn-primary" id="forge-smoke-run">▶️ Run All Tests</button>
+      </div>
+    </div>
+  </div>
+
+</section>
+<section id="forge-live-controls" class="forge-live-controls">
+  <h3>🌐 Live Data Controls (Manual)</h3>
+  <label class="forge-check">
+    <input type="checkbox" id="toggleFootballLive">
+    Football – Live Data (online)
+  </label>
+  <div id="footballStatus" class="statusText">Status: OFFLINE</div>
+
+  <label class="forge-check" style="margin-top:10px;">
+    <input type="checkbox" id="toggleRacingLive">
+    Horse Racing – Live Data (online)
+  </label>
+  <div id="racingStatus" class="statusText">Status: OFFLINE</div>
+
+  <p class="hint" style="margin-top:10px;">
+    Offline by default. No external calls happen unless you enable these.
+  </p>
+</section>
+
+

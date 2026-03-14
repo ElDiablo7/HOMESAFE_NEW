@@ -1,0 +1,25 @@
+{
+  "name": "gracex-homesafe",
+  "version": "6.6.0",
+  "description": "GRACE-X AI™ ULTIMATE Edition - HOMESAFE Module",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "build": "cd server && npm install",
+    "dev": "cd server && npm run dev",
+    "postinstall": "cd server && npm install"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "keywords": [
+    "gracex",
+    "ai",
+    "homesafe",
+    "builder",
+    "siteops"
+  ],
+  "author": "Zac Crockett",
+  "license": "MIT"
+}

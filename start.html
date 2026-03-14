@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRACE-X TITAN - Starting...</title>
+    
+    <!-- FORCE NO CACHE -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #000 0%, #1a1a2e 100%);
+            font-family: system-ui, -apple-system, sans-serif;
+            color: #fff;
+        }
+        
+        .box {
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            background: linear-gradient(135deg, #06b6d4, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+        
+        p {
+            color: #94a3b8;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            margin: 0 auto;
+            border: 3px solid rgba(6,182,212,0.2);
+            border-top-color: #06b6d4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .btn {
+            margin-top: 30px;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #06b6d4, #8b5cf6);
+            border: none;
+            border-radius: 25px;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .hint {
+            margin-top: 20px;
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h1>GRACE-X TITAN</h1>
+        <p>Clearing cache & loading fresh version...</p>
+        <div class="spinner"></div>
+        <button class="btn" onclick="forceReload()">Force Reload Now</button>
+        <p class="hint">Or wait 2 seconds for automatic reload</p>
+    </div>
+
+    <script>
+        // AGGRESSIVE CACHE CLEARING
+        function clearCaches() {
+            // Clear service worker caches
+            if ('caches' in window) {
+                caches.keys().then(names => {
+                    names.forEach(name => caches.delete(name));
+                });
+            }
+            
+            // Unregister service workers
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(registrations => {
+                    registrations.forEach(reg => reg.unregister());
+                });
+            }
+            
+            console.log('✅ Cache cleared');
+        }
+        
+        function forceReload() {
+            clearCaches();
+            
+            // Hard reload with cache bypass
+            const url = 'index.html?t=' + Date.now() + '#nocache';
+            window.location.href = url;
+            
+            // Also try location.reload with force
+            setTimeout(() => {
+                window.location.reload(true);
+            }, 100);
+        }
+        
+        // Auto-reload after 2 seconds
+        clearCaches();
+        setTimeout(forceReload, 2000);
+    </script>
+</body>
+</html>

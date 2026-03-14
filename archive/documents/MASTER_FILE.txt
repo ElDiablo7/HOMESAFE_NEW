@@ -1,0 +1,491 @@
+===============================================================
+                 GRACE-X AI™ – MASTER DOCUMENT (MASTERDOC)
+===============================================================
+
+Version: 1.0
+Date: 09 December 2025
+Author / Engineer: Zac Crockett
+System: GRACE-X AI™ Modular Ecosystem
+Jurisdiction: United Kingdom (primary), with international IP intent.
+
+---------------------------------------------------------------
+1. PROJECT OVERVIEW
+---------------------------------------------------------------
+
+GRACE-X AI™ is a modular, multi-app artificial intelligence ecosystem
+designed and engineered by Zac Crockett. It combines:
+
+• A central “Core” assistant and UI shell
+• A suite of specialist modules (“apps” / “DLCs”)
+• A shared audio / voice engine
+• Future AR / camera and OSINT tooling
+
+The goal is to create a real, usable AI companion that:
+
+• Helps with real-world tasks (trades, fitness, finance, safety)
+• Supports mental health and wellbeing
+• Assists creators and influencers
+• Helps families and kids learn and stay safe
+
+The platform is engineered as a local HTML/JS prototype that can be
+ported to web, mobile, and desktop apps.
+
+---------------------------------------------------------------
+2. CORE ARCHITECTURE
+---------------------------------------------------------------
+
+2.1 GRACE-X Core™
+
+The “Core” is the main brain and front-end shell.
+
+Responsibilities:
+• Boot screen, brand intro, and transitions.
+• Sidebar navigation to all modules.
+• Basic conversation logic and routing.
+• Debug panels (last heard, last reply, last intent).
+• Integration point for the AudioManager (voices) and other tools.
+
+Key elements:
+• index.html – entry point and Core shell.
+• core.js – Core logic, debug tools, and shell initialisation.
+• audioManager.js – shared voice/audio engine.
+• core.css – base styling, layout, colours, gradients, and typography.
+
+Trade mark:
+• GRACE-X Core™ – central operating layer of the GRACE-X AI™ system.
+
+---------------------------------------------------------------
+3. MODULE CATALOGUE (CURRENT)
+---------------------------------------------------------------
+
+Each module is a logical “app” that can be opened from the Core sidebar
+or directly as its own page. All names are copyrighted works, and the
+titles below are trade marks or pending trade marks of Zac Crockett.
+
+---------------------------------------------------
+3.1 GRACE-X Builder™
+---------------------------------------------------
+
+Focus:
+• Construction, trades and measurements.
+
+Features (intended and in progress):
+• Blueprint viewer / overlay.
+• AR-style room capture and dimension estimation (future).
+• Dynamic measurement helpers and material calculators.
+• Method-statement and risk-assessment templates.
+• Links to SiteOps and TradeLink for live jobs.
+
+Files:
+• modules/builder.html
+• assets/js/builder.js
+• Shared core.js, audioManager.js, core.css, builder.css
+
+Trademark:
+• GRACE-X Builder™
+
+---------------------------------------------------
+3.2 GRACE-X SiteOps™
+---------------------------------------------------
+
+Focus:
+• Site operations for construction and film/studio rigging.
+
+Features:
+• Phase selector (prep, survey, rigging, de-rig, strike, etc.).
+• Checklists for rigging, lighting and safety.
+• Integration plan to studio maps and global stage plans (future).
+• Hooks for camera/AR overlays and risk assessments.
+
+Files:
+• modules/siteops.html
+• assets/js/siteops.js
+
+Trademark:
+• GRACE-X SiteOps™
+
+---------------------------------------------------
+3.3 GRACE-X TradeLink™
+---------------------------------------------------
+
+Focus:
+• Uber-style marketplace for trades and professionals.
+
+Features:
+• Job board concept for tradesmen and clients.
+• Profiles and verification concept (to connect with OSINT).
+• Hooks into Builder (quotes / pricing from measurements).
+• Future map-based routes and job tracking.
+
+Files:
+• modules/tradelink.html
+• assets/js/tradelink.js
+
+Trademark:
+• GRACE-X TradeLink™
+
+---------------------------------------------------
+3.4 GRACE-X Uplift™
+---------------------------------------------------
+
+Focus:
+• Mental health, motivation, and emotional support.
+
+Features:
+• Daily encouragement and “morning check-in” concept.
+• Long-term: voice companion for people with anxiety/depression.
+• Crisis lane (Samaritans-style safety responses).
+• Professional mode for therapists and coaches (future).
+
+Files:
+• modules/uplift.html
+• assets/js/uplift.js (planned / partial in some builds)
+
+Trademark:
+• GRACE-X Uplift™
+
+Notes:
+• ARIA-Uplift™ is specifically engineered and copyrighted by
+  Zac Crockett and should always credit him as creator when
+  presented externally.
+
+---------------------------------------------------
+3.5 GRACE-X Chef™
+---------------------------------------------------
+
+Focus:
+• Cooking help, “fakeaway” recipes, budgeting and allergens.
+
+Features:
+• Recipe ideas and “fakeaway vs takeaway” savings.
+• Planned allergy tracking system:
+  – Users enter allergens; recipes avoid them.
+  – Reminder disclaimer that real-world checks are still required.
+• Meal planning and calorie/macros calculations (future).
+
+Files:
+• modules/chef.html
+• assets/js/chef.js (planned)
+
+Trademark:
+• GRACE-X Chef™
+
+---------------------------------------------------
+3.6 GRACE-X Artist™ / GraceX Studio™
+---------------------------------------------------
+
+Focus:
+• Creative tools for influencers and content creators.
+
+Features:
+• Concept planning for:
+  – Animation prompts and motion graphics.
+  – Social media posts, overlays, and branding.
+  – Learning/training course for creators (future).
+• Will integrate with future “Studio” tools for video and motion.
+
+Files:
+• modules/artist.html
+• assets/js/artist.js (planned)
+
+Trademarks:
+• GRACE-X Artist™
+• GRACE-X Studio™ (creative suite / course bundle)
+
+---------------------------------------------------
+3.7 GRACE-X Fit™
+---------------------------------------------------
+
+Focus:
+• Health, fitness and macros tracking.
+
+Features:
+• Workout planning and routine templates.
+• Weight, measurements and habit tracking (future).
+• Integrates with GRACE-X Yoga™ for stretching and meditation.
+
+Files:
+• modules/fit.html
+• assets/js/fit.js (planned)
+
+Trademark:
+• GRACE-X Fit™
+
+---------------------------------------------------
+3.8 GRACE-X Yoga™ (DLC)
+---------------------------------------------------
+
+Focus:
+• Yoga flows, stretching, and meditation prompts.
+
+Features:
+• Guided routines for neck, back, shoulders, and full body.
+• Breathing and grounding scripts.
+• Intended as a DLC to GRACE-X Fit™ and as part of Uplift™.
+
+Files:
+• modules/yoga.html
+• assets/js/yoga.js (planned)
+
+Trademarks:
+• GRACE-X Yoga™
+• ARIA Yoga™ (module name and concept in earlier ARIA builds)
+
+---------------------------------------------------
+3.9 GRACE-X Family™
+---------------------------------------------------
+
+Focus:
+• Family-safe assistant, homework help, and child-friendly mode.
+
+Features:
+• Educational assistance and syllabus-aware tutoring (future).
+• Early warning concept for bullying/anxiety signals (links to Uplift).
+• Family dashboards for homework, chores and rewards.
+
+Files:
+• modules/family.html
+• assets/js/family.js (planned)
+
+Trademark:
+• GRACE-X Family™
+
+Notes:
+• Replaces earlier “Play” module with a more responsible,
+  parent-oriented frame.
+
+---------------------------------------------------
+3.10 GRACE-X Accounting™
+---------------------------------------------------
+
+Focus:
+• Small-business and self-employed financial support.
+
+Features:
+• Tax return preparation concepts.
+• Invoice and expense tracking.
+• Future integrations: HMRC APIs, CSV import/export.
+
+Files:
+• modules/accounting.html
+• assets/js/accounting.js (planned)
+
+Trademark:
+• GRACE-X Accounting™
+
+---------------------------------------------------
+3.11 GRACE-X OSINT™
+---------------------------------------------------
+
+Focus:
+• Ethical OSINT (open-source intelligence) and pentest training.
+
+Features:
+• Tools for scanning and investigation **only for ethical use**.
+• Guardian/StreetSafe integration to detect grooming/suspicious
+  patterns (future).
+• Locked behind credentials to ensure white-hat only access.
+• Educational courses on safe pentesting practices.
+
+Files:
+• modules/osint.html
+• assets/js/osint.js
+
+Trademark:
+• GRACE-X OSINT™ / ARIA OSINT™
+
+Notes:
+• Strictly non-malicious. Educational and defensive only.
+
+---------------------------------------------------
+3.12 GRACE-X StreetSafe™
+---------------------------------------------------
+
+Focus:
+• Personal safety and situational awareness.
+
+Features:
+• Derived from “Guardian” module.
+• Concept: map-based alerts, check-in system and “get me home safe”
+  flows.
+• Long-term: Guardian-style backend with OSINT hooks.
+
+Files:
+• Planned as its own module file (streetsafe.html) in later builds.
+
+Trademark:
+• GRACE-X StreetSafe™
+
+---------------------------------------------------
+3.13 GRACE-X Gamer Mode™
+---------------------------------------------------
+
+Focus:
+• Gaming overlay and assistant, especially for consoles and PC.
+
+Features:
+• Overlays for missions, callouts, reminders and tips.
+• Parental-control ideas (e.g. PS5 safety wrappers).
+• Future: API hooks to gaming platforms; AR overlays.
+
+Files:
+• modules/gamer.html
+• assets/js/gamer.js
+
+Trademark:
+• GRACE-X Gamer Mode™
+
+Ownership note:
+• GRACE-X Gamer Mode™ app ownership is assigned to:
+  – Charlie Crockett
+  – Harry Crockett
+  as owners of the Gamer app concept.
+• Zac Crockett retains overall GRACE-X AI™ IP and accepts responsibility
+  for any issues or problems arising from the Gamer app’s behaviour,
+  design, and deployment.
+
+---------------------------------------------------
+3.14 GRACE-X Beauty™ (In Development)
+---------------------------------------------------
+
+Focus:
+• Personal style, makeup and skincare guidance.
+
+Features (planned):
+• “Build your look” flows.
+• Skin routine builder and product suggestions.
+• Hair/makeup style previews once visual layer is added.
+
+Files:
+• modules/beauty.html
+• assets/js/beauty.js (planned)
+
+Trademark:
+• GRACE-X Beauty™
+
+---------------------------------------------------
+3.15 GRACE-X Create™
+---------------------------------------------------
+
+Focus:
+• Idea generation and inspiration.
+
+Features:
+• Writing prompts, story ideas and brain-storming tools.
+• Concept support for future creator community tools.
+
+Files:
+• Planned module.
+
+Trademark:
+• GRACE-X Create™
+
+---------------------------------------------------------------
+4. DLCs, FUTURE MODULES & EXPERIMENTAL AREAS
+---------------------------------------------------------------
+
+• GRACE-X Yoga™ – DLC for Fit and Uplift.
+• GRACE-X OSINT™ – DLC and pro-mode, ethically constrained.
+• GRACE-X ChefPro™ – extended recipes, influencer collabs (“fakeaway”).
+• GraceX StreetSafe – expansion of Guardian for maps and alerts.
+• GraceX Studio – advanced creative and training suite.
+
+All future names and ideas described here are to be treated as
+conceptual IP of Zac Crockett.
+
+---------------------------------------------------------------
+5. BUILD / VERSIONING & “GODFILE” CONCEPT
+---------------------------------------------------------------
+
+The GRACE-X development workflow uses “hero builds” and “godfiles”:
+
+• Hero build – a dated zip of the full platform that is known to run.
+• Godfile – the CURRENT, CLEAN, BEST-KNOWN working build, frozen and
+  never edited directly. All new work is done on a copy.
+
+General rules:
+1. Only one godfile at a time.
+2. Every new dev session starts from the latest godfile copy.
+3. After changes, a new hero build is saved with date + notes.
+4. Once stable, that hero becomes the next godfile.
+
+Example naming:
+• HERO_09.12.25_HEADERS_V2_CORE_FIXED_FULL.zip
+• GODFILE_09.12.25_GRACEX_CORE_FULL.zip (once promoted)
+
+---------------------------------------------------------------
+6. INTELLECTUAL PROPERTY & OWNERSHIP
+---------------------------------------------------------------
+
+Primary IP owner:
+• Zac Crockett – creator, engineer and owner of the GRACE-X AI™
+  ecosystem and all modules, designs, scripts, audio, and concepts.
+
+Trademarks (current and intended):
+• GRACE-X AI™
+• GRACE-X Core™
+• GRACE-X Builder™
+• GRACE-X SiteOps™
+• GRACE-X TradeLink™
+• GRACE-X Uplift™
+• GRACE-X Chef™
+• GRACE-X Artist™
+• GRACE-X Studio™
+• GRACE-X Fit™
+• GRACE-X Yoga™
+• GRACE-X Family™
+• GRACE-X Accounting™
+• GRACE-X OSINT™
+• GRACE-X StreetSafe™
+• GRACE-X Gamer Mode™
+• GRACE-X Beauty™
+• GRACE-X Create™
+
+Special ownership statement for Gamer Mode:
+• The GRACE-X Gamer Mode™ app is formally assigned to:
+  – Charlie Crockett (owner)
+  – Harry Crockett (owner)
+• Any responsibility for any issues or problems with GRACE-X Gamer Mode™
+  remains with Zac Crockett as system designer and IP holder.
+
+All audio, visuals, scripts, text and code in this ecosystem are
+copyrighted works:
+
+• © 2025 Zac Crockett. All Rights Reserved.
+
+No part may be copied, resold, redistributed, white-labelled, or
+rebranded without written permission from Zac Crockett.
+
+---------------------------------------------------------------
+7. SAFETY, ETHICS & LIMITATIONS
+---------------------------------------------------------------
+
+• OSINT and security tools are strictly for ethical, defensive use.
+• Uplift and Family modules must not represent themselves as emergency
+  services. In crisis, users should be signposted to appropriate
+  helplines or services (e.g. Samaritans in the UK).
+• Data collection and AR/camera features must be compliant with local
+  data and privacy laws before public release.
+• GRACE-X is in prototype / pre-release, with no guarantees made for
+  production reliability at this stage.
+
+---------------------------------------------------------------
+8. CONTACT & ATTRIBUTION
+---------------------------------------------------------------
+
+Primary creator and engineer:
+• Zac Crockett
+
+Official project name:
+• GRACE-X AI™
+
+Contact email:
+• gracex@outlook.com
+
+Standard attribution line:
+• “GRACE-X AI™ and all associated modules were created and
+   engineered by Zac Crockett.”
+
+---------------------------------------------------------------
+END OF MASTERDOC
+---------------------------------------------------------------

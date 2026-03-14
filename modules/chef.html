@@ -1,0 +1,502 @@
+<section class="module-section chef-container">
+  <!-- Module Header -->
+  <div class="module-header">
+    <div class="module-logo-slot">
+      <span class="module-logo-text">CH</span>
+    </div>
+    <div class="module-header-text">
+      <h1 class="module-title">GRACE-X Chef™</h1>
+      <p class="module-subtitle">
+        Fakeaways · Allergy Safety · Budget Meals · Meal Plans · Savings Tracker
+      </p>
+    </div>
+  </div>
+
+  <!-- Kids Present Warning (visible when active) -->
+  <div id="chef-kids-banner" class="chef-kids-banner" style="display: none;">
+    <span>👨‍👩‍👧‍👦</span>
+    <div>
+      <strong>Kids Mode Active</strong>
+      <span>Simplified steps · Safety reminders · Kid-friendly tasks</span>
+    </div>
+  </div>
+
+  <!-- GRACE-X Chef Assistant (RIGHT AFTER HEADER) -->
+  <div class="builder-card" id="chef-brain-card">
+    <h2>🧠 GRACE-X Chef Assistant</h2>
+    <p class="hint">
+      Ask about recipes, fakeaways, allergies, budget meals, or what to cook with your ingredients.
+    </p>
+
+    <div class="module-brain" id="chef-brain-panel">
+      <div id="chef-brain-output" class="brain-output">
+        <div class="brain-message brain-message-system">
+          Hey! I'm your kitchen companion. Ask me for recipes, fakeaway ideas, budget meals, or help with allergies. I'll keep things practical and safe!
+        </div>
+      </div>
+
+      <div class="brain-input-row">
+        <button type="button" class="brain-mic-btn" id="chef-brain-mic" title="Voice input">
+          🎙️
+        </button>
+        <input
+          id="chef-brain-input"
+          type="text"
+          placeholder="e.g. 'Fakeaway curry under £5' or 'What can I make with chicken?'"
+        />
+        <button id="chef-brain-send">Ask</button>
+      </div>
+
+      <div class="brain-actions">
+        <button class="builder-btn" id="chef-brain-clear">
+          Clear conversation
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Kitchen Dashboard with Savings -->
+  <div class="builder-card" id="chef-stats-card">
+    <h2>🍳 Kitchen Dashboard</h2>
+    <div class="gx-stats-grid chef-stats-grid">
+      <div class="gx-stat-card">
+        <div class="gx-stat-value" id="chef-stat-recipes">0</div>
+        <div class="gx-stat-label">Saved Recipes</div>
+      </div>
+      <div class="gx-stat-card">
+        <div class="gx-stat-value" id="chef-stat-shopping">0</div>
+        <div class="gx-stat-label">Shopping Items</div>
+      </div>
+      <div class="gx-stat-card">
+        <div class="gx-stat-value" id="chef-stat-meals">0</div>
+        <div class="gx-stat-label">Meals Planned</div>
+      </div>
+      <div class="gx-stat-card chef-stat-savings">
+        <div class="gx-stat-value" id="chef-stat-savings">£0</div>
+        <div class="gx-stat-label">💰 Fakeaway Savings</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Allergy & Diet Tracker (SAFETY CRITICAL) -->
+  <div class="builder-card chef-allergy-card" id="chef-allergy-card">
+    <h2>⚠️ Allergy & Diet Tracker</h2>
+    <p class="hint">
+      Set your allergies and diet preferences. All recipes will be filtered for safety.
+    </p>
+
+    <div class="chef-allergy-grid">
+      <!-- Allergies Section -->
+      <div class="chef-allergy-section">
+        <h4>Allergies (will exclude ingredients)</h4>
+        <div class="chef-allergy-toggles" id="chef-allergy-toggles">
+          <label class="chef-allergy-toggle">
+            <input type="checkbox" data-allergy="nuts" />
+            <span>🥜 Nuts</span>
+          </label>
+          <label class="chef-allergy-toggle">
+            <input type="checkbox" data-allergy="peanuts" />
+            <span>🥜 Peanuts</span>
+          </label>
+          <label class="chef-allergy-toggle">
+            <input type="checkbox" data-allergy="dairy" />
+            <span>🥛 Dairy</span>
+          </label>
+          <label class="chef-allergy-toggle">
+            <input type="checkbox" data-allergy="eggs" />
+            <span>🥚 Eggs</span>
+          </label>
+          <label class="chef-allergy-toggle">
+            <input type="checkbox" data-allergy="gluten" />
+            <span>🌾 Gluten</span>
+          </label>
+          <label class="chef-allergy-toggle">
+            <input type="checkbox" data-allergy="shellfish" />
+            <span>🦐 Shellfish</span>
+          </label>
+          <label class="chef-allergy-toggle">
+            <input type="checkbox" data-allergy="fish" />
+            <span>🐟 Fish</span>
+          </label>
+          <label class="chef-allergy-toggle">
+            <input type="checkbox" data-allergy="sesame" />
+            <span>🫘 Sesame</span>
+          </label>
+          <label class="chef-allergy-toggle">
+            <input type="checkbox" data-allergy="soy" />
+            <span>🫛 Soy</span>
+          </label>
+          <label class="chef-allergy-toggle">
+            <input type="checkbox" data-allergy="celery" />
+            <span>🥬 Celery</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Intolerances Section -->
+      <div class="chef-allergy-section">
+        <h4>Intolerances & Preferences</h4>
+        <div class="chef-allergy-toggles" id="chef-intolerance-toggles">
+          <label class="chef-allergy-toggle">
+            <input type="checkbox" data-intolerance="lactose" />
+            <span>🥛 Lactose</span>
+          </label>
+          <label class="chef-allergy-toggle">
+            <input type="checkbox" data-intolerance="lowSalt" />
+            <span>🧂 Low Salt</span>
+          </label>
+          <label class="chef-allergy-toggle">
+            <input type="checkbox" data-intolerance="noSpicy" />
+            <span>🌶️ No Spicy</span>
+          </label>
+          <label class="chef-allergy-toggle">
+            <input type="checkbox" data-intolerance="highProtein" />
+            <span>💪 High Protein</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Diet Preferences Section -->
+      <div class="chef-allergy-section">
+        <h4>Diet Type</h4>
+        <div class="chef-diet-select">
+          <select id="chef-diet-type">
+            <option value="none">No restriction</option>
+            <option value="vegetarian">🥬 Vegetarian</option>
+            <option value="vegan">🌱 Vegan</option>
+            <option value="pescatarian">🐟 Pescatarian</option>
+            <option value="halal">☪️ Halal</option>
+            <option value="kosher">✡️ Kosher</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="chef-allergy-status" id="chef-allergy-status">
+      <span class="chef-allergy-count">0 allergies active</span>
+      <button class="builder-btn" id="chef-allergy-save">💾 Save Profile</button>
+    </div>
+
+    <!-- Safety Disclaimer -->
+    <div class="chef-allergy-disclaimer">
+      <strong>⚠️ Important Safety Notice:</strong> Please double-check ingredient labels and cross-contamination risks — especially sauces, spice mixes, and pre-prepared foods. This tool provides guidance only and cannot guarantee allergen-free recipes.
+    </div>
+  </div>
+
+  <!-- Fakeaway Generator (STAR FEATURE) -->
+  <div class="builder-card chef-fakeaway-card" id="chef-fakeaway-card">
+    <h2>🍔 Fakeaway Generator</h2>
+    <p class="hint">
+      Get healthier, cheaper homemade versions of your favourite takeaways — with real savings.
+    </p>
+
+    <div class="chef-fakeaway-types" id="chef-fakeaway-types">
+      <button class="chef-fakeaway-type active" data-type="any">🎲 Surprise Me</button>
+      <button class="chef-fakeaway-type" data-type="curry">🍛 Curry House</button>
+      <button class="chef-fakeaway-type" data-type="kebab">🥙 Kebab Shop</button>
+      <button class="chef-fakeaway-type" data-type="chicken">🍗 Fried Chicken</button>
+      <button class="chef-fakeaway-type" data-type="burger">🍔 Burgers</button>
+      <button class="chef-fakeaway-type" data-type="pizza">🍕 Pizza</button>
+      <button class="chef-fakeaway-type" data-type="chinese">🥡 Chinese</button>
+    </div>
+
+    <div class="summary-grid chef-fakeaway-options">
+      <label>
+        Cooking time
+        <select id="chef-time">
+          <option value="any">Any time</option>
+          <option value="quick">⚡ Under 30 mins</option>
+          <option value="medium">⏱️ 30-60 mins</option>
+          <option value="slow">🕰️ Slow cook</option>
+        </select>
+      </label>
+      <label>
+        Servings
+        <select id="chef-servings">
+          <option value="1">1 person</option>
+          <option value="2" selected>2 people</option>
+          <option value="4">4 people (family)</option>
+          <option value="6">6+ people</option>
+        </select>
+      </label>
+      <label>
+        Budget
+        <select id="chef-budget">
+          <option value="any">Any budget</option>
+          <option value="cheap">💷 Under £3/portion</option>
+          <option value="medium">💷💷 £3-5/portion</option>
+          <option value="treat">💷💷💷 Treat yourself</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="chef-healthier-toggle">
+      <label class="chef-toggle-row">
+        <input type="checkbox" id="chef-healthier" />
+        <span>🥗 Make it healthier</span>
+        <span class="hint">(baked vs fried, lower oil, more veg)</span>
+      </label>
+    </div>
+
+    <div class="builder-controls">
+      <button class="builder-btn gx-btn-primary" id="chef-generate-fakeaway">
+        🎰 Generate Fakeaway
+      </button>
+    </div>
+
+    <!-- Fakeaway Result -->
+    <div id="chef-fakeaway-output" class="chef-fakeaway-result" style="display: none;">
+      <!-- Generated fakeaway will appear here -->
+    </div>
+  </div>
+
+  <!-- Pantry Mode (What Can I Cook?) -->
+  <div class="builder-card" id="chef-pantry-card">
+    <h2>🧊 What Can I Cook Right Now?</h2>
+    <p class="hint">
+      Tell me what's in your fridge/pantry and I'll suggest what to make — prioritising things that need using up.
+    </p>
+
+    <div class="chef-pantry-input">
+      <label>
+        Your ingredients (comma separated)
+        <textarea id="chef-pantry-ingredients" rows="3" placeholder="e.g. chicken thighs, rice, onion, garlic, peppers, soy sauce, eggs..."></textarea>
+      </label>
+    </div>
+
+    <div class="chef-pantry-expiring">
+      <label>
+        <span>🔴 Needs using soon (optional)</span>
+        <input type="text" id="chef-pantry-expiring" placeholder="e.g. mince, yoghurt, spinach" />
+      </label>
+    </div>
+
+    <div class="builder-controls">
+      <button class="builder-btn gx-btn-primary" id="chef-pantry-search">
+        🔍 Find Recipes
+      </button>
+    </div>
+
+    <!-- Pantry Results (3 ranked options) -->
+    <div id="chef-pantry-output" class="chef-pantry-results" style="display: none;">
+      <!-- Results appear here -->
+    </div>
+  </div>
+
+  <!-- Weekly Meal Planner -->
+  <div class="builder-card" id="chef-planner-card">
+    <h2>📅 Weekly Meal Planner</h2>
+    <p class="hint">
+      Plan your meals for the week. Generate a consolidated shopping list.
+    </p>
+
+    <div class="chef-planner-options">
+      <label>
+        Plan type
+        <select id="chef-plan-type">
+          <option value="custom">Custom</option>
+          <option value="budget">💷 Budget Week</option>
+          <option value="family">👨‍👩‍👧‍👦 Family Friendly</option>
+          <option value="gym">💪 High Protein</option>
+          <option value="batch">🍲 Batch Cook</option>
+        </select>
+      </label>
+      <button class="builder-btn" id="chef-auto-plan">
+        🎲 Auto-Generate Week
+      </button>
+    </div>
+
+    <div id="chef-meal-grid" class="chef-meal-grid">
+      <!-- Will be populated by JS -->
+    </div>
+
+    <div class="builder-controls" style="margin-top: 16px;">
+      <button class="builder-btn gx-btn-primary" id="chef-generate-shopping">
+        🛒 Generate Shopping List
+      </button>
+      <button class="builder-btn" id="chef-clear-planner">
+        Clear Week
+      </button>
+    </div>
+  </div>
+
+  <!-- Supermarket Deals (Core-fed) -->
+  <div class="builder-card" id="chef-deals-card">
+    <h2>🏷️ Supermarket Deals</h2>
+    <p class="hint">
+      See current deals and get recipe suggestions that match what's on offer.
+    </p>
+
+    <div class="chef-supermarket-select">
+      <label>Your supermarkets</label>
+      <div class="chef-supermarket-toggles" id="chef-supermarket-toggles">
+        <label class="chef-supermarket-toggle">
+          <input type="checkbox" data-store="tesco" checked />
+          <span>Tesco</span>
+        </label>
+        <label class="chef-supermarket-toggle">
+          <input type="checkbox" data-store="asda" />
+          <span>Asda</span>
+        </label>
+        <label class="chef-supermarket-toggle">
+          <input type="checkbox" data-store="sainsburys" />
+          <span>Sainsbury's</span>
+        </label>
+        <label class="chef-supermarket-toggle">
+          <input type="checkbox" data-store="morrisons" />
+          <span>Morrisons</span>
+        </label>
+        <label class="chef-supermarket-toggle">
+          <input type="checkbox" data-store="aldi" />
+          <span>Aldi</span>
+        </label>
+        <label class="chef-supermarket-toggle">
+          <input type="checkbox" data-store="lidl" />
+          <span>Lidl</span>
+        </label>
+      </div>
+    </div>
+
+    <div id="chef-deals-output" class="chef-deals-list">
+      <div class="chef-deals-placeholder">
+        <span>📡</span>
+        <p>Deals feed coming soon via Core™ integration</p>
+        <p class="hint">Chef will suggest recipes matching current offers</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Savings Tracker (Opt-in) -->
+  <div class="builder-card chef-savings-card" id="chef-savings-card">
+    <h2>💰 Savings Tracker</h2>
+    <p class="hint">
+      Track how much you've saved by cooking fakeaways at home vs ordering takeaway.
+    </p>
+
+    <div class="chef-savings-summary">
+      <div class="chef-savings-total">
+        <span class="chef-savings-amount" id="chef-total-savings">£0.00</span>
+        <span class="chef-savings-label">Total Saved</span>
+      </div>
+      <div class="chef-savings-breakdown">
+        <div class="chef-savings-row">
+          <span>This week</span>
+          <span id="chef-savings-week">£0.00</span>
+        </div>
+        <div class="chef-savings-row">
+          <span>This month</span>
+          <span id="chef-savings-month">£0.00</span>
+        </div>
+        <div class="chef-savings-row">
+          <span>Fakeaways made</span>
+          <span id="chef-fakeaways-count">0</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="chef-savings-toggle">
+      <label class="chef-toggle-row">
+        <input type="checkbox" id="chef-savings-enabled" checked />
+        <span>Enable savings tracking</span>
+      </label>
+    </div>
+
+    <div class="builder-controls">
+      <button class="builder-btn" id="chef-savings-reset">Reset Tracker</button>
+      <button class="builder-btn" id="chef-savings-export">📥 Export History</button>
+    </div>
+  </div>
+
+  <!-- Shopping List -->
+  <div class="builder-card" id="chef-list-card">
+    <h2>🛒 Shopping List</h2>
+    <p class="hint">
+      Add items as you plan. Check them off while shopping.
+    </p>
+
+    <div class="brain-input-row" style="margin-bottom: 12px;">
+      <input type="text" id="chef-shopping-input" placeholder="Add item…" />
+      <button class="builder-btn gx-btn-primary" id="chef-shopping-add">Add</button>
+    </div>
+
+    <div class="chef-shopping-total" id="chef-shopping-estimate">
+      <span>Estimated total:</span>
+      <strong id="chef-shopping-cost">£0.00</strong>
+      <span class="hint">(rough estimate)</span>
+    </div>
+
+    <ul id="chef-shopping-list" class="gx-list chef-shopping-list">
+      <!-- Shopping items will be added here -->
+    </ul>
+
+    <div class="builder-controls" style="margin-top: 12px;">
+      <button class="builder-btn" id="chef-shopping-clear-checked">Clear Checked</button>
+      <button class="builder-btn" id="chef-shopping-export">📥 Export List</button>
+    </div>
+  </div>
+
+  <!-- Quick Dinner Ideas -->
+  <div class="builder-card" id="chef-quick-card">
+    <h2>⏱️ 30-Minute Dinners</h2>
+    <p class="hint">
+      Simple, no-fuss meals you can throw together fast.
+    </p>
+
+    <div class="gx-list" id="chef-quick-list">
+      <!-- Will be populated by JS based on allergies -->
+    </div>
+  </div>
+
+  <!-- Saved Recipes -->
+  <div class="builder-card" id="chef-saved-card">
+    <h2>📖 Saved Recipes</h2>
+    <p class="hint">
+      Your collection of saved fakeaways and meal ideas.
+    </p>
+
+    <ul id="chef-saved-list" class="gx-list" style="max-height: 300px; overflow-y: auto;">
+      <!-- Saved recipes will appear here -->
+    </ul>
+  </div>
+
+  <!-- Kitchen Tips -->
+  <div class="builder-card" id="chef-tips-card">
+    <h2>💡 Kitchen Tips</h2>
+    
+    <div class="builder-results">
+      <div class="result-row">
+        <span>🧅 Crying while cutting onions?</span>
+        <div class="hint">Chill them in the freezer for 15 mins first</div>
+      </div>
+      <div class="result-row">
+        <span>🧈 Softening butter quickly?</span>
+        <div class="hint">Grate frozen butter or microwave in 5-sec bursts</div>
+      </div>
+      <div class="result-row">
+        <span>🍳 Non-stick without spray?</span>
+        <div class="hint">Heat pan first, then add oil – food won't stick</div>
+      </div>
+      <div class="result-row">
+        <span>🧄 Easy garlic peeling?</span>
+        <div class="hint">Smash with the flat of a knife – skin slides off</div>
+      </div>
+      <div class="result-row">
+        <span>🥬 Revive wilted greens?</span>
+        <div class="hint">Soak in ice water for 30 mins</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Voice Panel (MOVED LOWER) -->
+  <div class="builder-card">
+    <h2>🎙️ Voice Dictation</h2>
+    <p class="hint">Use this for continuous voice input and transcript viewing.</p>
+    
+    <div class="module-voice-panel" data-module="chef" style="background: transparent; padding: 0; margin: 0;">
+      <button type="button" class="module-voice-btn">🎙 Talk to GRACE-X Chef</button>
+      <span class="module-voice-status">Mic off</span>
+      <textarea class="module-voice-text" placeholder="Voice transcript appears here…" rows="3"></textarea>
+      <div class="module-voice-reply"></div>
+    </div>
+  </div>
+</section>

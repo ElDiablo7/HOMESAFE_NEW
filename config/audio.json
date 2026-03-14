@@ -1,0 +1,11 @@
+{
+  "volume": 0.9,
+  "mute": false,
+  "files": {
+    "boot": "boot_voice.mp3",
+    "enter_uplift": "uplift_enter.mp3",
+    "ui_click": "ui_click.mp3",
+    "ui_back": "ui_back.mp3",
+    "notify": "notify_ping.mp3"
+  }
+}

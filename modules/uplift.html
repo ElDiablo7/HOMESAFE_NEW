@@ -1,0 +1,305 @@
+<section class="module-section uplift-container" id="uplift-root">
+  <!-- 
+    GRACE-X UPLIFT™ v2.0
+    Mental Health · Emotional Support · Crisis De-Escalation
+    HUMAN-FIRST SAFETY MODULE
+    
+    ⚠️ CRITICAL: This module handles mental health and crisis situations.
+    All safety rules in this module are NON-NEGOTIABLE.
+  -->
+
+  <!-- Module Header -->
+  <div class="module-header" id="uplift-header">
+        <div class="module-logo-slot">
+          <span class="module-logo-text">UP</span>
+        </div>
+        <div class="module-header-text">
+          <h1 class="module-title">GRACE-X Uplift™</h1>
+      <p class="module-subtitle" id="uplift-subtitle">
+        You're not alone. A calm, supportive space when you need it.
+      </p>
+    </div>
+    <div class="uplift-lane-display">
+      <span class="uplift-lane-badge" id="uplift-lane-badge" data-lane="U0">Supportive Mode</span>
+    </div>
+  </div>
+
+  <!-- IMPORTANT NOTICE (Always visible) -->
+  <div class="uplift-notice" id="uplift-notice">
+    <p>
+      <strong>This is not therapy or medical advice.</strong> 
+      GRACE-X Uplift is here to listen and help you feel calmer. 
+      For professional support, please reach out to a qualified person.
+          </p>
+        </div>
+
+  <!-- CRISIS CARD (Hidden by default, shown in U3) -->
+  <div class="uplift-crisis-card" id="uplift-crisis-card" style="display: none;">
+    <div class="crisis-header">
+      <h2>I'm Here With You</h2>
+      <p>I'm concerned about your safety. Let's slow down together.</p>
+    </div>
+
+    <div class="crisis-safety-question" id="uplift-crisis-safety-question">
+      <p class="crisis-question-text">Are you safe right now?</p>
+      <div class="crisis-response-buttons">
+        <button class="uplift-crisis-btn" id="uplift-btn-safe-yes">Yes, I'm safe</button>
+        <button class="uplift-crisis-btn crisis-urgent" id="uplift-btn-safe-no">No, I'm not safe</button>
+      </div>
+    </div>
+
+    <div class="crisis-actions" id="uplift-crisis-actions">
+      <h3>You deserve real support from people who can help.</h3>
+      
+      <button class="uplift-action-btn emergency" id="uplift-btn-call-emergency">
+        📞 Call Emergency Services (999)
+      </button>
+      
+      <button class="uplift-action-btn crisis-line" id="uplift-btn-call-crisisline">
+        📞 Call Samaritans (116 123) - Free, 24/7
+      </button>
+      
+      <button class="uplift-action-btn trusted" id="uplift-btn-contact-trusted">
+        👤 Contact Someone You Trust
+      </button>
+      
+      <button class="uplift-action-btn text" id="uplift-btn-text-crisisline">
+        💬 Text SHOUT to 85258
+      </button>
+    </div>
+
+    <div class="crisis-resources" id="uplift-crisis-resources">
+      <h4>Crisis Resources (UK)</h4>
+          <ul>
+        <li><strong>Samaritans:</strong> 116 123 (free, 24/7, won't judge)</li>
+        <li><strong>NHS 111:</strong> Option 2 for mental health crisis</li>
+        <li><strong>Emergency:</strong> 999</li>
+        <li><strong>Text SHOUT:</strong> 85258</li>
+        <li><strong>Papyrus (under 35):</strong> 0800 068 4141</li>
+          </ul>
+      <button class="builder-btn" id="uplift-btn-copy-crisis-resources">Copy Resources</button>
+    </div>
+
+    <div class="crisis-stay-present">
+      <p>I'm still here. You can type to me if that helps.</p>
+    </div>
+  </div>
+
+  <!-- MAIN SUPPORT CHAT (Calm Mode) -->
+  <div class="builder-card uplift-main-card" id="uplift-panel-chat">
+    <h2>💙 How Are You Feeling?</h2>
+    <p class="hint">
+      Take your time. There's no right or wrong answer. 
+      Just say what comes to mind.
+    </p>
+
+    <div class="module-brain" id="uplift-brain-panel">
+      <div id="uplift-brain-output" class="brain-output uplift-chat-thread">
+        <div class="brain-message brain-message-system">
+          I'm here to listen. When you're ready, tell me how you're feeling or what's on your mind. 
+          No pressure, no judgement.
+        </div>
+      </div>
+
+      <div class="brain-input-row">
+        <button type="button" class="brain-mic-btn" id="uplift-brain-mic" title="Voice input">
+          🎙️
+        </button>
+        <input
+          id="uplift-brain-input"
+          type="text"
+          placeholder="How are you feeling right now?"
+        />
+        <button id="uplift-brain-send">Send</button>
+        </div>
+
+      <div class="brain-actions">
+        <button class="builder-btn" id="uplift-brain-clear">
+          Start fresh
+        </button>
+        <button class="builder-btn" id="uplift-btn-i-am-not-safe" style="display: none;">
+          I don't feel safe
+        </button>
+          </div>
+          </div>
+        </div>
+
+  <!-- MOOD CHECK-IN (Quick Selection) -->
+  <div class="builder-card uplift-mood-card" id="uplift-panel-mood">
+    <h2>Quick Check-In</h2>
+    <p>Tap the one that's closest. It doesn't have to be perfect.</p>
+    
+    <div class="uplift-mood-grid">
+      <button class="uplift-mood-btn" data-mood="overwhelmed" data-lane="U1">
+        <span class="mood-emoji">😰</span>
+        <span class="mood-label">Overwhelmed</span>
+      </button>
+      <button class="uplift-mood-btn" data-mood="anxious" data-lane="U1">
+        <span class="mood-emoji">😟</span>
+        <span class="mood-label">Anxious</span>
+      </button>
+      <button class="uplift-mood-btn" data-mood="sad" data-lane="U1">
+        <span class="mood-emoji">😢</span>
+        <span class="mood-label">Sad</span>
+      </button>
+      <button class="uplift-mood-btn" data-mood="angry" data-lane="U0">
+        <span class="mood-emoji">😤</span>
+        <span class="mood-label">Frustrated</span>
+      </button>
+      <button class="uplift-mood-btn" data-mood="flat" data-lane="U1">
+        <span class="mood-emoji">😶</span>
+        <span class="mood-label">Empty/Flat</span>
+      </button>
+      <button class="uplift-mood-btn" data-mood="hopeless" data-lane="U2">
+        <span class="mood-emoji">💔</span>
+        <span class="mood-label">Hopeless</span>
+      </button>
+      <button class="uplift-mood-btn" data-mood="ok" data-lane="U0">
+        <span class="mood-emoji">🙂</span>
+        <span class="mood-label">Okay</span>
+      </button>
+      <button class="uplift-mood-btn" data-mood="unsafe" data-lane="U3">
+        <span class="mood-emoji">🆘</span>
+        <span class="mood-label">Not Safe</span>
+      </button>
+          </div>
+        </div>
+
+  <!-- GROUNDING TOOLS -->
+  <div class="builder-card uplift-grounding-card" id="uplift-panel-grounding">
+    <h2>🌿 Grounding Tools</h2>
+    <p class="hint">Simple exercises to help you feel more present and calm.</p>
+
+    <div class="uplift-grounding-buttons">
+      <button class="builder-btn uplift-ground-btn" id="uplift-btn-breathing-60">
+        🫁 Breathing (1 min)
+      </button>
+      <button class="builder-btn uplift-ground-btn" id="uplift-btn-breathing-120">
+        🫁 Breathing (2 min)
+      </button>
+      <button class="builder-btn uplift-ground-btn" id="uplift-btn-54321">
+        🖐️ 5-4-3-2-1 Senses
+      </button>
+      <button class="builder-btn uplift-ground-btn" id="uplift-btn-body-scan">
+        🧘 Body Scan
+      </button>
+    </div>
+
+    <div class="uplift-grounding-active" id="uplift-grounding-card" style="display: none;">
+      <div class="grounding-header">
+        <h3 id="uplift-grounding-title">Breathing Exercise</h3>
+        <button class="builder-btn" id="uplift-grounding-stop">Stop</button>
+      </div>
+      <div class="grounding-content" id="uplift-grounding-content">
+        <!-- Dynamic grounding content appears here -->
+      </div>
+      <div class="grounding-progress">
+        <div class="progress-bar" id="uplift-grounding-progress"></div>
+      </div>
+            </div>
+          </div>
+
+  <!-- SUPPORT PLAN (U1-U2) -->
+  <div class="builder-card" id="uplift-panel-plan">
+    <h2>📋 Your Next Steps</h2>
+    <p class="hint">A simple plan to help you through the next little while.</p>
+
+    <div class="uplift-plan-section">
+      <label>
+        <strong>What's making today hard?</strong>
+        <textarea id="uplift-plan-whats-hard" rows="2" placeholder="Just a short note for yourself..."></textarea>
+      </label>
+    </div>
+
+    <div class="uplift-plan-section">
+      <label>
+        <strong>One small thing for the next 10 minutes:</strong>
+        <input type="text" id="uplift-plan-10min" placeholder="e.g. Make a cup of tea, step outside">
+      </label>
+    </div>
+
+    <div class="uplift-plan-section">
+      <label>
+        <strong>One thing for today:</strong>
+        <input type="text" id="uplift-plan-today" placeholder="e.g. Go for a short walk, call a friend">
+      </label>
+    </div>
+
+    <div class="uplift-plan-section">
+      <label>
+        <strong>Someone you could reach out to:</strong>
+        <input type="text" id="uplift-plan-person" placeholder="A friend, family member, or support line">
+            </label>
+    </div>
+
+    <div class="builder-controls">
+      <button class="builder-btn" id="uplift-btn-plan-generate">💡 Suggest a Plan</button>
+      <button class="builder-btn" id="uplift-btn-plan-copy">📋 Copy Plan</button>
+    </div>
+  </div>
+
+  <!-- RESOURCES (Calm Mode) -->
+  <div class="builder-card" id="uplift-panel-resources">
+    <h2>🤝 Support Resources</h2>
+    <p class="hint">Real people who can help, whenever you're ready.</p>
+
+    <div class="uplift-resources-list">
+      <div class="resource-item">
+        <strong>Samaritans</strong>
+        <span>116 123 (free, 24/7)</span>
+        <p>Whatever you're going through, they'll listen.</p>
+      </div>
+      <div class="resource-item">
+        <strong>NHS 111</strong>
+        <span>Press 2 for mental health</span>
+        <p>For urgent mental health support.</p>
+      </div>
+      <div class="resource-item">
+        <strong>Shout</strong>
+        <span>Text SHOUT to 85258</span>
+        <p>Free, confidential text support.</p>
+      </div>
+      <div class="resource-item">
+        <strong>Mind</strong>
+        <span>0300 123 3393</span>
+        <p>Mental health information and support.</p>
+      </div>
+    </div>
+
+    <div class="builder-controls">
+      <button class="builder-btn" id="uplift-btn-show-local-resources">🌍 Show More Resources</button>
+      <button class="builder-btn" id="uplift-btn-copy-resources">📋 Copy Resources</button>
+    </div>
+  </div>
+
+  <!-- HANDOFF BANNERS (shown when escalation needed) -->
+  <div class="uplift-handoff-banner" id="uplift-banner-human-help" style="display: none;">
+    <div class="banner-content">
+      <p><strong>You deserve real support.</strong></p>
+      <p>Consider reaching out to someone you trust, or a support line.</p>
+      <button class="builder-btn" id="uplift-banner-show-resources">Show Resources</button>
+    </div>
+          </div>
+
+  <!-- Voice Panel -->
+  <div class="builder-card" id="uplift-voice-card">
+    <h2>🎙️ Voice Support</h2>
+    <p class="hint">Sometimes it's easier to talk than type. I'm listening.</p>
+    
+    <div class="module-voice-panel" data-module="uplift" style="background: transparent; padding: 0; margin: 0;">
+      <button type="button" class="module-voice-btn">🎙 Talk to GRACE-X Uplift</button>
+      <span class="module-voice-status">Mic off</span>
+      <textarea class="module-voice-text" placeholder="Voice transcript appears here…" rows="3"></textarea>
+      <div class="module-voice-reply"></div>
+    </div>
+        </div>
+
+  <!-- DISCLAIMER FOOTER -->
+  <div class="uplift-footer-notice">
+    <p>
+      GRACE-X Uplift™ is not a substitute for professional mental health care. 
+      If you're in crisis, please contact emergency services or a crisis helpline.
+      You matter, and help is available.
+    </p>
+        </div>
+      </section>

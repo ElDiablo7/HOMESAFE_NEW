@@ -1,0 +1,107 @@
+<section class="module-section yoga-container">
+  <!-- Module Header -->
+        <div class="module-header">
+        <div class="module-logo-slot">
+          <span class="module-logo-text">YO</span>
+        </div>
+        <div class="module-header-text">
+          <h1 class="module-title">GRACE-X Yoga™</h1>
+          <p class="module-subtitle">
+        Short, realistic resets for real bodies – your personal yoga guide.
+      </p>
+    </div>
+  </div>
+
+  <!-- GRACE-X Yoga Assistant (RIGHT AFTER HEADER) -->
+  <div class="builder-card" id="yoga-brain-card">
+    <h2>🧠 GRACE-X Yoga Assistant</h2>
+    <p class="hint">
+      Tell me how your body feels today and what kind of day you're having.
+      I'll suggest a short, realistic reset – not a perfect routine.
+          </p>
+
+    <div class="module-brain" id="yoga-brain-panel">
+      <div id="yoga-brain-output" class="brain-output">
+        <div class="brain-message brain-message-system">
+          Tell me what's tight, how long you've got, and whether you're sitting or standing.
+        </div>
+      </div>
+
+      <div class="brain-input-row">
+        <button type="button" class="brain-mic-btn" id="yoga-brain-mic" title="Voice input">
+          🎙️
+        </button>
+        <input
+          id="yoga-brain-input"
+          type="text"
+          placeholder="e.g. Lower back is tight, bit stressed, only got 5 minutes…"
+        />
+        <button id="yoga-brain-send">Ask</button>
+      </div>
+
+      <div class="brain-actions">
+        <button class="builder-btn" id="yoga-brain-clear">
+          Clear conversation
+        </button>
+      </div>
+    </div>
+  </div>
+
+        <!-- INTRO CARD -->
+        <div class="builder-card yoga-intro-card">
+          <h2 class="builder-card-title">Reset Your Body, One Small Step</h2>
+          <p>
+            GRACE-X Yoga™ is about simple, realistic stretches and breathing –
+            not pretzel shapes for Instagram. Tiny sessions you can actually stick to.
+          </p>
+          <ul>
+            <li><strong>Short flows:</strong> 3–10 minutes you can fit into a busy day.</li>
+      <li><strong>Real bodies:</strong> "Bit stiff", "bad back", "tight shoulders" – all welcome.</li>
+            <li><strong>Calm head:</strong> gentle breathing to take the edge off stress and anxiety.</li>
+          </ul>
+        </div>
+
+        <!-- QUICK RESET FLOW -->
+        <div class="builder-card yoga-flow-card">
+          <h2 class="builder-card-title">Quick Reset Flow</h2>
+          <p>Prototype 3-step flow:</p>
+          <ul class="yoga-flow-list">
+            <li><strong>Step 1:</strong> Pick where it hurts (neck, shoulders, back, hips, general).</li>
+            <li><strong>Step 2:</strong> Pick time: 3, 5 or 10 minutes.</li>
+            <li><strong>Step 3:</strong> GRACE-X suggests a mini flow you can actually do.</li>
+          </ul>
+
+          <button class="secondary-btn" id="yoga-start-flow">
+            Start Short Flow
+          </button>
+
+          <p id="yoga-flow-status" class="hint">
+            Prototype only – in the full build this will walk you through a simple “follow-along”
+            stretching + breathing sequence you can save as a favourite.
+          </p>
+        </div>
+
+        <!-- ROADMAP / PRO PACK -->
+        <div class="builder-card yoga-roadmap-card">
+          <h2 class="builder-card-title">Roadmap – Yoga DLC Ideas</h2>
+          <ul>
+      <li>Saved "desk reset", "bedtime reset" and "anxiety reset" flows.</li>
+            <li>Gentle routines for COPD, chronic pain, and low mobility (flagged as guidance, not medical).</li>
+            <li>Voice-only mode: listen with your eyes closed while GRACE-X talks you through it.</li>
+            <li>Pro pack for physios / yoga teachers to build presets for their clients.</li>
+          </ul>
+        </div>
+
+  <!-- Voice Panel (MOVED LOWER) -->
+  <div class="builder-card">
+    <h2>🎙️ Voice Dictation</h2>
+    <p class="hint">Use this for continuous voice input and transcript viewing.</p>
+    
+    <div class="module-voice-panel" data-module="yoga" style="background: transparent; padding: 0; margin: 0;">
+      <button type="button" class="module-voice-btn">🎙 Talk to GRACE-X Yoga</button>
+      <span class="module-voice-status">Mic off</span>
+      <textarea class="module-voice-text" placeholder="Voice transcript appears here…" rows="3"></textarea>
+      <div class="module-voice-reply"></div>
+    </div>
+  </div>
+      </section>

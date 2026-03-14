@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GRACE-X Dashboard - Module Discovery</title>
+  <link rel="stylesheet" href="../assets/css/dashboard.css">
+</head>
+<body>
+  <div class="dashboard-container">
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="hero-content">
+        <h1>Welcome to GRACE-X AI™</h1>
+        <p class="hero-subtitle">Your Complete AI-Powered Workflow Ecosystem</p>
+        <p class="hero-description">18 Integrated Modules · 5-Brain AI System · Enterprise-Grade Platform</p>
+        
+        <div class="hero-stats">
+          <div class="stat-box">
+            <div class="stat-number" id="stat-modules">18</div>
+            <div class="stat-label">Modules</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-number" id="stat-wired">18/18</div>
+            <div class="stat-label">Brain Wired</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-number" id="stat-commercial">5</div>
+            <div class="stat-label">Commercial</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-number" id="stat-uptime">—</div>
+            <div class="stat-label">System Uptime</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Search & Filter -->
+    <section class="search-section">
+      <div class="search-bar">
+        <input type="text" id="search-input" placeholder="🔍 Search modules by name, capability, or category..." />
+      </div>
+      <div class="filter-buttons">
+        <button class="filter-btn active" data-filter="all">All Modules</button>
+        <button class="filter-btn" data-filter="commercial">Commercial</button>
+        <button class="filter-btn" data-filter="lifestyle">Lifestyle</button>
+        <button class="filter-btn" data-filter="production">Production Ready</button>
+        <button class="filter-btn" data-filter="core">Core Systems</button>
+      </div>
+    </section>
+
+    <!-- Module Grid -->
+    <section class="modules-section">
+      <h2>Explore Modules</h2>
+      
+      <div class="modules-grid" id="modules-grid">
+        <!-- Core Modules -->
+        <div class="module-card core" data-module="core">
+          <div class="module-header">
+            <span class="module-icon">🎯</span>
+            <h3>GRACE-X Core™</h3>
+            <span class="module-badge core">Core</span>
+          </div>
+          <p class="module-description">Central coordination hub with AI brain integration, state management, and routing</p>
+          <div class="module-capabilities">
+            <span class="capability-tag">AI Brain</span>
+            <span class="capability-tag">Routing</span>
+            <span class="capability-tag">State Management</span>
+          </div>
+          <div class="module-status">
+            <span class="status-indicator production">✓ Production</span>
+            <span class="brain-status">🧠 Wired</span>
+          </div>
+        </div>
+
+        <div class="module-card core" data-module="core2">
+          <div class="module-header">
+            <span class="module-icon">🚀</span>
+            <h3>GRACE-X Core 2.0™</h3>
+            <span class="module-badge core">Core</span>
+          </div>
+          <p class="module-description">Next-generation core with advanced AI features, enhanced performance, and extended capabilities</p>
+          <div class="module-capabilities">
+            <span class="capability-tag">Advanced AI</span>
+            <span class="capability-tag">Performance</span>
+            <span class="capability-tag">Extended API</span>
+          </div>
+          <div class="module-status">
+            <span class="status-indicator production">✓ Production</span>
+            <span class="brain-status">🧠 Wired</span>
+          </div>
+        </div>
+
+        <!-- Commercial Modules -->
+        <div class="module-card commercial" data-module="builder">
+          <div class="module-header">
+            <span class="module-icon">🏗️</span>
+            <h3>Builder™</h3>
+            <span class="module-badge commercial">Commercial</span>
+          </div>
+          <p class="module-description">Construction & trades management: blueprints, scope packs, quotes, measurements, problem-solving library</p>
+          <div class="module-capabilities">
+            <span class="capability-tag">Blueprint Analysis</span>
+            <span class="capability-tag">Scope Packs</span>
+            <span class="capability-tag">Quote Generation</span>
+            <span class="capability-tag">Measurements</span>
+          </div>
+          <div class="module-status">
+            <span class="status-indicator production">✓ Production</span>
+            <span class="brain-status">🧠 Wired</span>
+          </div>
+        </div>
+
+        <div class="module-card commercial" data-module="siteops">
+          <div class="module-header">
+            <span class="module-icon">🚧</span>
+            <h3>SiteOps™</h3>
+            <span class="module-badge commercial">Commercial</span>
+          </div>
+          <p class="module-description">Site operations management: project tracking, resource allocation, scheduling, compliance</p>
+          <div class="module-capabilities">
+            <span class="capability-tag">Project Tracking</span>
+            <span class="capability-tag">Resources</span>
+            <span class="capability-tag">Scheduling</span>
+          </div>
+          <div class="module-status">
+            <span class="status-indicator production">✓ Production</span>
+            <span class="brain-status">🧠 Wired</span>
+          </div>
+        </div>
+
+        <div class="module-card commercial" data-module="sport">
+          <div class="module-header">
+            <span class="module-icon">⚽</span>
+            <h3>Sport™</h3>
+            <span class="module-badge commercial">Commercial</span>
+          </div>
+          <p class="module-description">Sports betting analysis: live scores, odds comparison, AI predictions, betting strategies</p>
+          <div class="module-capabilities">
+            <span class="capability-tag">Live Scores</span>
+            <span class="capability-tag">Odds Analysis</span>
+            <span class="capability-tag">AI Predictions</span>
+          </div>
+          <div class="module-status">
+            <span class="status-indicator production">✓ Production</span>
+            <span class="brain-status">🧠 Wired</span>
+          </div>
+        </div>
+
+        <div class="module-card commercial" data-module="accounting">
+          <div class="module-header">
+            <span class="module-icon">💰</span>
+            <h3>Accounting™</h3>
+            <span class="module-badge commercial">Commercial</span>
+          </div>
+          <p class="module-description">Business finance management: invoicing, expense tracking, profit/loss, tax calculations, reports</p>
+          <div class="module-capabilities">
+            <span class="capability-tag">Invoicing</span>
+            <span class="capability-tag">Expense Tracking</span>
+            <span class="capability-tag">Reports</span>
+          </div>
+          <div class="module-status">
+            <span class="status-indicator production">✓ Production</span>
+            <span class="brain-status">🧠 Wired</span>
+          </div>
+        </div>
+
+        <div class="module-card commercial" data-module="osint">
+          <div class="module-header">
+            <span class="module-icon">🔍</span>
+            <h3>OSINT™</h3>
+            <span class="module-badge commercial">Commercial</span>
+          </div>
+          <p class="module-description">Open-source intelligence: research tools, data gathering, analysis, reporting for investigators</p>
+          <div class="module-capabilities">
+            <span class="capability-tag">Research</span>
+            <span class="capability-tag">Data Gathering</span>
+            <span class="capability-tag">Analysis</span>
+          </div>
+          <div class="module-status">
+            <span class="status-indicator production">✓ Production</span>
+            <span class="brain-status">🧠 Wired</span>
+          </div>
+        </div>
+
+        <!-- System Modules -->
+        <div class="module-card" data-module="forge">
+          <div class="module-header">
+            <span class="module-icon">⚒️</span>
+            <h3>Forge™</h3>
+            <span class="module-badge system">System</span>
+          </div>
+          <p class="module-description">Engineering bay: build mini-apps, templates, file management with desktop saving</p>
+          <div class="module-capabilities">
+            <span class="capability-tag">App Building</span>
+            <span class="capability-tag">Templates</span>
+            <span class="capability-tag">File Management</span>
+          </div>
+          <div class="module-status">
+            <span class="status-indicator production">✓ Production</span>
+            <span class="brain-status">🧠 Wired</span>
+          </div>
+        </div>
+
+        <div class="module-card" data-module="guardian">
+          <div class="module-header">
+            <span class="module-icon">🛡️</span>
+            <h3>Guardian™</h3>
+            <span class="module-badge system">System</span>
+          </div>
+          <p class="module-description">Security & monitoring: system alerts, error tracking, performance monitoring, health checks</p>
+          <div class="module-capabilities">
+            <span class="capability-tag">Security</span>
+            <span class="capability-tag">Monitoring</span>
+            <span class="capability-tag">Alerts</span>
+          </div>
+          <div class="module-status">
+            <span class="status-indicator production">✓ Production</span>
+            <span class="brain-status">🧠 Wired</span>
+          </div>
+        </div>
+
+        <!-- Lifestyle Modules -->
+        <div class="module-card lifestyle" data-module="uplift">
+          <div class="module-header">
+            <span class="module-icon">💚</span>
+            <h3>Uplift™</h3>
+            <span class="module-badge lifestyle">Lifestyle</span>
+          </div>
+          <p class="module-description">Mental health & wellbeing: mood tracking, journaling, mindfulness exercises, progress monitoring</p>
+          <div class="module-capabilities">
+            <span class="capability-tag">Mood Tracking</span>
+            <span class="capability-tag">Journaling</span>
+            <span class="capability-tag">Mindfulness</span>
+          </div>
+          <div class="module-status">
+            <span class="status-indicator production">✓ Production</span>
+            <span class="brain-status">🧠 Wired</span>
+          </div>
+        </div>
+
+        <div class="module-card lifestyle" data-module="fit">
+          <div class="module-header">
+            <span class="module-icon">💪</span>
+            <h3>Fit™</h3>
+            <span class="module-badge lifestyle">Lifestyle</span>
+          </div>
+          <p class="module-description">Fitness & workout planning: exercise routines, progress tracking, nutrition guidance</p>
+          <div class="module-capabilities">
+            <span class="capability-tag">Workouts</span>
+            <span class="capability-tag">Progress</span>
+            <span class="capability-tag">Nutrition</span>
+          </div>
+          <div class="module-status">
+            <span class="status-indicator development">⚙ Development</span>
+            <span class="brain-status">🧠 Wired</span>
+          </div>
+        </div>
+
+        <div class="module-card lifestyle" data-module="yoga">
+          <div class="module-header">
+            <span class="module-icon">🧘</span>
+            <h3>Yoga™</h3>
+            <span class="module-badge lifestyle">Lifestyle</span>
+          </div>
+          <p class="module-description">Yoga practice guide: poses, sequences, meditation, breathing exercises, mindfulness</p>
+          <div class="module-capabilities">
+            <span class="capability-tag">Poses</span>
+            <span class="capability-tag">Meditation</span>
+            <span class="capability-tag">Breathing</span>
+          </div>
+          <div class="module-status">
+            <span class="status-indicator development">⚙ Development</span>
+            <span class="brain-status">🧠 Wired</span>
+          </div>
+        </div>
+
+        <div class="module-card lifestyle" data-module="chef">
+          <div class="module-header">
+            <span class="module-icon">👨‍🍳</span>
+            <h3>Chef™</h3>
+            <span class="module-badge lifestyle">Lifestyle</span>
+          </div>
+          <p class="module-description">Cooking assistant: recipes, meal planning, shopping lists, nutritional info, cooking tips</p>
+          <div class="module-capabilities">
+            <span class="capability-tag">Recipes</span>
+            <span class="capability-tag">Meal Planning</span>
+            <span class="capability-tag">Shopping Lists</span>
+          </div>
+          <div class="module-status">
+            <span class="status-indicator development">⚙ Development</span>
+            <span class="brain-status">🧠 Wired</span>
+          </div>
+        </div>
+
+        <div class="module-card lifestyle" data-module="beauty">
+          <div class="module-header">
+            <span class="module-icon">💄</span>
+            <h3>Beauty™</h3>
+            <span class="module-badge lifestyle">Lifestyle</span>
+          </div>
+          <p class="module-description">Beauty & skincare: routines, product recommendations, tutorials, skin analysis</p>
+          <div class="module-capabilities">
+            <span class="capability-tag">Skincare</span>
+            <span class="capability-tag">Routines</span>
+            <span class="capability-tag">Recommendations</span>
+          </div>
+          <div class="module-status">
+            <span class="status-indicator development">⚙ Development</span>
+            <span class="brain-status">🧠 Wired</span>
+          </div>
+        </div>
+
+        <div class="module-card lifestyle" data-module="artist">
+          <div class="module-header">
+            <span class="module-icon">🎨</span>
+            <h3>Artist™</h3>
+            <span class="module-badge lifestyle">Lifestyle</span>
+          </div>
+          <p class="module-description">Creative tools: drawing tutorials, art techniques, inspiration, project management</p>
+          <div class="module-capabilities">
+            <span class="capability-tag">Tutorials</span>
+            <span class="capability-tag">Techniques</span>
+            <span class="capability-tag">Inspiration</span>
+          </div>
+          <div class="module-status">
+            <span class="status-indicator development">⚙ Development</span>
+            <span class="brain-status">🧠 Wired</span>
+          </div>
+        </div>
+
+        <div class="module-card lifestyle" data-module="gamer">
+          <div class="module-header">
+            <span class="module-icon">🎮</span>
+            <h3>Gamer™</h3>
+            <span class="module-badge lifestyle">Lifestyle</span>
+          </div>
+          <p class="module-description">Gaming companion: game recommendations, strategies, performance tracking, community</p>
+          <div class="module-capabilities">
+            <span class="capability-tag">Recommendations</span>
+            <span class="capability-tag">Strategies</span>
+            <span class="capability-tag">Tracking</span>
+          </div>
+          <div class="module-status">
+            <span class="status-indicator development">⚙ Development</span>
+            <span class="brain-status">🧠 Wired</span>
+          </div>
+        </div>
+
+        <div class="module-card lifestyle" data-module="family">
+          <div class="module-header">
+            <span class="module-icon">👨‍👩‍👧‍👦</span>
+            <h3>Family™</h3>
+            <span class="module-badge lifestyle">Lifestyle</span>
+          </div>
+          <p class="module-description">Family organization: schedules, activities, memories, shared calendars, event planning</p>
+          <div class="module-capabilities">
+            <span class="capability-tag">Schedules</span>
+            <span class="capability-tag">Activities</span>
+            <span class="capability-tag">Events</span>
+          </div>
+          <div class="module-status">
+            <span class="status-indicator development">⚙ Development</span>
+            <span class="brain-status">🧠 Wired</span>
+          </div>
+        </div>
+
+        <div class="module-card" data-module="tradelink">
+          <div class="module-header">
+            <span class="module-icon">🔗</span>
+            <h3>TradeLink™</h3>
+            <span class="module-badge">Business</span>
+          </div>
+          <p class="module-description">Trades network: supplier connections, subcontractor management, project collaborations</p>
+          <div class="module-capabilities">
+            <span class="capability-tag">Networking</span>
+            <span class="capability-tag">Suppliers</span>
+            <span class="capability-tag">Collaboration</span>
+          </div>
+          <div class="module-status">
+            <span class="status-indicator development">⚙ Development</span>
+            <span class="brain-status">🧠 Wired</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Actions -->
+    <section class="quick-actions">
+      <h2>Quick Actions</h2>
+      <div class="actions-grid">
+        <button class="action-btn" onclick="window.location.href='../valuation/index.html'">
+          <span class="action-icon">💰</span>
+          <span class="action-text">View Valuation Dashboard</span>
+        </button>
+        <button class="action-btn" onclick="window.location.href='forge_map.html'">
+          <span class="action-icon">🗺️</span>
+          <span class="action-text">Open Forge Map</span>
+        </button>
+        <button class="action-btn" onclick="window.location.href='callsheets.html'">
+          <span class="action-icon">📋</span>
+          <span class="action-text">Call Sheets Management</span>
+        </button>
+        <button class="action-btn" onclick="window.location.href='risk-safety.html'">
+          <span class="action-icon">🛡️</span>
+          <span class="action-text">Risk & Safety Dashboard</span>
+        </button>
+      </div>
+    </section>
+  </div>
+
+  <script src="../assets/js/dashboard.js"></script>
+</body>
+</html>

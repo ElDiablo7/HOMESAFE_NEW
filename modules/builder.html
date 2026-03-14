@@ -1,0 +1,1014 @@
+<section class="module-section builder-container">
+  <!-- Header -->
+  <div class="module-header">
+    <div class="module-logo-slot">
+      <span class="module-logo-text">BU</span>
+    </div>
+    <div class="module-header-text">
+      <h1 class="module-title">GRACE-X Builder™</h1>
+      <p class="module-subtitle">
+        Construction planning, measurements, method statements & RAMS – your complete job management system.
+      </p>
+    </div>
+  </div>
+
+  <!-- Builder AI Assistant (moved up, under header) -->
+  <div class="builder-card" id="builder-brain-card">
+    <h2>🧠 GRACE-X Builder Assistant</h2>
+    <p class="hint">
+      Ask about measurements, job scoping, materials, compliance, or any trade question.
+    </p>
+
+    <div class="module-brain" id="builder-brain-panel">
+      <div id="builder-brain-output" class="brain-output">
+        I'm GRACE-X Builder. Tell me what you're working on and I'll help with scope, materials, and method statements.
+      </div>
+
+      <div class="brain-input-row">
+        <button type="button" class="brain-mic-btn" id="builder-brain-mic" title="Voice input">
+          🎙️
+        </button>
+        <input id="builder-brain-input" type="text"
+          placeholder="e.g. 'Plaster a 4x3m bedroom' or 'Quote for kitchen refit'" />
+        <button id="builder-brain-send">Ask</button>
+      </div>
+
+      <div class="brain-actions" style="margin-top: 8px; display: flex; gap: 8px;">
+        <button class="builder-btn" id="builder-brain-clear" style="font-size: 0.85em; padding: 4px 8px;">
+          Clear conversation
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TASK PICKER (NEW) -->
+  <div class="builder-card" id="task-picker-card">
+    <h2>🔧 Task Picker</h2>
+    <p class="hint">Select trade type and finish level to auto-calculate materials and generate scope.</p>
+
+    <div class="summary-grid">
+      <label>
+        Trade / Task Type
+        <select id="task-trade-type">
+          <option value="">Select trade...</option>
+          <optgroup label="Wet Trades">
+            <option value="plastering">Plastering / Skim</option>
+            <option value="rendering">Rendering</option>
+            <option value="screeding">Screeding</option>
+            <option value="tiling">Tiling</option>
+          </optgroup>
+          <optgroup label="Dry Trades">
+            <option value="drylining">Drylining / Plasterboard</option>
+            <option value="carpentry">Carpentry / Joinery</option>
+            <option value="flooring">Flooring (laminate/vinyl)</option>
+            <option value="insulation">Insulation</option>
+          </optgroup>
+          <optgroup label="Decorating">
+            <option value="painting">Painting</option>
+            <option value="wallpapering">Wallpapering</option>
+          </optgroup>
+          <optgroup label="First Fix">
+            <option value="electrical">Electrical (Part P)</option>
+            <option value="plumbing">Plumbing</option>
+            <option value="heating">Heating</option>
+          </optgroup>
+          <optgroup label="Second Fix">
+            <option value="sockets">Sockets & Switches</option>
+            <option value="sanitaryware">Sanitaryware</option>
+            <option value="kitchens">Kitchen Fitting</option>
+          </optgroup>
+          <optgroup label="External">
+            <option value="roofing">Roofing</option>
+            <option value="brickwork">Brickwork</option>
+            <option value="fencing">Fencing</option>
+            <option value="landscaping">Landscaping</option>
+          </optgroup>
+        </select>
+      </label>
+      <label>
+        Finish Level
+        <select id="task-finish-level">
+          <option value="basic">Basic (Budget)</option>
+          <option value="standard" selected>Standard (Good)</option>
+          <option value="premium">Premium (High-end)</option>
+        </select>
+      </label>
+      <label>
+        Room / Area
+        <input type="text" id="task-room" placeholder="e.g. Living room, Bathroom 1">
+      </label>
+      <label>
+        Area (m²)
+        <input type="number" step="0.01" id="task-area" placeholder="0.00">
+      </label>
+    </div>
+
+    <div class="builder-controls" style="margin-top: 12px;">
+      <button class="builder-btn" id="task-calculate">Calculate Materials</button>
+      <button class="builder-btn" id="task-add-to-scope">Add to Scope</button>
+      <button class="builder-btn" id="task-clear">Clear</button>
+    </div>
+
+    <div id="task-output" class="builder-results" style="margin-top: 12px; display: none;">
+      <div class="result-row"><span>Materials:</span><strong id="task-materials">—</strong></div>
+      <div class="result-row"><span>Est. Labour (hrs):</span><strong id="task-labour">—</strong></div>
+      <div class="result-row"><span>Cost Range:</span><strong id="task-cost">—</strong></div>
+      <div id="task-compliance" class="compliance-warning" style="display: none;"></div>
+    </div>
+  </div>
+
+  <!-- CAMERA CAPTURE MODE (NEW) -->
+  <div class="builder-card" id="capture-card">
+    <h2>📷 Camera Capture Mode</h2>
+    <p class="hint">Use your phone or Meta glasses to walk through a space. Builder will guide you.</p>
+
+    <div class="capture-status" id="capture-status">
+      <div class="capture-indicator" id="capture-indicator">⚪ Ready</div>
+      <div class="capture-guidance" id="capture-guidance">
+        Click "Start Capture" to begin walkthrough mode.
+      </div>
+    </div>
+
+    <div class="builder-controls">
+      <button class="builder-btn capture-btn" id="capture-start">▶️ Start Capture</button>
+      <button class="builder-btn capture-btn" id="capture-photo">📸 Take Photo</button>
+      <button class="builder-btn capture-btn" id="capture-stop" disabled>⏹️ Stop</button>
+    </div>
+
+    <div id="capture-frames" class="capture-frames-grid" style="display: none;">
+      <!-- Captured frames will appear here -->
+    </div>
+
+    <div class="capture-checklist" id="capture-checklist" style="display: none;">
+      <h4>📋 Capture Checklist</h4>
+      <ul id="capture-items">
+        <li data-item="corners"><input type="checkbox" disabled> All corners captured</li>
+        <li data-item="walls"><input type="checkbox" disabled> All walls captured</li>
+        <li data-item="openings"><input type="checkbox" disabled> Doors & windows captured</li>
+        <li data-item="features"><input type="checkbox" disabled> Key features captured</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SITE PHOTOS -->
+  <div class="builder-card" id="site-photos-card">
+    <h2>📸 Site Photos</h2>
+    <p class="hint">Capture timestamped, GPS-tagged photos for evidence, compliance, and handover.</p>
+
+    <div class="summary-grid">
+      <label>
+        Room / Area
+        <input type="text" id="photo-room" placeholder="e.g. Kitchen, Bathroom 1">
+      </label>
+      <label>
+        Trade
+        <input type="text" id="photo-trade" placeholder="e.g. Plasterer">
+      </label>
+      <label>
+        Stage
+        <select id="photo-stage">
+          <option value="before">Before</option>
+          <option value="during" selected>During</option>
+          <option value="after">After</option>
+          <option value="snag">Snag / Defect</option>
+        </select>
+      </label>
+      <label>
+        Caption
+        <input type="text" id="photo-caption" placeholder="Brief description">
+      </label>
+    </div>
+
+    <div class="builder-controls" style="margin-top: 12px;">
+      <button class="builder-btn" id="photo-capture">📷 Take Photo</button>
+      <button class="builder-btn" id="photo-upload">📁 Upload</button>
+      <input type="file" id="photo-file" accept="image/*" capture="environment" style="display:none">
+    </div>
+
+    <div id="photo-gallery" class="capture-frames-grid" style="margin-top: 12px;">
+      <!-- Photos will appear here -->
+    </div>
+    <div id="photo-empty" class="hint" style="text-align: center; padding: 20px;">
+      No site photos yet. Capture or upload photos to build your evidence trail.
+    </div>
+  </div>
+
+  <!-- MATERIALS TRACKER -->
+  <div class="builder-card" id="materials-tracker-card">
+    <h2>🧱 Materials Tracker</h2>
+    <p class="hint">Log deliveries, track consumption, and monitor stock levels.</p>
+
+    <div class="builder-controls">
+      <button class="builder-btn" id="mat-btn-delivery">📦 Log Delivery</button>
+      <button class="builder-btn" id="mat-btn-consume">📉 Log Consumption</button>
+      <button class="builder-btn" id="mat-btn-stock">📊 Stock Levels</button>
+    </div>
+
+    <div class="summary-grid" id="mat-form" style="display: none; margin-top: 12px;">
+      <label>
+        Material
+        <input type="text" id="mat-name" placeholder="e.g. Plasterboard, Cement, Screws">
+      </label>
+      <label>
+        Quantity
+        <input type="number" id="mat-qty" placeholder="0" min="0" step="0.5">
+      </label>
+      <label>
+        Unit
+        <select id="mat-unit">
+          <option value="units">Units</option>
+          <option value="bags">Bags</option>
+          <option value="sheets">Sheets</option>
+          <option value="metres">Metres</option>
+          <option value="litres">Litres</option>
+          <option value="kg">Kg</option>
+          <option value="boxes">Boxes</option>
+        </select>
+      </label>
+      <label>
+        Supplier / Notes
+        <input type="text" id="mat-supplier" placeholder="e.g. Travis Perkins, Jewson">
+      </label>
+      <label>
+        Cost (£)
+        <input type="number" id="mat-cost" placeholder="0.00" step="0.01">
+      </label>
+      <button class="builder-btn" id="mat-save" style="align-self: end;">Save</button>
+    </div>
+
+    <div id="mat-stock-display" style="display: none; margin-top: 12px;">
+      <h4>📊 Current Stock Levels</h4>
+      <table class="siteops-table" id="mat-stock-table">
+        <thead>
+          <tr>
+            <th>Material</th>
+            <th>Delivered</th>
+            <th>Used</th>
+            <th>Remaining</th>
+            <th>Unit</th>
+          </tr>
+        </thead>
+        <tbody id="mat-stock-body">
+          <!-- Stock rows appear here -->
+        </tbody>
+      </table>
+    </div>
+
+    <pre id="mat-output" class="builder-output" style="display: none; max-height: 200px; overflow-y: auto;"></pre>
+  </div>
+
+  <!-- TOOL REGISTER -->
+  <div class="builder-card" id="tool-register-card">
+    <h2>🔧 Tool Register</h2>
+    <p class="hint">Track tools on site — check in/out with person and condition.</p>
+
+    <div class="builder-controls">
+      <button class="builder-btn" id="tool-btn-checkin">✅ Check In</button>
+      <button class="builder-btn" id="tool-btn-checkout">📤 Check Out</button>
+    </div>
+
+    <div class="summary-grid" id="tool-form" style="display: none; margin-top: 12px;">
+      <label>
+        Tool Name
+        <input type="text" id="tool-name" placeholder="e.g. SDS Drill, Angle Grinder">
+      </label>
+      <label>
+        Person
+        <input type="text" id="tool-person" placeholder="Who has the tool?">
+      </label>
+      <label>
+        Condition
+        <select id="tool-condition">
+          <option value="good">Good</option>
+          <option value="fair">Fair</option>
+          <option value="damaged">Damaged</option>
+          <option value="needs-repair">Needs Repair</option>
+        </select>
+      </label>
+      <button class="builder-btn" id="tool-save" style="align-self: end;">Save</button>
+    </div>
+
+    <table class="siteops-table" id="tool-status-table" style="margin-top: 12px;">
+      <thead>
+        <tr>
+          <th>Tool</th>
+          <th>Status</th>
+          <th>Person</th>
+          <th>Condition</th>
+          <th>Last Updated</th>
+        </tr>
+      </thead>
+      <tbody id="tool-status-body">
+        <!-- Tool rows appear here -->
+      </tbody>
+    </table>
+    <div id="tool-empty" class="hint" style="text-align: center; padding: 20px;">
+      No tools registered. Check in tools to start tracking.
+    </div>
+  </div>
+
+  <div class="builder-card" id="ar-card">
+    <h2>🛰️ AR Room Planner</h2>
+    <p class="hint">Use your camera to drop markers and automatically calculate floor area/perimeter.</p>
+
+    <!-- AI Readable State Container -->
+    <div id="ar-ai-data" data-area="0" data-perimeter="0" data-status="Inactive" style="display: none;"></div>
+
+    <div class="builder-controls">
+      <button class="builder-btn" id="ar-camera-toggle">▶️ Start Camera</button>
+      <button class="builder-btn" id="ar-place-marker" disabled>📍 Place Marker</button>
+      <button class="builder-btn" id="ar-undo" disabled>↩️ Undo Last</button>
+      <button class="builder-btn" id="ar-clear">🗑️ Clear</button>
+      <span class="hint" id="ar-status-readout">Smart Status: Ready</span>
+    </div>
+
+    <!-- The actual AR interaction stage -->
+    <div class="measure-stage"
+      style="position: relative; overflow: hidden; height: 50vh; min-height: 400px; background: #1a1a24; border-radius: 8px; margin-top: 12px; display: flex; align-items: center; justify-content: center;">
+
+      <!-- Video stream -->
+      <video id="ar-video" autoplay playsinline
+        style="display: none; width: 100%; height: 100%; object-fit: cover; position: absolute; top:0; left:0; z-index: 1;"></video>
+
+      <!-- Interactive drawing canvas -->
+      <canvas id="ar-canvas"
+        style="position: absolute; top:0; left:0; width: 100%; height: 100%; z-index: 2; cursor: crosshair;"></canvas>
+
+      <!-- Smart Reticle (center of screen) -->
+      <div id="ar-reticle"
+        style="display: none; position: absolute; z-index: 3; pointer-events: none; width: 30px; height: 30px;">
+        <div
+          style="position: absolute; top: 14px; left: 0; width: 30px; height: 2px; background: rgba(255, 204, 0, 0.8);">
+        </div>
+        <div
+          style="position: absolute; top: 0; left: 14px; width: 2px; height: 30px; background: rgba(255, 204, 0, 0.8);">
+        </div>
+        <div
+          style="position: absolute; top: 12px; left: 12px; width: 6px; height: 6px; background: #ffcc00; border-radius: 50%;">
+        </div>
+      </div>
+
+    </div>
+
+    <div id="ar-results" class="builder-results" style="margin-top: 12px;">
+      <div class="result-row">
+        <span>Dynamic Floor Area:</span>
+        <strong id="ar-calc-area">0.00 m²</strong>
+      </div>
+      <div class="result-row">
+        <span>Dynamic Perimeter:</span>
+        <strong id="ar-calc-perimeter">0.00 m</strong>
+      </div>
+    </div>
+
+    <div class="summary-grid" style="margin-top: 12px;">
+      <label>
+        Ceiling height (m) scale reference
+        <input type="number" step="0.01" id="ar-height" value="2.4" placeholder="Standard 2.4m">
+      </label>
+      <label>
+        Room name
+        <input type="text" id="ar-room-name" placeholder="Living room, Studio A, etc.">
+      </label>
+      <label>
+        Use / notes
+        <input type="text" id="ar-room-notes" placeholder="e.g. Edit suite, rigging bay">
+      </label>
+      <label>
+        Priority
+        <input type="text" id="ar-priority" placeholder="High / Medium / Low">
+      </label>
+    </div>
+  </div>
+
+  <!-- BLUEPRINT OVERLAY -->
+  <div class="builder-card" id="blueprint-card">
+    <h2>📐 Blueprint Overlay</h2>
+
+    <div class="builder-controls">
+      <button class="builder-btn" id="bp-upload">Upload Blueprint</button>
+      <button class="builder-btn" id="bp-clear">Clear</button>
+      <span class="hint">Choose a JPG/PNG. Wheel = zoom, drag = pan.</span>
+
+      <!-- hidden real input, triggered by button -->
+      <input type="file" id="bp-file" accept="image/*" style="display:none">
+    </div>
+
+    <div class="bp-stage">
+      <canvas id="bp-canvas" width="900" height="520"></canvas>
+    </div>
+  </div>
+
+  <!-- QUICK MEASUREMENTS -->
+  <div class="builder-card" id="measure-card">
+    <h2>📏 Quick Measurements</h2>
+
+    <div class="builder-controls">
+      <button class="builder-btn" id="measure-upload">Upload Blueprint</button>
+      <button class="builder-btn" id="measure-start">Start</button>
+      <button class="builder-btn" id="measure-undo">Undo</button>
+      <button class="builder-btn" id="measure-clear">Clear</button>
+      <button class="builder-btn" id="measure-export">Export</button>
+      <button class="builder-btn" id="measure-ar-toggle">📷 AR Mode</button>
+
+      <label class="scale">
+        Scale (m/px)
+        <input id="scale-input" type="number" step="0.001" value="0.01">
+      </label>
+      <label class="scale">
+        Color
+        <input id="measure-color" type="color" value="#4ade80" style="width: 40px; height: 24px; padding: 0;">
+      </label>
+      <label class="scale">
+        Thickness
+        <input id="measure-thickness" type="number" step="1" min="1" max="20" value="2" style="width: 50px;">
+      </label>
+      <label class="scale">
+        Unit
+        <select id="measure-unit-select" style="width: 80px;">
+          <option value="m">Metric (m)</option>
+          <option value="ft">Imperial (ft/in)</option>
+        </select>
+      </label>
+
+      <!-- hidden file input for blueprint upload -->
+      <input type="file" id="measure-file" accept="image/*" style="display:none">
+    </div>
+
+    <div class="measure-stage" style="position: relative;">
+      <video id="measure-ar-video" autoplay playsinline
+        style="display: none; width: 100%; height: 100%; object-fit: cover; position: absolute; top:0; left:0; z-index: 1; border-radius: 8px;"></video>
+      <canvas id="measure-canvas" width="900" height="520" style="position: relative; z-index: 2;"></canvas>
+      <div id="measure-readout" style="position: relative; z-index: 3;">Length: 0 px (0.000 m)</div>
+    </div>
+  </div>
+
+  <!-- MEASUREMENT CALCULATOR -->
+  <div class="builder-card" id="measure-calc-card">
+    <h2>🧮 Measurement Calculator</h2>
+    <p class="hint">Calculate totals, areas, perimeters, and material needs from your measurements.</p>
+
+    <div class="builder-controls">
+      <button class="builder-btn" id="measure-calc-update">Calculate</button>
+      <button class="builder-btn" id="measure-calc-clear">Clear All</button>
+    </div>
+
+    <div id="measure-calc-stats" class="builder-results" style="margin-top: 12px;">
+      <div class="result-row">
+        <span>Total measurements:</span>
+        <strong id="calc-count">0</strong>
+      </div>
+      <div class="result-row">
+        <span>Total length:</span>
+        <strong id="calc-total-length">0.000 m</strong>
+      </div>
+      <div class="result-row">
+        <span>Average length:</span>
+        <strong id="calc-avg-length">0.000 m</strong>
+      </div>
+      <div class="result-row">
+        <span>Longest measurement:</span>
+        <strong id="calc-max-length">0.000 m</strong>
+      </div>
+      <div class="result-row">
+        <span>Shortest measurement:</span>
+        <strong id="calc-min-length">0.000 m</strong>
+      </div>
+    </div>
+
+    <div class="summary-grid" style="margin-top: 16px;">
+      <label>
+        Calculate area (rectangular)
+        <input type="checkbox" id="calc-area-enabled">
+      </label>
+      <label>
+        Length (m)
+        <input type="number" step="0.01" id="calc-area-length" placeholder="0.00" disabled>
+      </label>
+      <label>
+        Width (m)
+        <input type="number" step="0.01" id="calc-area-width" placeholder="0.00" disabled>
+      </label>
+    </div>
+
+    <div id="measure-calc-area" class="builder-results" style="margin-top: 12px; display: none;">
+      <div class="result-row">
+        <span>Area:</span>
+        <strong id="calc-area-result">0.00 m²</strong>
+      </div>
+      <div class="result-row">
+        <span>Perimeter:</span>
+        <strong id="calc-perimeter-result">0.00 m</strong>
+      </div>
+    </div>
+
+    <div class="summary-grid" style="margin-top: 16px;">
+      <label>
+        Material type
+        <select id="calc-material-type">
+          <option value="">None</option>
+          <option value="wire">Wire / Cable (m)</option>
+          <option value="pipe">Pipe / Tubing (m)</option>
+          <option value="trim">Trim / Molding (m)</option>
+          <option value="lumber">Lumber / Timber (m)</option>
+          <option value="fencing">Fencing (m)</option>
+          <option value="rope">Rope / Cord (m)</option>
+        </select>
+      </label>
+      <label>
+        Cost per meter (£)
+        <input type="number" step="0.01" id="calc-material-cost" placeholder="0.00">
+      </label>
+      <label>
+        Waste factor (%)
+        <input type="number" step="1" id="calc-material-waste" value="10" min="0" max="50">
+      </label>
+    </div>
+
+    <div id="measure-calc-material" class="builder-results" style="margin-top: 12px; display: none;">
+      <div class="result-row">
+        <span>Total length needed:</span>
+        <strong id="calc-material-length">0.000 m</strong>
+      </div>
+      <div class="result-row">
+        <span>With waste:</span>
+        <strong id="calc-material-total">0.000 m</strong>
+      </div>
+      <div class="result-row">
+        <span>Estimated cost:</span>
+        <strong id="calc-material-cost-total">£0.00</strong>
+      </div>
+    </div>
+
+    <div class="summary-grid" style="margin-top: 16px;">
+      <label>
+        Convert to unit
+        <select id="calc-convert-unit">
+          <option value="m">Metres (m)</option>
+          <option value="cm">Centimetres (cm)</option>
+          <option value="mm">Millimetres (mm)</option>
+          <option value="ft">Feet (ft)</option>
+          <option value="in">Inches (in)</option>
+          <option value="yd">Yards (yd)</option>
+        </select>
+      </label>
+    </div>
+
+    <div id="measure-calc-convert" class="builder-results" style="margin-top: 12px;">
+      <div class="result-row">
+        <span>Total length:</span>
+        <strong id="calc-convert-result">0.000 m</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- AREA & VOLUME CALCULATOR -->
+  <div class="builder-card" id="area-calc-card">
+    <h2>📐 Area & Volume Calculator</h2>
+    <p class="hint">Calculate wall areas, floor areas, and room volumes for material estimates.</p>
+
+    <div class="summary-grid">
+      <label>
+        Length (m)
+        <input type="number" step="0.01" id="area-length" placeholder="0.00">
+      </label>
+      <label>
+        Width (m)
+        <input type="number" step="0.01" id="area-width" placeholder="0.00">
+      </label>
+      <label>
+        Height (m)
+        <input type="number" step="0.01" id="area-height" placeholder="0.00">
+      </label>
+      <label>
+        Number of walls
+        <input type="number" id="area-walls" value="4" min="1" max="10">
+      </label>
+    </div>
+
+    <div class="builder-controls">
+      <button class="builder-btn" id="area-calculate">Calculate</button>
+      <button class="builder-btn" id="area-clear">Clear</button>
+    </div>
+
+    <div id="area-results" class="builder-results">
+      <div class="result-row">
+        <span>Floor area:</span>
+        <strong id="area-floor">—</strong>
+      </div>
+      <div class="result-row">
+        <span>Wall area (total):</span>
+        <strong id="area-walls-total">—</strong>
+      </div>
+      <div class="result-row">
+        <span>Room volume:</span>
+        <strong id="area-volume">—</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- MATERIAL CALCULATORS -->
+  <div class="builder-card" id="material-calc-card">
+    <h2>🧱 Material Calculator</h2>
+    <p class="hint">Calculate materials needed for common jobs.</p>
+
+    <div class="builder-controls">
+      <label>
+        Material type
+        <select id="material-type">
+          <option value="paint">Paint</option>
+          <option value="plaster">Plaster / Skim</option>
+          <option value="tiles">Tiles</option>
+          <option value="flooring">Flooring (laminate/vinyl)</option>
+          <option value="insulation">Insulation</option>
+          <option value="plasterboard">Plasterboard</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="summary-grid" id="material-inputs">
+      <label>
+        Area (m²)
+        <input type="number" step="0.01" id="material-area" placeholder="0.00">
+      </label>
+      <label>
+        Coverage per unit (m²)
+        <input type="number" step="0.01" id="material-coverage" placeholder="Auto">
+      </label>
+      <label>
+        Waste factor (%)
+        <input type="number" step="1" id="material-waste" value="10" min="0" max="50">
+      </label>
+    </div>
+
+    <div class="builder-controls">
+      <button class="builder-btn" id="material-calculate">Calculate</button>
+      <button class="builder-btn" id="material-clear">Clear</button>
+    </div>
+
+    <div id="material-results" class="builder-results">
+      <div class="result-row">
+        <span>Total area (with waste):</span>
+        <strong id="material-total-area">—</strong>
+      </div>
+      <div class="result-row">
+        <span>Units needed:</span>
+        <strong id="material-units">—</strong>
+      </div>
+      <div class="result-row">
+        <span>Recommended purchase:</span>
+        <strong id="material-purchase">—</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- COST ESTIMATOR -->
+  <div class="builder-card" id="cost-est-card">
+    <h2>💰 Cost Estimator</h2>
+    <p class="hint">Quick cost estimates for materials and labor.</p>
+
+    <div class="summary-grid">
+      <label>
+        Material cost per unit (£)
+        <input type="number" step="0.01" id="cost-material-unit" placeholder="0.00">
+      </label>
+      <label>
+        Units needed
+        <input type="number" step="0.01" id="cost-units" placeholder="0.00">
+      </label>
+      <label>
+        Labor rate (£/hour)
+        <input type="number" step="0.01" id="cost-labor-rate" placeholder="0.00">
+      </label>
+      <label>
+        Estimated hours
+        <input type="number" step="0.5" id="cost-hours" placeholder="0.0">
+      </label>
+    </div>
+
+    <div class="builder-controls">
+      <button class="builder-btn" id="cost-calculate">Calculate</button>
+      <button class="builder-btn" id="cost-clear">Clear</button>
+    </div>
+
+    <div id="cost-results" class="builder-results">
+      <div class="result-row">
+        <span>Material cost:</span>
+        <strong id="cost-materials">£0.00</strong>
+      </div>
+      <div class="result-row">
+        <span>Labor cost:</span>
+        <strong id="cost-labor">£0.00</strong>
+      </div>
+      <div class="result-row">
+        <span>Total estimate:</span>
+        <strong id="cost-total">£0.00</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- JOB PLANNER -->
+  <div class="builder-card" id="job-plan-card">
+    <h2>📅 Job Planner</h2>
+    <p class="hint">Plan tasks and timeline for a job.</p>
+
+    <div class="summary-grid">
+      <label>
+        Job name
+        <input type="text" id="job-name" placeholder="Kitchen refit, Bathroom, etc.">
+      </label>
+      <label>
+        Start date
+        <input type="date" id="job-start-date">
+      </label>
+    </div>
+
+    <div class="builder-controls">
+      <label>
+        Task
+        <input type="text" id="job-task-input" placeholder="e.g. Remove old units, Install plumbing...">
+      </label>
+      <label>
+        Estimated days
+        <input type="number" step="0.5" id="job-task-days" placeholder="1.0" min="0.5">
+      </label>
+      <button class="builder-btn" id="job-task-add">Add task</button>
+    </div>
+
+    <ul id="job-task-list" class="builder-list">
+      <!-- Tasks will be added here -->
+    </ul>
+
+    <div class="builder-controls">
+      <button class="builder-btn" id="job-generate-plan">Generate timeline</button>
+      <button class="builder-btn" id="job-clear">Clear all</button>
+    </div>
+
+    <pre id="job-plan-output" class="builder-output">Add tasks above, then generate timeline…</pre>
+  </div>
+
+  <!-- UNIT CONVERTER -->
+  <div class="builder-card" id="unit-convert-card">
+    <h2>🔄 Unit Converter</h2>
+    <p class="hint">Convert between metric and imperial units.</p>
+
+    <div class="summary-grid">
+      <label>
+        From value
+        <input type="number" step="0.01" id="convert-value" placeholder="0.00">
+      </label>
+      <label>
+        From unit
+        <select id="convert-from">
+          <option value="m">Metres (m)</option>
+          <option value="ft">Feet (ft)</option>
+          <option value="in">Inches (in)</option>
+          <option value="cm">Centimetres (cm)</option>
+          <option value="mm">Millimetres (mm)</option>
+          <option value="m2">Square metres (m²)</option>
+          <option value="ft2">Square feet (ft²)</option>
+          <option value="m3">Cubic metres (m³)</option>
+          <option value="ft3">Cubic feet (ft³)</option>
+        </select>
+      </label>
+      <label>
+        To unit
+        <select id="convert-to">
+          <option value="m">Metres (m)</option>
+          <option value="ft">Feet (ft)</option>
+          <option value="in">Inches (in)</option>
+          <option value="cm">Centimetres (cm)</option>
+          <option value="mm">Millimetres (mm)</option>
+          <option value="m2">Square metres (m²)</option>
+          <option value="ft2">Square feet (ft²)</option>
+          <option value="m3">Cubic metres (m³)</option>
+          <option value="ft3">Cubic feet (ft³)</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="builder-controls">
+      <button class="builder-btn" id="convert-calculate">Convert</button>
+      <button class="builder-btn" id="convert-clear">Clear</button>
+    </div>
+
+    <div id="convert-result" class="builder-results">
+      <div class="result-row">
+        <span>Result:</span>
+        <strong id="convert-output">—</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- METHOD STATEMENT & RAMS GENERATOR (NEW) -->
+  <div class="builder-card" id="method-rams-card">
+    <h2>📝 Method Statement & RAMS</h2>
+    <p class="hint">Generate compliant method statements and risk assessments for your job.</p>
+
+    <div class="summary-grid">
+      <label>
+        Job Title
+        <input type="text" id="rams-job-title" placeholder="e.g. Kitchen Refit - 14 Oak Lane">
+      </label>
+      <label>
+        Client Name
+        <input type="text" id="rams-client" placeholder="Optional">
+      </label>
+      <label>
+        Site Address
+        <input type="text" id="rams-address" placeholder="Site address">
+      </label>
+      <label>
+        Start Date
+        <input type="date" id="rams-start-date">
+      </label>
+    </div>
+
+    <div class="summary-grid" style="margin-top: 12px;">
+      <label>
+        Work Activities (select all that apply)
+        <select id="rams-activities" multiple size="5" style="height: auto;">
+          <option value="demolition">Demolition / Strip-out</option>
+          <option value="working-height">Working at Height</option>
+          <option value="electrical">Electrical Work</option>
+          <option value="plumbing">Plumbing Work</option>
+          <option value="hot-works">Hot Works</option>
+          <option value="confined-space">Confined Space Entry</option>
+          <option value="dust">Dust Generating Work</option>
+          <option value="manual-handling">Manual Handling</option>
+          <option value="power-tools">Power Tool Use</option>
+          <option value="silica">Silica Dust Risk</option>
+          <option value="asbestos-check">Pre-2000 Building (Asbestos Check)</option>
+        </select>
+      </label>
+      <label>
+        Special Conditions
+        <select id="rams-conditions" multiple size="3" style="height: auto;">
+          <option value="occupied">Occupied Property</option>
+          <option value="children">Children Present</option>
+          <option value="pets">Pets on Site</option>
+          <option value="elderly">Elderly/Vulnerable Occupants</option>
+          <option value="night-work">Night Work</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="builder-controls" style="margin-top: 12px;">
+      <button class="builder-btn" id="rams-generate">📄 Generate RAMS</button>
+      <button class="builder-btn" id="method-generate">📋 Generate Method Statement</button>
+      <button class="builder-btn" id="rams-export">📤 Export PDF</button>
+    </div>
+
+    <pre id="rams-output" class="builder-output" style="max-height: 400px; overflow-y: auto; white-space: pre-wrap;">
+Select work activities and click Generate to create your method statement and risk assessment.
+    </pre>
+  </div>
+
+  <!-- PROBLEM → SOLVED LIBRARY (NEW) -->
+  <div class="builder-card" id="problem-solved-card">
+    <h2>🔍 Problem → Solved Library</h2>
+    <p class="hint">Your personal knowledge base of fixes. Search previous solutions or add new ones.</p>
+
+    <div class="builder-controls">
+      <input type="text" id="ps-search" placeholder="Search problems... e.g. 'damp', 'blown plaster', 'RCD trips'"
+        style="flex: 2;">
+      <button class="builder-btn" id="ps-search-btn">🔎 Search</button>
+      <button class="builder-btn" id="ps-add-btn">➕ Add New</button>
+    </div>
+
+    <div id="ps-results" class="ps-results-list" style="margin-top: 12px;">
+      <!-- Search results appear here -->
+      <p class="hint">Enter a search term or add a new Problem → Solved entry.</p>
+    </div>
+
+    <div id="ps-add-form"
+      style="display: none; margin-top: 16px; padding: 16px; background: rgba(255,255,255,0.05); border-radius: 8px;">
+      <h4 style="margin-top: 0;">➕ Add Problem → Solved Entry</h4>
+      <div class="summary-grid">
+        <label>
+          Problem / Symptoms
+          <textarea id="ps-symptoms" rows="2" placeholder="Describe the problem you encountered..."></textarea>
+        </label>
+        <label>
+          Root Cause
+          <input type="text" id="ps-cause" placeholder="What caused the problem?">
+        </label>
+      </div>
+      <div class="summary-grid" style="margin-top: 8px;">
+        <label>
+          Fix Steps
+          <textarea id="ps-fix" rows="3" placeholder="Step-by-step fix instructions..."></textarea>
+        </label>
+        <label>
+          Tools Required
+          <input type="text" id="ps-tools" placeholder="e.g. Screwdriver, multimeter, heat gun">
+        </label>
+      </div>
+      <div class="summary-grid" style="margin-top: 8px;">
+        <label>
+          Materials Required
+          <input type="text" id="ps-materials" placeholder="e.g. PVA, bonding, screws">
+        </label>
+        <label>
+          Tags
+          <input type="text" id="ps-tags" placeholder="e.g. damp, electrical, plumbing">
+        </label>
+      </div>
+      <div class="summary-grid" style="margin-top: 8px;">
+        <label>
+          Safety Notes
+          <input type="text" id="ps-safety" placeholder="Important safety considerations">
+        </label>
+        <label>
+          Job Context
+          <input type="text" id="ps-context" placeholder="e.g. Bathroom, Victorian property">
+        </label>
+      </div>
+      <div class="builder-controls" style="margin-top: 12px;">
+        <button class="builder-btn" id="ps-save">💾 Save Entry</button>
+        <button class="builder-btn" id="ps-cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCOPE PACK (NEW) -->
+  <div class="builder-card" id="scope-pack-card">
+    <h2>📦 Scope Pack</h2>
+    <p class="hint">Your complete job scope with materials, labour, and assumptions.</p>
+
+    <div id="scope-items" class="scope-items-list">
+      <!-- Scope items added from Task Picker appear here -->
+      <p class="hint" id="scope-empty">No scope items yet. Use Task Picker to add items.</p>
+    </div>
+
+    <div id="scope-summary" class="builder-results" style="display: none; margin-top: 12px;">
+      <div class="result-row"><span>Total Tasks:</span><strong id="scope-total-tasks">0</strong></div>
+      <div class="result-row"><span>Total Area:</span><strong id="scope-total-area">0.00 m²</strong></div>
+      <div class="result-row"><span>Est. Labour:</span><strong id="scope-total-labour">0 hrs</strong></div>
+      <div class="result-row"><span>Material Cost:</span><strong id="scope-material-cost">£0.00</strong></div>
+      <div class="result-row"><span>Labour Cost:</span><strong id="scope-labour-cost">£0.00</strong></div>
+      <div class="result-row" style="font-size: 1.1em; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 8px;">
+        <span>Total Estimate:</span><strong id="scope-total-cost">£0.00</strong>
+      </div>
+    </div>
+
+    <div class="builder-controls" style="margin-top: 12px;">
+      <button class="builder-btn" id="scope-export">📤 Export Scope Pack</button>
+      <button class="builder-btn" id="scope-clear">🗑️ Clear Scope</button>
+    </div>
+  </div>
+
+  <!-- PROJECT MEMORY BANK (NEW) -->
+  <div class="builder-card" id="project-memory-card">
+    <h2>💾 Project Memory Bank</h2>
+    <p class="hint">Save and load complete job profiles with all room data.</p>
+
+    <div class="summary-grid">
+      <label>
+        Project Name
+        <input type="text" id="project-name" placeholder="e.g. 14 Oak Lane Kitchen">
+      </label>
+      <label>
+        Address Label
+        <input type="text" id="project-address" placeholder="Display name (not full address)">
+      </label>
+    </div>
+
+    <div class="builder-controls" style="margin-top: 12px;">
+      <button class="builder-btn" id="project-save">💾 Save Project</button>
+      <button class="builder-btn" id="project-load">📂 Load Project</button>
+      <button class="builder-btn" id="project-export">📤 Export All</button>
+      <button class="builder-btn" id="project-list">📋 View Saved</button>
+    </div>
+
+    <div id="project-list-panel" style="display: none; margin-top: 12px;">
+      <h4>📁 Saved Projects</h4>
+      <ul id="project-saved-list" class="builder-list">
+        <!-- Saved projects appear here -->
+      </ul>
+    </div>
+  </div>
+
+  <!-- SITE SUMMARY -->
+  <div class="builder-card" id="summary-card">
+    <h2>📊 Site Summary</h2>
+    <div class="builder-controls">
+      <button class="builder-btn" id="sum-calc">Generate Summary</button>
+      <span class="hint">Complete overview of current job including scope, measurements, and assumptions.</span>
+    </div>
+    <pre id="sum-out">Click "Generate Summary" to see full job overview.</pre>
+  </div>
+
+  <!-- Voice Panel (MOVED LOWER) -->
+  <div class="builder-card">
+    <h2>🎙️ Voice Dictation</h2>
+    <p class="hint">Use this for continuous voice input and transcript viewing.</p>
+
+    <div class="module-voice-panel" data-module="builder" style="background: transparent; padding: 0; margin: 0;">
+      <button type="button" class="module-voice-btn">🎙 Talk to GRACE-X Builder</button>
+      <span class="module-voice-status">Mic off</span>
+      <textarea class="module-voice-text" placeholder="Voice transcript appears here…" rows="3"></textarea>
+      <div class="module-voice-reply"></div>
+    </div>
+  </div>
+</section>
