@@ -74,7 +74,7 @@
     indicator.id = 'gracex-voice-status';
     indicator.style.cssText = `
       position: fixed;
-      bottom: 90px;
+      bottom: 150px;
       right: 20px;
       padding: 12px 20px;
       background: rgba(20, 20, 30, 0.95);
@@ -557,7 +557,7 @@
     btn.innerHTML = '🎤 Tap to enable voice';
     btn.style.cssText = `
       position: fixed;
-      bottom: 24px;
+      bottom: 90px;
       right: 24px;
       padding: 12px 20px;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);

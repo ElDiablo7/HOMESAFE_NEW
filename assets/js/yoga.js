@@ -107,6 +107,7 @@
     if (url && url.indexOf("yoga.html") !== -1) {
       initYoga();
     }
+  });
 
    // ---- GRACE-X Yoga V5 Brain Wiring ----
 

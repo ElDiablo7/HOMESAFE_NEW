@@ -180,8 +180,8 @@ function initCoreShell() {
       console.warn("[GRACEX CORE] Could not play boot video", err);
     }
     
-    // Safety fallback: if video is longer than 15s or something fails
-    setTimeout(finishBoot, 15000);
+    // Safety fallback: if video is longer than 10s or something fails
+    setTimeout(finishBoot, 10000);
   }
 
   // Tap the boot card
@@ -340,10 +340,10 @@ function initCoreVoice() {
       }
     });
     
-    // Stop after 15 seconds max
+    // Stop after 10 seconds max
     setTimeout(() => {
       try { recognizer.stop(); } catch(e) {}
-    }, 15000);
+    }, 10000);
 
     try {
       recognizer.start();

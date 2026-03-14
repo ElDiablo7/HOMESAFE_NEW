@@ -56,7 +56,6 @@ const MODULE_VOICE_KEYS = {
   chef: "chef_activate",
   artist: "artist_activate",
   beauty: "beauty_activate",
-  sport: "sport_activate",
   guardian: "guardian_activate",
   forge: "forge_activate"  // PATCHED: Added missing forge key
 };
