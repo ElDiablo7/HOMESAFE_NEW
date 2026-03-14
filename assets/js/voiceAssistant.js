@@ -59,6 +59,7 @@
   let silenceTimer = null;
   let statusIndicator = null;
   let lastWakeTime = 0;
+  let isProcessing = false; // Add processing lock
   const WAKE_COOLDOWN_MS = 2500; // stops wake spam / repeated triggers
 
   // ============================================
@@ -368,6 +369,7 @@
 
     } catch (err) {
       console.warn('[GRACEX VOICE] Could not start active listening:', err);
+      isActiveMode = false;
       endActiveListening();
     }
   }
@@ -418,9 +420,12 @@
     }
 
     // Try to get response from brain
+    if (isProcessing) return; // Lock check
+    isProcessing = true;
+    
     let result;
     try {
-      // Step 1: Immediately give offline feedback so the user isn't hanging
+      // Step 1: Immediately give offline feedback
       let offlineFeedback = null;
       if (window.GraceX && typeof window.GraceX.route === 'function') {
         const routeRes = window.GraceX.route({
@@ -448,6 +453,8 @@
     } catch (err) {
       console.warn('[GRACEX VOICE] Brain error:', err);
       result = "Sorry, I had trouble processing that.";
+    } finally {
+      isProcessing = false; // Unlock
     }
 
     // Update state
@@ -480,8 +487,13 @@
   // ============================================
 
   function manualActivate() {
-    // Stop wake word listener
+    // Stop all ongoing listeners
     stopWakeWordListening();
+    if (commandRecognizer) {
+      try { commandRecognizer.stop(); } catch (e) { }
+    }
+    isActiveMode = false;
+    isProcessing = false;
 
     // Start active listening directly
     if (window.GRACEX_TTS && window.GRACEX_TTS.isEnabled()) {

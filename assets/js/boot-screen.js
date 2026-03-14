@@ -30,7 +30,7 @@
       'UI CONTROLS'
     ],
     currentModuleIndex: 0,
-    bootDuration: 6000, // 6 seconds total boot time
+    bootDuration: 1500, // Shortened from 6000ms
     skipRequested: false,
 
     init() {

@@ -91,32 +91,84 @@
     }
   }
 
+  const hairStyles = {
+    none: null,
+    waves: 'https://cdn-icons-png.flaticon.com/512/3246/3246193.png',
+    bob: 'https://cdn-icons-png.flaticon.com/512/3246/3246187.png',
+    bangs: 'https://cdn-icons-png.flaticon.com/512/3246/3246201.png',
+    ponytail: 'https://cdn-icons-png.flaticon.com/512/3246/3246195.png'
+  };
+
+  const hairColors = {
+    none: 'none',
+    rose: 'hue-rotate(320deg) saturate(2) brightness(0.9)',
+    platinum: 'grayscale(1) brightness(1.5)',
+    copper: 'hue-rotate(20deg) saturate(1.5) brightness(0.8)',
+    lavender: 'hue-rotate(260deg) saturate(1.2) brightness(1.1)'
+  };
+
+  function applyHairColor(colorKey) {
+    const filter = hairColors[colorKey] || 'none';
+    videoEl.style.filter = filter === 'none' ? '' : filter;
+    log(`Applied color filter: ${colorKey}`);
+    
+    document.querySelectorAll('#hairColors .filter-btn').forEach(b => {
+      b.classList.toggle('active', b.getAttribute('data-color') === colorKey);
+    });
+  }
+
+  function applyHairstyle(styleKey) {
+    const overlay = $("arOverlay");
+    if (!overlay) return;
+    
+    overlay.innerHTML = '';
+    const src = hairStyles[styleKey];
+    
+    if (src) {
+      const img = document.createElement('img');
+      img.src = src;
+      img.className = 'ar-hairstyle active';
+      overlay.appendChild(img);
+      log(`Applied hairstyle: ${styleKey}`);
+    } else {
+      log('Cleared hairstyle overlay');
+    }
+
+    document.querySelectorAll('#hairStyles .filter-btn').forEach(b => {
+      b.classList.toggle('active', b.getAttribute('data-hair') === styleKey);
+    });
+  }
+
   // --------- AR Mirror ----------
   async function startCamera(){
     try{
       if(state.stream) return;
 
-      setStatus("Starting camera…");
-      log(`Camera start (facingMode=${state.facingMode})`);
+      setStatus("Starting Beauty Mirror…");
+      log("Initializing High-Def Beauty Stream...");
 
       const constraints = {
         audio: false,
         video: {
-          facingMode: { ideal: state.facingMode },
-          width: { ideal: 1280 },
-          height: { ideal: 720 }
+          facingMode: "user",
+          width: { ideal: 1920 },
+          height: { ideal: 1080 }
         }
       };
 
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       state.stream = stream;
       videoEl.srcObject = stream;
+      
+      $("btnCamStart").style.display = "none";
+      $("btnCamStop").style.display = "block";
 
-      setStatus("Camera live");
-      log("Camera live.");
+      setStatus("Mirror Live");
+      log("Mirror is live. ✨ You look fabulous!");
+      setOverlayText("Beauty Mirror active. Select a hairstyle or filter to begin.");
     }catch(e){
-      log(`Camera error: ${e?.message || String(e)}`);
-      setStatus("Camera blocked");
+      log(`Mirror error: ${e?.message || "Verify permissions"}`);
+      setStatus("Mirror Blocked");
     }
   }
 
@@ -125,20 +177,18 @@
     state.stream.getTracks().forEach(t => t.stop());
     state.stream = null;
     if(videoEl) videoEl.srcObject = null;
-    setStatus("Camera stopped");
-    log("Camera stopped.");
-  }
-
-  async function flipCamera(){
-    state.facingMode = (state.facingMode === "user") ? "environment" : "user";
-    log(`Flip camera → ${state.facingMode}`);
-    stopCamera();
-    await startCamera();
+    
+    $("btnCamStart").style.display = "block";
+    $("btnCamStop").style.display = "none";
+    
+    setStatus("Mirror Idle");
+    log("Mirror closed.");
+    setOverlayText("Ready for your next look?");
   }
 
   function snapshot(){
     if(!videoEl || !videoEl.videoWidth){
-      log("Snapshot failed: camera not live.");
+      log("Snapshot failed: Mirror not live.");
       return;
     }
     const w = videoEl.videoWidth;
@@ -148,31 +198,28 @@
     canvasEl.height = h;
 
     const ctx = canvasEl.getContext("2d");
-    // un-mirror when capturing so image isn't reversed
+    
+    // Reverse mirroring for the actual photo
     ctx.save();
     ctx.translate(w, 0);
     ctx.scale(-1, 1);
+    
+    // Apply filters if any
+    if (videoEl.style.filter) ctx.filter = videoEl.style.filter;
+    
     ctx.drawImage(videoEl, 0, 0, w, h);
     ctx.restore();
 
-    state.lastSnapshotDataUrl = canvasEl.toDataURL("image/jpeg", 0.85);
-
+    state.lastSnapshotDataUrl = canvasEl.toDataURL("image/jpeg", 0.9);
     shotImg.src = state.lastSnapshotDataUrl;
     shotBox.style.display = "block";
 
-    log("Snapshot captured (local).");
-    setStatus("Snapshot saved");
+    log("Snapshot saved to your device. 📸");
+    setStatus("Snapshot Taken");
   }
 
-  function setOverlayText(mode){
-    if(!hudText) return;
-    const map = {
-      skin: "Skin scan: neutral light, no flash, camera at eye level. Note redness, texture, shine.",
-      makeup: "Makeup check: symmetry + blending. Look for creasing, patchiness, separation zones.",
-      hair: "Hair check: frizz + flyaways. Check crown + ends. Note dryness vs oil at roots.",
-      lighting: "Lighting: face a window. Avoid overhead. If shadows under eyes, move light forward."
-    };
-    hudText.textContent = map[mode] || map.skin;
+  function setOverlayText(txt){
+    if(hudText) hudText.textContent = txt;
   }
 
   // --------- UI Bind ----------
@@ -220,30 +267,30 @@
     // AR controls
     $("btnCamStart")?.addEventListener("click", startCamera);
     $("btnCamStop")?.addEventListener("click", stopCamera);
-    $("btnCamFlip")?.addEventListener("click", flipCamera);
     $("btnSnap")?.addEventListener("click", snapshot);
 
-    $("arMode")?.addEventListener("change", ()=>{
-      setOverlayText($("arMode").value);
-      log(`Overlay mode: ${$("arMode").value}`);
+    // Hairstyle selection
+    document.querySelectorAll('#hairStyles .filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        applyHairstyle(btn.getAttribute('data-hair'));
+      });
     });
-    setOverlayText($("arMode")?.value || "skin");
 
-    // Analyse buttons (send a useful prompt based on the overlay mode)
+    // Color selection
+    document.querySelectorAll('#hairColors .filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        applyHairColor(btn.getAttribute('data-color'));
+      });
+    });
+
+    // Analyse buttons
     $("btnAnalyseSkin")?.addEventListener("click", ()=>{
-      const mode = $("arMode")?.value || "skin";
-      const msg = `AR Mirror analysis (${mode}). I’ve taken a snapshot locally. Ask me 5 quick questions max, then give me a 2-week plan.`;
+      const msg = `AI Skin Audit requested. I've inspected my skin in the mirror. Provide a detailed analysis and a 7-day rose-gold glow routine.`;
       $("userText").value = msg;
       talkToGrace(msg);
     });
 
-    $("btnMakeupCheck")?.addEventListener("click", ()=>{
-      const msg = `Makeup check using AR Mirror. I’ve taken a snapshot locally. Troubleshoot: creasing/caking/separation/patchiness. Give quick fixes + next-time routine.`;
-      $("userText").value = msg;
-      talkToGrace(msg);
-    });
-
-    log("Beauty panel loaded (AR Mirror ready).");
+    log("Beauty 2.0 Loaded. ✨ Let's get glamorous!");
     setStatus("Idle");
   }
 

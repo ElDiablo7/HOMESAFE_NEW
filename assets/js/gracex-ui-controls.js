@@ -72,7 +72,7 @@
         themeBtn.setAttribute('title', 'Change Theme');
         themeBtn.style.cssText = `
             position: fixed;
-            bottom: 90px;
+            bottom: 160px;
             right: 20px;
             width: 56px;
             height: 56px;

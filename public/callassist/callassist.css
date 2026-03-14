@@ -216,7 +216,7 @@ body {
 /* Brain panel styles (mirror gracex-v6) */
 .ca-brain-output {
   min-height: 120px;
-  max-height: 220px;
+  max-height: 800px;
   overflow-y: auto;
   padding: 12px;
   background: rgba(0,0,0,0.3);
