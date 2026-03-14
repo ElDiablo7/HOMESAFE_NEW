@@ -391,3 +391,35 @@ h1, h2, h3, label, .module-subtitle, .hint, button {
   text-shadow: 0 0 6px rgba(0, 0, 0, 0.8);
 }
 
+
+/* GRACE-X Brain Thinking Dots Animation */
+.brain-thinking-dots {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px !important;
+  background: rgba(56, 189, 248, 0.1) !important;
+  border: 1px dashed rgba(56, 189, 248, 0.3) !important;
+  border-radius: 12px;
+  margin: 8px 0;
+  min-width: 60px;
+}
+
+.brain-thinking-dots span {
+  width: 6px;
+  height: 6px;
+  background-color: var(--accent, #60a5fa);
+  border-radius: 50%;
+  display: inline-block;
+  animation: gx-thinking-pulse 1.4s infinite ease-in-out both;
+  box-shadow: 0 0 8px var(--accent, #60a5fa);
+}
+
+.brain-thinking-dots span:nth-child(1) { animation-delay: -0.32s; }
+.brain-thinking-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes gx-thinking-pulse {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.3; }
+  40% { transform: scale(1.1); opacity: 1; }
+}

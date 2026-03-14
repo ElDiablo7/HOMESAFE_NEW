@@ -40,11 +40,13 @@
     ],
     language: 'en-GB',
     // How long to listen after wake word (milliseconds)
-    activeListenDuration: 15000, // 10 seconds
+    activeListenDuration: 8000, // 8 seconds
     // How long to wait for speech before timing out
-    silenceTimeout: 15000, // 5 seconds of silence
+    silenceTimeout: 3500, // 3.5 seconds of silence
     // Continuous background listening for wake word
-    backgroundListening: true
+    backgroundListening: true,
+    // Automated follow-up after TTS
+    followUpMode: true
   };
 
   // ============================================
@@ -613,6 +615,17 @@
       createEnableVoiceButton();
     }
   }
+  // Automated Follow-up listener
+  document.addEventListener('gracex_tts_finished', () => {
+    if (CONFIG.followUpMode && !isActiveMode && !isListening) {
+      console.log('[GRACEX VOICE] TTS finished. Triggering follow-up listening...');
+      // Small delay to ensure no audio overlap
+      setTimeout(() => {
+        if (!isActiveMode) manualActivate();
+      }, 400);
+    }
+  });
+
   setTimeout(maybeShowEnableVoice, 2500);
 
   console.info('[GRACEX VOICE ASSISTANT] Loaded - Wake words: Hey Grace, Yo Grace, Gracie Grace, Ok Grace, Hey Gracie, Ok Gracie');

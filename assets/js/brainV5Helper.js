@@ -85,11 +85,10 @@
       isLoading = loading;
       if (loading) {
         send.disabled = true;
-        send.textContent = 'Thinking...';
         const loadingMsg = document.createElement('div');
-        loadingMsg.className = 'brain-message brain-message-system';
+        loadingMsg.className = 'brain-message brain-message-system brain-thinking-dots';
         loadingMsg.id = moduleId + '-brain-loading';
-        loadingMsg.textContent = 'Thinking...';
+        loadingMsg.innerHTML = '<span>.</span><span>.</span><span>.</span>';
         output.appendChild(loadingMsg);
         output.scrollTop = output.scrollHeight;
       } else {
@@ -228,8 +227,9 @@
 
       // Show thinking state
       const thinkingRow = document.createElement("div");
-      thinkingRow.className = "brain-message brain-message-ai brain-message-thinking";
-      thinkingRow.textContent = "Thinking...";
+      thinkingRow.className = "brain-message brain-message-ai brain-thinking-dots";
+      thinkingRow.innerHTML = "<span>.</span><span>.</span><span>.</span>";
+      thinkingRow.id = moduleId + "-brain-thinking-temp";
       output.appendChild(thinkingRow);
       output.scrollTop = output.scrollHeight;
 
@@ -336,7 +336,7 @@
     let shouldListen = false;
     let isStopping = false;
     let silenceTimer = null;
-    const SILENCE_DURATION = 2500; // 2.5 seconds of silence before auto-stop
+    const SILENCE_DURATION = 3500; // 3.5 seconds of silence before auto-stop
 
     // If the wake-word assistant is running, it can steal the mic and instantly end this recognizer.
     // We pause it while the brain mic is active, then resume afterwards.

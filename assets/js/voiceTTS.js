@@ -545,6 +545,8 @@
       utterance.onend = () => {
         isSpeaking = false;
         currentUtterance = null;
+        // Notify other systems (like voice assistant follow-up)
+        document.dispatchEvent(new CustomEvent('gracex_tts_finished'));
         resolve();
       };
 

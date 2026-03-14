@@ -268,7 +268,7 @@ function initCoreVoice() {
     
     let finalTranscript = '';
     let silenceTimer = null;
-      const SILENCE_TIMEOUT = 15000; // 15s silence window (user-requested)
+      const SILENCE_TIMEOUT = 3500; // 3.5s silence window (global standard)
     
     recognizer.addEventListener("result", async (event) => {
       // Reset silence timer on any speech

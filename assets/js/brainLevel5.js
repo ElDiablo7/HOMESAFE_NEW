@@ -19,7 +19,7 @@
     enableMemory: true,
 
     // Max conversation history to send
-    maxHistory: 4,
+    maxHistory: 12,
 
     // Request timeout (ms)
     timeout: 120000,
