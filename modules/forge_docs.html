@@ -44,5 +44,18 @@
       <p style="margin:0">Close this tab to return to Forge. (Opens in a new tab by design to keep RAM low.)</p>
     </div>
   </main>
+    
+
+    <!-- UNIVERSAL VOICE ORB -->
+    <script src="../assets/js/voiceTTS.js"></script>
+    <script src="../assets/js/voiceAssistant.js"></script>
+    <script>
+      window.addEventListener('DOMContentLoaded', () => {
+        if (window.VoiceAssistant && typeof window.VoiceAssistant.start === 'function') {
+          setTimeout(() => window.VoiceAssistant.start(), 1000);
+        }
+      });
+    </script>
+
 </body>
 </html>

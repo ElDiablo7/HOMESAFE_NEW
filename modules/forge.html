@@ -126,6 +126,19 @@
 <iframe id="forge-preview-frame" sandbox="allow-scripts allow-same-origin" srcdoc="<html><body style='background:#111;color:#888;display:flex;align-items:center;justify-content:center;height:100vh;font-family:system-ui;'><div style='text-align:center'>🔨<br>Build something to preview</div>
   <div id="gxVersionBadge" class="gx-version-badge">ZGV6 19.12.25.6</div>
 
+    
+
+    <!-- UNIVERSAL VOICE ORB -->
+    <script src="../assets/js/voiceTTS.js"></script>
+    <script src="../assets/js/voiceAssistant.js"></script>
+    <script>
+      window.addEventListener('DOMContentLoaded', () => {
+        if (window.VoiceAssistant && typeof window.VoiceAssistant.start === 'function') {
+          setTimeout(() => window.VoiceAssistant.start(), 1000);
+        }
+      });
+    </script>
+
 </body></html>"></iframe>
 </div></details>
         </div>

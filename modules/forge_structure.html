@@ -63,5 +63,17 @@ GRACE-X/
 
     <p class="muted">Back to Forge: <a href="../index.html">Open GRACE-X</a></p>
   </main>
+
+    <!-- UNIVERSAL VOICE ORB -->
+    <script src="../assets/js/voiceTTS.js"></script>
+    <script src="../assets/js/voiceAssistant.js"></script>
+    <script>
+      window.addEventListener('DOMContentLoaded', () => {
+        if (window.VoiceAssistant && typeof window.VoiceAssistant.start === 'function') {
+          setTimeout(() => window.VoiceAssistant.start(), 1000);
+        }
+      });
+    </script>
+
 </body>
 </html>

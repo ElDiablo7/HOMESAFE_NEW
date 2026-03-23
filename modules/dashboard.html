@@ -411,5 +411,18 @@
   </div>
 
   <script src="../assets/js/dashboard.js"></script>
+    
+
+    <!-- UNIVERSAL VOICE ORB -->
+    <script src="../assets/js/voiceTTS.js"></script>
+    <script src="../assets/js/voiceAssistant.js"></script>
+    <script>
+      window.addEventListener('DOMContentLoaded', () => {
+        if (window.VoiceAssistant && typeof window.VoiceAssistant.start === 'function') {
+          setTimeout(() => window.VoiceAssistant.start(), 1000);
+        }
+      });
+    </script>
+
 </body>
 </html>

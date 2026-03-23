@@ -1377,5 +1377,18 @@
         console.log('🔥 GRACE-X CORE 2.0™ Loaded - Ready for Action!');
         console.log('© 2026 Zachary Charles Anthony Crockett - All Rights Reserved');
     </script>
+    
+
+    <!-- UNIVERSAL VOICE ORB -->
+    <script src="../assets/js/voiceTTS.js"></script>
+    <script src="../assets/js/voiceAssistant.js"></script>
+    <script>
+      window.addEventListener('DOMContentLoaded', () => {
+        if (window.VoiceAssistant && typeof window.VoiceAssistant.start === 'function') {
+          setTimeout(() => window.VoiceAssistant.start(), 1000);
+        }
+      });
+    </script>
+
 </body>
 </html>

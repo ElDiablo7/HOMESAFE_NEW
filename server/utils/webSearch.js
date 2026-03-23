@@ -1,46 +1,33 @@
 /**
  * Web Search Utility for GRACE-X
- * Fetches real-time DuckDuckGo HTML results to fulfill user internet requests.
+ * Fetches real-time data using duck-duck-scrape for robust, deep search context.
  */
+const { search } = require('duck-duck-scrape');
 
 async function searchWeb(query) {
     try {
-        console.log(`[WEB SEARCH] Fetching real-time data for: "${query}"`);
-        const response = await fetch(`https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`, {
-            headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-                'Accept-Language': 'en-US,en;q=0.5'
-            }
+        console.log(`[WEB SEARCH] Fetching deep data for: "${query}"`);
+        const searchResults = await search(query, {
+            safeSearch: 'strict'
         });
         
-        if (!response.ok) {
-            console.warn(`[WEB SEARCH] Failed to fetch: HTTP ${response.status}`);
+        if (!searchResults || !searchResults.results || searchResults.results.length === 0) {
+            console.warn(`[WEB SEARCH] No results found.`);
             return null;
         }
 
-        const html = await response.text();
-        
-        // Extract basic snippets using regex to avoid heavy DOM parsers
         const results = [];
-        const snippetRegex = /<a class="result__snippet[^>]*>([\s\S]*?)<\/a>/g;
-        let match;
-        let count = 0;
+        // Get up to 10 results for deep context
+        const limit = Math.min(10, searchResults.results.length);
         
-        while ((match = snippetRegex.exec(html)) !== null && count < 3) {
-            // Clean HTML tags and decode common entities
-            let text = match[1].replace(/<[^>]*>?/gm, '').trim();
-            text = text.replace(/&quot;/g, '"')
-                       .replace(/&#x27;/g, "'")
-                       .replace(/&amp;/g, '&')
-                       .replace(/&lt;/g, '<')
-                       .replace(/&gt;/g, '>')
-                       .replace(/<b>/g, '')
-                       .replace(/<\/b>/g, '');
-            
-            if (text && text.length > 20) {
-                results.push(`- ${text}`);
-                count++;
+        for (let i = 0; i < limit; i++) {
+            const res = searchResults.results[i];
+            // Include Title, Snippet, and URL to give the LLM maximum surface area
+            if (res.title && res.description) {
+                // Strip HTML tags from description just in case
+                let text = res.description.replace(/<[^>]*>?/gm, '').trim();
+                text = text.replace(/&quot;/g, '"').replace(/&#x27;/g, "'").replace(/&amp;/g, '&');
+                results.push(`[Result ${i+1}] ${res.title}\nDetails: ${text}\nSource: ${res.url}\n`);
             }
         }
         
