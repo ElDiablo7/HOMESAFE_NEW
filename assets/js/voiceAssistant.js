@@ -42,7 +42,7 @@
     // How long to listen after wake word (milliseconds)
     activeListenDuration: 8000, // 8 seconds
     // How long to wait for speech before timing out
-    silenceTimeout: 3500, // 3.5 seconds of silence
+    silenceTimeout: 1500, // 1.5 seconds of silence (makes interactions snappier)
     // Continuous background listening for wake word
     backgroundListening: true,
     // Automated follow-up after TTS
@@ -298,21 +298,12 @@
       // Reset silence timer
       if (silenceTimer) clearTimeout(silenceTimer);
       silenceTimer = setTimeout(() => {
-        // Don't cut the user off early. We only *consider* ending once the full active window has elapsed.
-        const elapsed = Date.now() - activeStart;
-        if (elapsed >= CONFIG.activeListenDuration) {
-          if (!hasProcessed && finalTranscript.trim()) {
-            hasProcessed = true;
-            processCommand(finalTranscript.trim());
-          }
-          endActiveListening();
-          return;
+        // Evaluate immediately when silence window triggers to make interactions snappier
+        if (!hasProcessed && finalTranscript.trim()) {
+          hasProcessed = true;
+          processCommand(finalTranscript.trim());
         }
-
-        // Still inside the active window — keep listening.
-        // Re-arm the timer so we can keep checking without stopping the recognizer.
-        if (silenceTimer) clearTimeout(silenceTimer);
-        silenceTimer = setTimeout(() => { }, 0); // no-op; real timeout is controlled by the main active timer
+        endActiveListening();
       }, CONFIG.silenceTimeout);
 
       // Build transcript

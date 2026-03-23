@@ -40,6 +40,8 @@ const storage = require('./utils/storage');
 // GRACE-X Brain Router (feature-flagged)
 const brainRouter = require('./router/brain_router');
 
+const webSearch = require('./utils/webSearch');
+
 // ============================================
 // GRACE-X AI™ VOICE & CHARACTER MASTER SPEC
 // Engineered and copyrighted by Zac Crockett
@@ -912,6 +914,21 @@ app.post('/api/brain', rateLimitMiddleware, async (req, res) => {
       }
     } catch (e) {
       console.warn('[BRAIN] Sports API lookup failed, continuing without live data');
+    }
+  }
+
+  // INTERNET SEARCH INJECTION
+  const searchQueryText = req.body.message || req.body.prompt || req.body.input || (Array.isArray(messages) && messages.length ? (messages.find(m => m.role === 'user')?.content || messages[messages.length - 1]?.content || '') : '');
+  const searchTriggers = ['search for', 'look up', 'check', 'latest', 'news', 'weather', 'who is', 'what is', 'when is', 'where is', 'price of', 'current', 'today', 'how many', 'who won'];
+  
+  if (typeof searchQueryText === 'string' && searchTriggers.some(t => searchQueryText.toLowerCase().includes(t))) {
+    try {
+      const searchResult = await webSearch.searchWeb(searchQueryText);
+      if (searchResult) {
+        liveDataInjection += `\n\n## LIVE INTERNET DATA (REAL-TIME CONTEXT)\nThe following is real-time information fetched from the internet to help answer the user's request. DO NOT mention you are reading this data, just incorporate the facts naturally into your response:\n${searchResult}`;
+      }
+    } catch (e) {
+      console.warn('[BRAIN] Internet search lookup failed', e);
     }
   }
 

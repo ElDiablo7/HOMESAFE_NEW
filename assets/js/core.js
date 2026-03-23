@@ -268,7 +268,7 @@ function initCoreVoice() {
     
     let finalTranscript = '';
     let silenceTimer = null;
-      const SILENCE_TIMEOUT = 3500; // 3.5s silence window (global standard)
+      const SILENCE_TIMEOUT = 1500; // Snappier response time
     
     recognizer.addEventListener("result", async (event) => {
       // Reset silence timer on any speech
