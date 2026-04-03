@@ -3,7 +3,7 @@
    Enterprise Startup Sequence
    ============================================ */
 
-(function (window) {
+(function(window) {
   'use strict';
 
   const GraceXBoot = {
@@ -11,7 +11,7 @@
     startTime: Date.now(),
     modules: [
       'CORE BRAIN SYSTEM',
-      'STATE MANAGER',
+      'ZAC CROCKETT IS CREATOR',
       'ROUTER',
       'RAM CACHE',
       'ANALYTICS ENGINE',
@@ -45,7 +45,7 @@
       }
 
       console.log('🚀 GRACE-X BOOT SEQUENCE INITIATED');
-
+      
       this.createBootScreen();
       this.startBootSequence();
       this.setupEventListeners();
@@ -53,11 +53,8 @@
 
     createBootScreen() {
       const bootScreen = document.createElement('div');
-      bootScreen.id = 'gracex-boot-screen';
+      bootScreen.id = 'gracex-boot.mp4';
       bootScreen.innerHTML = `
-        <!-- Boot Background Video -->
-        <video class="boot-bg-video" src="assets/video/gracex-boot.mp4" autoplay muted playsinline preload="auto" aria-hidden="true"></video>
-
         <!-- Animated Grid Background -->
         <div class="boot-grid"></div>
         
@@ -72,9 +69,9 @@
           <div>STATUS: INITIALIZING</div>
         </div>
         
-        <!-- Main Logo (Animated GRACE Avatar) -->
-        <div class="">
-          <video class="boot-avatar-video" src="" autoplay audio loop playsinline preload="metadata" aria-hidden="true"></video>
+        <!-- Main Logo -->
+        <div class="boot-logo-container">
+          <img src="assets/images/gracex-boot-logo.png" alt="GRACE-X AI PRO FILM PRODUCTION SUITE">
         </div>
         
         <!-- Module Loading List -->
@@ -100,9 +97,9 @@
           © 2026 ZAC CROCKETT • MINISTRY OF DEFENCE GRADE SYSTEM
         </div>
       `;
-
+      
       document.body.insertBefore(bootScreen, document.body.firstChild);
-
+      
       // Generate particles
       this.generateParticles();
     },
@@ -110,7 +107,7 @@
     generateParticles() {
       const particlesContainer = document.getElementById('boot-particles');
       const particleCount = 30;
-
+      
       for (let i = 0; i < particleCount; i++) {
         const particle = document.createElement('div');
         particle.className = 'boot-particle';
@@ -125,30 +122,30 @@
       const statusText = document.getElementById('boot-status-text');
       const progressBar = document.getElementById('boot-progress-bar');
       const systemInfo = document.querySelector('.boot-system-info');
-
+      
       // Update status
       this.updateStatus('WIRING 18 AI MODULES...');
-
+      
       // Load modules progressively
       this.loadModulesSequentially();
-
+      
       // Update progress bar smoothly
       const progressInterval = setInterval(() => {
         const elapsed = Date.now() - this.startTime;
         const progress = Math.min((elapsed / this.bootDuration) * 100, 100);
         progressBar.style.width = progress + '%';
-
+        
         if (progress >= 100 || this.skipRequested) {
           clearInterval(progressInterval);
           this.completeBoot();
         }
       }, 50);
-
+      
       // Update system status
       setTimeout(() => {
         systemInfo.querySelector('div:last-child').textContent = 'STATUS: WIRING MODULES';
       }, 1000);
-
+      
       setTimeout(() => {
         systemInfo.querySelector('div:last-child').textContent = 'STATUS: ONLINE';
       }, this.bootDuration - 1000);
@@ -157,34 +154,34 @@
     loadModulesSequentially() {
       const modulesContainer = document.getElementById('boot-modules');
       const moduleLoadTime = this.bootDuration / this.modules.length;
-
+      
       const loadNextModule = () => {
         if (this.currentModuleIndex >= this.modules.length || this.skipRequested) {
           return;
         }
-
+        
         const moduleName = this.modules[this.currentModuleIndex];
         const moduleItem = document.createElement('div');
         moduleItem.className = 'boot-module-item loading';
         moduleItem.textContent = `[LOADING] ${moduleName}...`;
         modulesContainer.appendChild(moduleItem);
-
+        
         // Scroll to bottom
         modulesContainer.scrollTop = modulesContainer.scrollHeight;
-
+        
         // Mark as loaded after short delay
         setTimeout(() => {
           moduleItem.className = 'boot-module-item loaded';
           moduleItem.textContent = `[✓] ${moduleName} ONLINE`;
         }, moduleLoadTime * 0.3);
-
+        
         this.currentModuleIndex++;
-
+        
         if (this.currentModuleIndex < this.modules.length) {
           setTimeout(loadNextModule, moduleLoadTime);
         }
       };
-
+      
       loadNextModule();
     },
 
@@ -192,14 +189,14 @@
       const statusText = document.getElementById('boot-status-text');
       const progressBar = document.getElementById('boot-progress-bar');
       const systemInfo = document.querySelector('.boot-system-info');
-
+      
       // Final updates
       progressBar.style.width = '100%';
       statusText.textContent = 'ALL SYSTEMS OPERATIONAL • GRACE-X READY';
       statusText.style.color = '#00ff88';
       systemInfo.querySelector('div:last-child').textContent = 'STATUS: READY';
       systemInfo.querySelector('div:last-child').style.color = '#00ff88';
-
+      
       // Wait a moment, then fade out
       setTimeout(() => {
         this.fadeOutBoot();
@@ -209,12 +206,12 @@
     fadeOutBoot() {
       const bootScreen = document.getElementById('gracex-boot-screen');
       const app = document.getElementById('app');
-
+      
       bootScreen.classList.add('fade-out');
-
+      
       setTimeout(() => {
         bootScreen.classList.add('hidden');
-
+        
         // Show main app with fade-in
         if (app) {
           app.style.display = 'flex';
@@ -223,9 +220,9 @@
             app.classList.add('app-ready');
           }, 50); // Small delay to ensure transition triggers
         }
-
+        
         console.log('✅ GRACE-X BOOT COMPLETE - System Ready');
-
+        
         // Dispatch custom event for other systems to know boot is complete
         window.dispatchEvent(new CustomEvent('gracex:boot-complete'));
       }, 1000);
@@ -234,62 +231,43 @@
     skipBoot() {
       const bootScreen = document.getElementById('gracex-boot-screen');
       const app = document.getElementById('app');
-
+      
       if (bootScreen) {
         bootScreen.classList.add('hidden');
       }
-
+      
       // Show app immediately when skipping
       if (app) {
         app.style.display = 'flex';
         app.classList.add('app-ready');
       }
-
+      
       console.log('⏭️ GRACE-X BOOT SKIPPED');
       window.dispatchEvent(new CustomEvent('gracex:boot-complete'));
     },
 
     setupEventListeners() {
-      // Unmute boot video on first user interaction (browsers require muted for autoplay)
-      let soundEnabled = false;
-      const enableSound = () => {
-        if (soundEnabled) return;
-        soundEnabled = true;
-        const bgVideo = document.querySelector('#gracex-boot-screen .boot-bg-video');
-        if (bgVideo) {
-          bgVideo.muted = false;
-          bgVideo.volume = 0.7;
-          bgVideo.play().catch(() => { });
-          console.log('[GRACEX BOOT] 🔊 Sound enabled');
-        }
-      };
-
-      // Press any key to skip (also enables sound)
+      // Press any key to skip
       const skipHandler = (e) => {
-        enableSound();
         if (this.skipRequested) return;
-
+        
         this.skipRequested = true;
-
+        
         // ESC = skip always
         if (e.key === 'Escape') {
           localStorage.setItem('gracex_skip_boot', 'true');
           console.log('🔇 Boot screen disabled for future sessions');
         }
-
+        
         this.completeBoot();
         document.removeEventListener('keydown', skipHandler);
       };
-
+      
       document.addEventListener('keydown', skipHandler);
-
-      // Click to enable sound first, second click to skip
+      
+      // Click to skip
       const bootScreen = document.getElementById('gracex-boot-screen');
       bootScreen.addEventListener('click', () => {
-        if (!soundEnabled) {
-          enableSound();
-          return; // First click enables sound, don't skip yet
-        }
         if (!this.skipRequested) {
           this.skipRequested = true;
           this.completeBoot();
